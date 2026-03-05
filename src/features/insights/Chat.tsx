@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useGeminiChat, ChatMode } from '../hooks/useGeminiChat';
+import { useGeminiChat, ChatMode } from './useGeminiChat';
 import { Send, MessageSquare, Wind, Brain, HeartHandshake } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -77,8 +77,8 @@ const Chat = () => {
             >
               <div
                 className={`max-w-[85%] md:max-w-[70%] p-4 text-sm md:text-base leading-relaxed soft-shadow ${msg.role === 'user'
-                    ? 'bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white rounded-[25px] rounded-br-[8px]'
-                    : 'glass bg-[var(--color-bg-primary)]/70 text-[var(--color-text-primary)] rounded-[25px] rounded-bl-[8px]'
+                  ? 'bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white rounded-[25px] rounded-br-[8px]'
+                  : 'glass bg-[var(--color-bg-primary)]/70 text-[var(--color-text-primary)] rounded-[25px] rounded-bl-[8px]'
                   }`}
               >
                 {msg.text}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, User, Shield, Download, Trash2, Bell, FileText, ChevronRight } from 'lucide-react';
-import { requestNotificationPermission, areNotificationsEnabled, getReminderTime, setReminderTime } from '../services/notifications';
-import { getUserEntries } from '../services/journal';
+import { requestNotificationPermission, areNotificationsEnabled, getReminderTime, setReminderTime } from '../features/common/notificationService';
+import { getUserEntries } from '../features/mood/journalService';
 
 const Settings = () => {
   const { user, logout } = useAuth();

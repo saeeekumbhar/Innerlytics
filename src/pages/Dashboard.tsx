@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getUserEntries, getTodayEntry, JournalEntry } from '../services/journal';
-import MoodCheckIn from '../components/MoodCheckIn';
-import WeeklyMoodGraph from '../components/WeeklyMoodGraph';
-import AIInsightCard from '../components/AIInsightCard';
+import { getUserEntries, getTodayEntry, JournalEntry } from '../features/mood/journalService';
+import MoodCheckIn from '../features/mood/MoodCheckIn';
+import WeeklyMoodGraph from '../features/mood/WeeklyMoodGraph';
+import AIInsightCard from '../features/insights/InsightCard';
 import { motion } from 'motion/react';
 import { Plus, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-import { getAchievements, Achievement } from '../services/achievements';
-import AchievementBadge from '../components/AchievementBadge';
+import { getAchievements, Achievement } from '../features/profile/achievementService';
+import AchievementBadge from '../features/profile/AchievementBadge';
 
 const Dashboard = () => {
   const { user } = useAuth();

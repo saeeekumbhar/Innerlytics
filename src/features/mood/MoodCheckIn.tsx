@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Smile, Meh, Frown, Heart, Zap, ChevronDown } from 'lucide-react';
-import { addJournalEntry } from '../services/journal';
-import { useAuth } from '../context/AuthContext';
+import { addJournalEntry } from './journalService';
+import { useAuth } from '../../context/AuthContext';
 
 const moods = [
   { score: 2, label: 'Low', icon: Frown, color: 'text-[var(--color-pastel-blue)]', bg: 'bg-[var(--color-pastel-blue)]/20', ring: 'ring-[var(--color-pastel-blue)]' },
@@ -172,8 +172,8 @@ const MoodCheckIn = ({ onComplete }: { onComplete: () => void }) => {
                     whileTap={{ scale: 0.92 }}
                     onClick={() => toggleEmotion(emotion)}
                     className={`px-3.5 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${selectedEmotions.includes(emotion)
-                        ? 'bg-[var(--color-pastel-purple)]/20 border-[var(--color-pastel-purple)]/50 text-[var(--color-pastel-purple)] shadow-sm'
-                        : 'border-[var(--color-border-subtle)]/50 text-[var(--color-text-secondary)] hover:border-[var(--color-pastel-purple)]/30 hover:bg-[var(--color-pastel-hover)]'
+                      ? 'bg-[var(--color-pastel-purple)]/20 border-[var(--color-pastel-purple)]/50 text-[var(--color-pastel-purple)] shadow-sm'
+                      : 'border-[var(--color-border-subtle)]/50 text-[var(--color-text-secondary)] hover:border-[var(--color-pastel-purple)]/30 hover:bg-[var(--color-pastel-hover)]'
                       }`}
                   >
                     {emotion}
@@ -192,8 +192,8 @@ const MoodCheckIn = ({ onComplete }: { onComplete: () => void }) => {
                     whileTap={{ scale: 0.92 }}
                     onClick={() => setContext(context === opt.value ? '' : opt.value)}
                     className={`px-3 py-2.5 rounded-2xl text-xs font-medium transition-all duration-300 border text-center ${context === opt.value
-                        ? 'bg-[var(--color-pastel-blue)]/20 border-[var(--color-pastel-blue)]/50 text-[var(--color-text-primary)] shadow-sm'
-                        : 'border-[var(--color-border-subtle)]/50 text-[var(--color-text-secondary)] hover:bg-[var(--color-pastel-hover)]'
+                      ? 'bg-[var(--color-pastel-blue)]/20 border-[var(--color-pastel-blue)]/50 text-[var(--color-text-primary)] shadow-sm'
+                      : 'border-[var(--color-border-subtle)]/50 text-[var(--color-text-secondary)] hover:bg-[var(--color-pastel-hover)]'
                       }`}
                   >
                     {opt.label}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { getUserEntries, JournalEntry } from '../services/journal';
+import { useAuth } from '../../context/AuthContext';
+import { getUserEntries, JournalEntry } from '../mood/journalService';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, Radar, PieChart, Pie, Cell } from 'recharts';
 import { format, parseISO } from 'date-fns';
 import { motion } from 'motion/react';

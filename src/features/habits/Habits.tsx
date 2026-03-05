@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Flame, Check, Trash2, X } from 'lucide-react';
-import { Habit, getHabits, addHabit, removeHabit, toggleHabitCompletion, getStreak } from '../services/habits';
+import { Habit, getHabits, addHabit, removeHabit, toggleHabitCompletion, getStreak } from './habitService';
 
 const habitEmojis = ['🧘', '📖', '💧', '🏃', '🎨', '✍️', '🛌', '🥗', '🧠', '🎵', '💪', '🌿'];
 
@@ -157,8 +157,8 @@ const Habits = () => {
                                         whileTap={{ scale: 0.85 }}
                                         onClick={() => handleToggle(habit.id)}
                                         className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all duration-300 border-2 ${isCompletedToday
-                                                ? 'bg-[var(--color-pastel-teal)] border-[var(--color-pastel-teal)] text-white shadow-md'
-                                                : 'border-[var(--color-border-subtle)] hover:border-[var(--color-pastel-teal)] hover:bg-[var(--color-pastel-teal)]/10'
+                                            ? 'bg-[var(--color-pastel-teal)] border-[var(--color-pastel-teal)] text-white shadow-md'
+                                            : 'border-[var(--color-border-subtle)] hover:border-[var(--color-pastel-teal)] hover:bg-[var(--color-pastel-teal)]/10'
                                             }`}
                                     >
                                         {isCompletedToday ? <Check className="w-6 h-6" /> : <span className="text-xl">{habit.emoji}</span>}
@@ -184,8 +184,8 @@ const Habits = () => {
                                             <div
                                                 key={day}
                                                 className={`w-6 h-6 rounded-lg transition-colors ${habit.completedDates.includes(day)
-                                                        ? 'bg-[var(--color-pastel-teal)]'
-                                                        : 'bg-[var(--color-border-subtle)]/30'
+                                                    ? 'bg-[var(--color-pastel-teal)]'
+                                                    : 'bg-[var(--color-border-subtle)]/30'
                                                     }`}
                                                 title={day}
                                             />

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { useAuth } from '../context/AuthContext';
-import { getUserEntries, JournalEntry } from '../services/journal';
+import { useAuth } from '../../context/AuthContext';
+import { getUserEntries, JournalEntry } from './journalService';
 import { motion } from 'motion/react';
 
 const CalendarPage = () => {
