@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Calendar, BookOpen, MessageSquare, BarChart2, Users, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Calendar, BookOpen, MessageSquare, BarChart2, Users, Settings, LogOut, Activity, Heart, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'motion/react';
 import ThemeToggle from './ThemeToggle';
@@ -15,7 +15,10 @@ const Layout = () => {
     { path: '/journal', icon: BookOpen, label: 'Journal' },
     { path: '/chat', icon: MessageSquare, label: 'AI Chat' },
     { path: '/insights', icon: BarChart2, label: 'Insights' },
+    { path: '/habits', icon: Activity, label: 'Habits' },
+    { path: '/wellness', icon: Heart, label: 'Wellness' },
     { path: '/partner', icon: Users, label: 'Partner' },
+    { path: '/support', icon: Shield, label: 'Support' },
     { path: '/settings', icon: Settings, label: 'Settings' },
   ];
 

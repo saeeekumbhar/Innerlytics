@@ -10,6 +10,9 @@ import Chat from './pages/Chat';
 import Insights from './pages/Insights';
 import Partner from './pages/Partner';
 import Settings from './pages/Settings';
+import Habits from './pages/Habits';
+import Wellness from './pages/Wellness';
+import Support from './pages/Support';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -48,7 +51,10 @@ export default function App() {
             <Route path="journal" element={<Journal />} />
             <Route path="chat" element={<Chat />} />
             <Route path="insights" element={<Insights />} />
+            <Route path="habits" element={<Habits />} />
+            <Route path="wellness" element={<Wellness />} />
             <Route path="partner" element={<Partner />} />
+            <Route path="support" element={<Support />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
