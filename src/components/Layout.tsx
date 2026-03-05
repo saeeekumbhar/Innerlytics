@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Calendar, BookOpen, MessageSquare, BarChart2, Users, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'motion/react';
+import ThemeToggle from './ThemeToggle';
 
 const Layout = () => {
   const { user, logout } = useAuth();
@@ -37,8 +38,8 @@ const Layout = () => {
                 key={item.path}
                 to={item.path}
                 className={`relative flex items-center px-4 py-3 rounded-2xl transition-all duration-300 group ${isActive
-                    ? 'text-[var(--color-text-primary)] font-medium'
-                    : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-sidebar-hover)] hover:text-[var(--color-text-primary)] hover:scale-[1.02]'
+                  ? 'text-[var(--color-text-primary)] font-medium'
+                  : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-sidebar-hover)] hover:text-[var(--color-text-primary)] hover:scale-[1.02]'
                   }`}
               >
                 {isActive && (
@@ -58,8 +59,11 @@ const Layout = () => {
           })}
         </nav>
 
-        <div className="p-4 border-t border-[var(--color-border-subtle)]">
-          <div className="flex items-center mb-4 px-2">
+        <div className="p-4 border-t border-[var(--color-border-subtle)] space-y-4">
+          <div className="flex items-center justify-center">
+            <ThemeToggle />
+          </div>
+          <div className="flex items-center px-2">
             <div className="w-10 h-10 rounded-full bg-[var(--color-pastel-teal)]/30 text-[var(--color-pastel-teal)] flex items-center justify-center mr-3 font-bold text-sm shadow-sm">
               {user?.displayName?.[0] || 'U'}
             </div>
@@ -70,7 +74,7 @@ const Layout = () => {
           </div>
           <button
             onClick={logout}
-            className="w-full flex items-center justify-center px-4 py-3 text-sm font-medium text-[var(--color-soft-danger)] bg-[var(--color-soft-danger)]/10 hover:bg-[var(--color-soft-danger)]/20 rounded-full transition-all duration-300 hover:scale-[1.02]"
+            className="w-full flex items-center justify-center px-4 py-3 text-sm font-medium text-[var(--color-danger)] bg-[var(--color-danger)]/10 hover:bg-[var(--color-danger)]/20 rounded-full transition-all duration-300 hover:scale-[1.02]"
           >
             <LogOut className="w-4 h-4 mr-2" />
             Sign Out

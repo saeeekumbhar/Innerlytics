@@ -51,11 +51,10 @@ const Journal = () => {
       await addJournalEntry({
         userId: user.uid,
         date: new Date().toISOString().split('T')[0],
-        moodScore: moodScore, // User selected or AI inferred? Let's stick to user selected for now, or maybe AI could suggest.
+        moodScore: moodScore,
         moodLabel: aiResult.primary_emotion || 'Neutral',
         content,
         aiAnalysisJson: JSON.stringify(aiResult),
-        createdAt: new Date(),
       });
 
       setContent('');
