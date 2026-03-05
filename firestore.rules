@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && (request.auth.uid == resource.data.userId || request.auth.uid == resource.data.uid || request.auth.uid == resource.data.requesterId || request.auth.uid == resource.data.partnerId);
+    }
+
+    // Check if the user is a partner with access (simplified for MVP)
+    // In a real app, this would query the partner_connections collection, but rules can't query other collections easily without get()
+    // For now, we'll rely on the 'sharedWith' array in JournalEntry
+    function isSharedWithUser() {
+      return isAuthenticated() && resource.data.sharedWith.hasAny([request.auth.uid]);
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    function isValidString(field, maxLen) {
+      return request.resource.data[field] is string && request.resource.data[field].size() <= maxLen;
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId);
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    match /journal_entries/{entryId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isSharedWithUser());
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    match /chat_messages/{messageId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      // Chat messages are generally immutable
+    }
+
+    match /partner_connections/{connectionId} {
+      allow read: if isAuthenticated() && (resource.data.requesterId == request.auth.uid || resource.data.partnerId == request.auth.uid);
+      allow create: if isAuthenticated() && (request.resource.data.requesterId == request.auth.uid);
+      allow update: if isAuthenticated() && (resource.data.requesterId == request.auth.uid || resource.data.partnerId == request.auth.uid);
+      allow delete: if isAuthenticated() && (resource.data.requesterId == request.auth.uid || resource.data.partnerId == request.auth.uid);
+    }
+
+    match /weekly_reports/{reportId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid; // Usually created by backend, but allowing user for now if client-side generation
+    }
+  }
+}
