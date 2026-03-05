@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Calendar, BookOpen, MessageSquare, BarChart2, Users, Settings, LogOut, Activity, Heart, Shield } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { motion } from 'motion/react';
 import ThemeToggle from './ThemeToggle';
 import Onboarding from './Onboarding';

@@ -1,5 +1,5 @@
-import { JournalEntry, getUserEntries } from './journal';
-import { Habit, getHabits } from './habits';
+import { JournalEntry, getUserEntries } from '../mood/journalService';
+import { Habit, getHabits } from '../habits/habitService';
 
 export interface Achievement {
     id: string;

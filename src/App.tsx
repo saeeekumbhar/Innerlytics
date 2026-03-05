@@ -1,19 +1,21 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import Layout from './components/Layout';
+import Layout from './features/common/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import CalendarPage from './pages/CalendarPage';
-import Journal from './pages/Journal';
-import Chat from './pages/Chat';
-import Insights from './pages/Insights';
-import Partner from './pages/Partner';
+import CalendarPage from './features/mood/CalendarPage';
+import Journal from './features/mood/JournalPage';
+import Chat from './features/insights/Chat';
+import Insights from './features/insights/Insights';
+import Partner from './features/partner/Partner';
 import Settings from './pages/Settings';
-import Habits from './pages/Habits';
-import Wellness from './pages/Wellness';
-import Support from './pages/Support';
-import Privacy from './pages/Privacy';
+import Habits from './features/habits/Habits';
+import Wellness from './features/wellness/Wellness';
+import Support from './features/support/Support';
+import Privacy from './features/common/Privacy';
+
+import ErrorBoundary from './features/common/ErrorBoundary';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -35,32 +37,34 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="calendar" element={<CalendarPage />} />
-            <Route path="journal" element={<Journal />} />
-            <Route path="chat" element={<Chat />} />
-            <Route path="insights" element={<Insights />} />
-            <Route path="habits" element={<Habits />} />
-            <Route path="wellness" element={<Wellness />} />
-            <Route path="partner" element={<Partner />} />
-            <Route path="support" element={<Support />} />
-            <Route path="privacy" element={<Privacy />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="calendar" element={<CalendarPage />} />
+              <Route path="journal" element={<Journal />} />
+              <Route path="chat" element={<Chat />} />
+              <Route path="insights" element={<Insights />} />
+              <Route path="habits" element={<Habits />} />
+              <Route path="wellness" element={<Wellness />} />
+              <Route path="partner" element={<Partner />} />
+              <Route path="support" element={<Support />} />
+              <Route path="privacy" element={<Privacy />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }

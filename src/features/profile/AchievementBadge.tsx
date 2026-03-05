@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Achievement } from '../services/achievements';
+import { Achievement } from './achievementService';
 
 interface Props {
     achievement: Achievement;
