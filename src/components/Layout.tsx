@@ -4,6 +4,7 @@ import { LayoutDashboard, Calendar, BookOpen, MessageSquare, BarChart2, Users, S
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'motion/react';
 import ThemeToggle from './ThemeToggle';
+import Onboarding from './Onboarding';
 
 const Layout = () => {
   const { user, logout } = useAuth();
@@ -19,6 +20,7 @@ const Layout = () => {
     { path: '/wellness', icon: Heart, label: 'Wellness' },
     { path: '/partner', icon: Users, label: 'Partner' },
     { path: '/support', icon: Shield, label: 'Support' },
+    { path: '/privacy', icon: Shield, label: 'Privacy' },
     { path: '/settings', icon: Settings, label: 'Settings' },
   ];
 
@@ -91,6 +93,7 @@ const Layout = () => {
           <Outlet />
         </div>
       </main>
+      <Onboarding />
     </div>
   );
 };
