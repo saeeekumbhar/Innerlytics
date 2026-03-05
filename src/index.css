@@ -1,1 +1,221 @@
 @import "tailwindcss";
+
+@theme {
+  --font-serif: "DM Serif Display", serif;
+  --font-sans: "Poppins", sans-serif;
+
+  --color-bg-primary: var(--color-bg-primary);
+  --color-bg-card: var(--color-bg-card);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+
+  --color-pastel-purple: var(--color-pastel-purple);
+  --color-pastel-blue: var(--color-pastel-blue);
+  --color-pastel-teal: var(--color-pastel-teal);
+  --color-pastel-pink: var(--color-pastel-pink);
+  --color-pastel-peach: var(--color-pastel-peach);
+  --color-danger: var(--color-danger);
+  --color-pastel-hover: var(--color-pastel-hover);
+
+  --color-border-subtle: var(--color-border-subtle);
+  --color-sidebar-bg: var(--color-sidebar-bg);
+  --color-sidebar-hover: var(--color-sidebar-hover);
+  --color-sidebar-active: var(--color-sidebar-active);
+}
+
+@layer base {
+  :root {
+    --color-bg-primary: #FDF6F0;
+    /* Soft cream pink */
+    --color-bg-card: #FFFFFF;
+    --color-text-primary: #4A4A5A;
+    /* Soft dark gray instead of black */
+    --color-text-secondary: #8C8C9A;
+
+    --color-pastel-purple: #C8B6FF;
+    --color-pastel-blue: #A0C4FF;
+    --color-pastel-teal: #B8E0D2;
+    --color-pastel-pink: #FFAFCC;
+    --color-pastel-peach: #FFD6A5;
+    --color-danger: #FF8FAB;
+    /* Muted rose */
+
+    --color-pastel-hover: rgba(200, 182, 255, 0.08);
+    --color-border-subtle: rgba(200, 182, 255, 0.2);
+    --color-sidebar-bg: rgba(255, 255, 255, 0.6);
+    --color-sidebar-hover: #F8F4FF;
+    --color-sidebar-active: #C8B6FF;
+  }
+
+  /* Dark Mode - Soft aesthetic night */
+  .dark {
+    --color-bg-primary: #1E1E2F;
+    /* Soft navy charcoal */
+    --color-bg-card: #2C2C44;
+    --color-text-primary: #EAEAF0;
+    /* Off-white */
+    --color-text-secondary: #B8B8C5;
+    /* Soft gray */
+
+    --color-pastel-purple: #B5A0FF;
+    /* Slightly tweaked for dark contrast */
+    --color-pastel-blue: #A0C4FF;
+    --color-pastel-teal: #94CDB8;
+    --color-pastel-pink: #FFAFCC;
+    /* Muted glow */
+    --color-pastel-peach: #FFD6A5;
+    --color-danger: #FF7597;
+
+    --color-pastel-hover: rgba(200, 182, 255, 0.05);
+    --color-border-subtle: rgba(200, 182, 255, 0.1);
+    --color-sidebar-bg: rgba(44, 44, 68, 0.6);
+    --color-sidebar-hover: #3A3A5A;
+    --color-sidebar-active: #B5A0FF;
+  }
+}
+
+@layer utilities {
+  .glass {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-subtle);
+  }
+
+  .glass-sidebar {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: var(--color-sidebar-bg);
+    border-right: 1px solid var(--color-border-subtle);
+  }
+
+  .soft-shadow {
+    box-shadow: 0 10px 30px -10px rgba(200, 182, 255, 0.15);
+  }
+
+  .dark .soft-shadow {
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+  }
+
+  .floating {
+    animation: floating 6s ease-in-out infinite;
+  }
+
+  @keyframes floating {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-5px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  .glow-focus:focus-within {
+    box-shadow: 0 0 0 3px rgba(200, 182, 255, 0.3);
+    border-color: var(--color-pastel-purple);
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: background-color 0.5s ease, color 0.5s ease;
+  overflow-x: hidden;
+}
+
+/* Base heading styles */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+}
+
+/* FullCalendar Customizations */
+.fullcalendar-custom {
+  --fc-border-color: var(--color-border-subtle);
+  --fc-daygrid-event-dot-width: 8px;
+  --fc-today-bg-color: rgba(200, 182, 255, 0.15);
+  /* Pastel purple very transparent */
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: var(--color-bg-primary);
+  --fc-list-event-hover-bg-color: var(--color-pastel-hover);
+  --fc-theme-standard-border-color: var(--color-border-subtle);
+}
+
+.fullcalendar-custom .fc-theme-standard td,
+.fullcalendar-custom .fc-theme-standard th {
+  border-color: var(--color-border-subtle);
+  border-right-color: var(--color-border-subtle);
+  border-bottom-color: var(--color-border-subtle);
+}
+
+.fullcalendar-custom .fc-col-header-cell-cushion {
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  padding: 12px 0;
+}
+
+.fullcalendar-custom .fc-daygrid-day-number {
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  padding: 8px;
+}
+
+.fullcalendar-custom .fc-event {
+  border-radius: 8px;
+  padding: 2px 4px;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+}
+
+.fullcalendar-custom .fc-event:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.fullcalendar-custom .fc-button-primary {
+  background-color: var(--color-pastel-purple) !important;
+  border-color: var(--color-pastel-purple) !important;
+  border-radius: 12px !important;
+  text-transform: capitalize !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 500 !important;
+  transition: all 0.3s !important;
+}
+
+.fullcalendar-custom .fc-button-primary:not(:disabled):active,
+.fullcalendar-custom .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: var(--color-pastel-blue) !important;
+  border-color: var(--color-pastel-blue) !important;
+}
+
+.fullcalendar-custom .fc-button-primary:hover {
+  background-color: var(--color-pastel-blue) !important;
+  border-color: var(--color-pastel-blue) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(160, 196, 255, 0.4);
+}
+
+.fullcalendar-custom .fc-toolbar-title {
+  font-family: var(--font-serif) !important;
+  color: var(--color-text-primary) !important;
+  font-size: 1.5rem !important;
+  font-weight: bold !important;
+}
