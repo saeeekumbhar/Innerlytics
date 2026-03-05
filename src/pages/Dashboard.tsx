@@ -8,21 +8,27 @@ import { motion } from 'motion/react';
 import { Plus, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+import { getAchievements, Achievement } from '../services/achievements';
+import AchievementBadge from '../components/AchievementBadge';
+
 const Dashboard = () => {
   const { user } = useAuth();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [todayEntry, setTodayEntry] = useState<JournalEntry | null>(null);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     if (!user) return;
     try {
-      const [recentEntries, today] = await Promise.all([
+      const [recentEntries, today, unlockedAchievements] = await Promise.all([
         getUserEntries(user.uid, 7),
-        getTodayEntry(user.uid)
+        getTodayEntry(user.uid),
+        getAchievements(user.uid)
       ]);
       setEntries(recentEntries);
       setTodayEntry(today);
+      setAchievements(unlockedAchievements);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -110,6 +116,21 @@ const Dashboard = () => {
         <div className="space-y-8">
           <motion.div variants={itemVariants}>
             <AIInsightCard entries={entries} />
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="glass rounded-[2rem] p-6 lg:p-8 soft-shadow border-none relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-pastel-purple)]/10 rounded-full blur-2xl -mt-10 -mr-10 pointer-events-none"></div>
+            <h3 className="text-xl font-serif font-bold text-[var(--color-text-primary)] mb-5 relative z-10">Your Growth</h3>
+            <div className="space-y-4 relative z-10">
+              {achievements.slice(0, 3).map((achievement) => (
+                <AchievementBadge key={achievement.id} achievement={achievement} />
+              ))}
+              {achievements.length === 0 && (
+                <div className="p-6 text-center border-2 border-dashed border-[var(--color-border-subtle)] rounded-2xl">
+                  <p className="text-sm text-[var(--color-text-secondary)]">Keep journaling to unlock badges! 🌱</p>
+                </div>
+              )}
+            </div>
           </motion.div>
 
           <motion.div variants={itemVariants} className="glass rounded-[2rem] p-6 lg:p-8 soft-shadow border-none relative overflow-hidden">

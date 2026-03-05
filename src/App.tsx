@@ -13,6 +13,7 @@ import Settings from './pages/Settings';
 import Habits from './pages/Habits';
 import Wellness from './pages/Wellness';
 import Support from './pages/Support';
+import Privacy from './pages/Privacy';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -55,6 +56,7 @@ export default function App() {
             <Route path="wellness" element={<Wellness />} />
             <Route path="partner" element={<Partner />} />
             <Route path="support" element={<Support />} />
+            <Route path="privacy" element={<Privacy />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>

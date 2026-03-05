@@ -3,7 +3,9 @@ import { useAuth } from '../context/AuthContext';
 import { addJournalEntry } from '../services/journal';
 import { generateJsonContent } from '../services/gemini';
 import { motion } from 'motion/react';
-import { PenTool, BookOpen, Save, Loader } from 'lucide-react';
+import { PenTool, BookOpen, Save, Loader, Mic } from 'lucide-react';
+import { useSpeechToText } from '../hooks/useSpeechToText';
+import { useEffect } from 'react';
 import { Type } from '@google/genai';
 
 const prompts = [
@@ -21,6 +23,14 @@ const Journal = () => {
   const [moodScore, setMoodScore] = useState(5); // Default neutral
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
+  const { isListening, transcript, setTranscript, startListening, stopListening, isSupported } = useSpeechToText();
+
+  useEffect(() => {
+    if (transcript) {
+      setContent(prev => prev + (prev && !prev.endsWith(' ') ? ' ' : '') + transcript);
+      setTranscript('');
+    }
+  }, [transcript, setTranscript]);
 
   const handleSubmit = async () => {
     if (!content.trim() || !user) return;
@@ -125,9 +135,21 @@ const Journal = () => {
           </div>
 
           <div className="flex justify-between items-center pt-6 border-t border-[var(--color-border-subtle)]">
-            <div className="flex items-center space-x-4">
-              {/* Mood Slider could go here */}
-              <span className="text-xs text-[var(--color-text-secondary)]">{content.split(/\s+/).filter(w => w.length > 0).length} words</span>
+            <div className="flex items-center space-x-3">
+              {isSupported && (
+                <button
+                  onClick={isListening ? stopListening : startListening}
+                  className={`p-3 rounded-full transition-all duration-300 ${isListening
+                    ? 'bg-[var(--color-danger)] text-white animate-pulse'
+                    : 'bg-[var(--color-pastel-purple)]/10 text-[var(--color-pastel-purple)] hover:bg-[var(--color-pastel-purple)]/20'}`}
+                  title={isListening ? "Stop listening" : "Start voice journaling"}
+                >
+                  <Mic className={`w-5 h-5 ${isListening ? 'scale-110' : ''}`} />
+                </button>
+              )}
+              <span className="text-xs text-[var(--color-text-secondary)] font-medium">
+                {content.split(/\s+/).filter(w => w.length > 0).length} words
+              </span>
             </div>
             <button
               onClick={handleSubmit}
