@@ -5,6 +5,11 @@ export interface JournalEntry {
   moodScore: number;
   moodLabel: string;
   content: string;
+  energyLevel?: number;
+  stressLevel?: number;
+  anxietyLevel?: number;
+  emotionTags?: string[];
+  context?: string;
   aiAnalysisJson?: string;
   sharedWith?: string[];
   createdAt: any;
