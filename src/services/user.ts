@@ -1,19 +1,18 @@
-import { doc, getDoc, setDoc, updateDoc, Timestamp } from 'firebase/firestore';
-import { db } from '../firebase';
-import { User } from 'firebase/auth';
+import { User } from '../context/AuthContext';
 
 export const createUserProfile = async (user: User) => {
-  const userRef = doc(db, 'users', user.uid);
-  const userSnap = await getDoc(userRef);
+  const usersStr = localStorage.getItem('innerlytics_users');
+  const users = usersStr ? JSON.parse(usersStr) : {};
 
-  if (!userSnap.exists()) {
+  if (!users[user.uid]) {
     try {
-      await setDoc(userRef, {
+      users[user.uid] = {
         uid: user.uid,
         email: user.email,
         name: user.displayName,
-        createdAt: Timestamp.now(),
-      });
+        createdAt: new Date().toISOString(),
+      };
+      localStorage.setItem('innerlytics_users', JSON.stringify(users));
     } catch (error) {
       console.error("Error creating user profile:", error);
     }
@@ -22,10 +21,12 @@ export const createUserProfile = async (user: User) => {
 
 export const getUserProfile = async (userId: string) => {
   try {
-    const userRef = doc(db, 'users', userId);
-    const userSnap = await getDoc(userRef);
-    if (userSnap.exists()) {
-      return userSnap.data();
+    const usersStr = localStorage.getItem('innerlytics_users');
+    if (usersStr) {
+      const users = JSON.parse(usersStr);
+      if (users[userId]) {
+        return users[userId];
+      }
     }
     return null;
   } catch (error) {

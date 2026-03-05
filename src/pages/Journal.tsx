@@ -69,44 +69,45 @@ const Journal = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8 pb-10">
       <header>
-        <h1 className="text-3xl font-serif font-bold text-slate-900">Journal</h1>
-        <p className="text-slate-600 mt-1">Reflect on your thoughts and feelings.</p>
+        <h1 className="text-3xl md:text-4xl font-serif font-bold text-[var(--color-text-primary)]">Journal</h1>
+        <p className="text-[var(--color-text-secondary)] mt-1.5 text-lg">Reflect on your thoughts and feelings.</p>
       </header>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="flex border-b border-slate-100">
+      <div className="glass rounded-[2rem] soft-shadow border-none overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-pastel-pink)]/10 rounded-full blur-3xl -mt-20 -mr-20 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-[var(--color-pastel-teal)]/10 rounded-full blur-2xl -mb-10 -ml-10 pointer-events-none"></div>
+
+        <div className="flex border-b border-[var(--color-border-subtle)] relative z-10">
           <button
             onClick={() => setMode('free')}
-            className={`flex-1 py-4 text-sm font-medium flex items-center justify-center transition-colors ${
-              mode === 'free' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'
-            }`}
+            className={`flex-1 py-4 text-sm font-medium flex items-center justify-center transition-colors ${mode === 'free' ? 'bg-[var(--color-pastel-purple)]/10 text-[var(--color-pastel-purple)] shadow-inner' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-sidebar-hover)]'
+              }`}
           >
             <PenTool className="w-4 h-4 mr-2" />
             Free Write
           </button>
           <button
             onClick={() => setMode('guided')}
-            className={`flex-1 py-4 text-sm font-medium flex items-center justify-center transition-colors ${
-              mode === 'guided' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'
-            }`}
+            className={`flex-1 py-4 text-sm font-medium flex items-center justify-center transition-colors ${mode === 'guided' ? 'bg-[var(--color-pastel-purple)]/10 text-[var(--color-pastel-purple)] shadow-inner' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-sidebar-hover)]'
+              }`}
           >
             <BookOpen className="w-4 h-4 mr-2" />
             Guided Reflection
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-6 md:p-8 space-y-6 relative z-10">
           {mode === 'guided' && (
             <div className="space-y-4">
-              <p className="text-sm font-medium text-slate-700">Choose a prompt:</p>
+              <p className="text-sm font-medium text-[var(--color-text-secondary)]">Choose a prompt:</p>
               <div className="flex flex-wrap gap-2">
                 {prompts.map((prompt, index) => (
                   <button
                     key={index}
                     onClick={() => setContent(prev => prev + (prev ? '\n\n' : '') + prompt + '\n')}
-                    className="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs rounded-lg hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                    className="px-4 py-2 bg-[var(--color-bg-primary)]/50 border border-[var(--color-border-subtle)] text-[var(--color-text-primary)] text-xs md:text-sm rounded-full hover:bg-[var(--color-pastel-purple)]/10 hover:text-[var(--color-pastel-purple)] hover:border-[var(--color-pastel-purple)]/30 transition-all duration-300"
                   >
                     {prompt}
                   </button>
@@ -115,32 +116,34 @@ const Journal = () => {
             </div>
           )}
 
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder={mode === 'free' ? "Start writing..." : "Select a prompt above or start writing..."}
-            className="w-full h-64 p-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none text-slate-700 leading-relaxed"
-          />
+          <div className="glow-focus rounded-2xl transition-shadow duration-300">
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder={mode === 'free' ? "Start writing..." : "Select a prompt above or start writing..."}
+              className="w-full h-64 p-5 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/30 focus:outline-none resize-none text-[var(--color-text-primary)] leading-relaxed transition-colors placeholder:text-[var(--color-text-secondary)]/70 font-sans"
+            />
+          </div>
 
-          <div className="flex justify-between items-center pt-4 border-t border-slate-100">
+          <div className="flex justify-between items-center pt-6 border-t border-[var(--color-border-subtle)]">
             <div className="flex items-center space-x-4">
-               {/* Mood Slider could go here */}
-               <span className="text-xs text-slate-400">{content.split(/\s+/).filter(w => w.length > 0).length} words</span>
+              {/* Mood Slider could go here */}
+              <span className="text-xs text-[var(--color-text-secondary)]">{content.split(/\s+/).filter(w => w.length > 0).length} words</span>
             </div>
             <button
               onClick={handleSubmit}
               disabled={isSubmitting || !content.trim()}
-              className="flex items-center px-6 py-2 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center px-8 py-3 bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white rounded-full font-medium transition-all duration-300 soft-shadow hover:shadow-[0_8px_25px_-8px_rgba(200,182,255,0.6)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>
-                  <Loader className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader className="w-5 h-5 mr-3 animate-spin" />
                   Analyzing & Saving...
                 </>
               ) : (
                 <>
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Entry
+                  <Save className="w-5 h-5 mr-2" />
+                  Save Entry ✨
                 </>
               )}
             </button>
@@ -152,20 +155,23 @@ const Journal = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100"
+          className="glass rounded-[2rem] p-6 lg:p-8 border-none relative overflow-hidden bg-[var(--color-pastel-purple)]/5"
         >
-          <h3 className="text-lg font-serif font-bold text-indigo-900 mb-2">AI Analysis</h3>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="bg-white/50 p-3 rounded-xl">
-              <span className="text-xs text-indigo-500 uppercase tracking-wide">Primary Emotion</span>
-              <p className="font-medium text-indigo-900">{analysis.primary_emotion}</p>
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-[var(--color-pastel-purple)]/10 rounded-full blur-2xl pointer-events-none"></div>
+          <h3 className="text-xl font-serif font-bold text-[var(--color-text-primary)] mb-4 relative z-10 flex items-center">
+            AI Analysis
+          </h3>
+          <div className="grid grid-cols-2 gap-4 mb-5 relative z-10">
+            <div className="bg-[var(--color-bg-primary)]/40 p-4 rounded-[1.5rem]">
+              <span className="text-xs text-[var(--color-pastel-purple)] uppercase tracking-wide font-medium">Primary Emotion</span>
+              <p className="font-medium text-[var(--color-text-primary)] mt-1">{analysis.primary_emotion}</p>
             </div>
-            <div className="bg-white/50 p-3 rounded-xl">
-              <span className="text-xs text-indigo-500 uppercase tracking-wide">Sentiment</span>
-              <p className="font-medium text-indigo-900 capitalize">{analysis.sentiment}</p>
+            <div className="bg-[var(--color-bg-primary)]/40 p-4 rounded-[1.5rem]">
+              <span className="text-xs text-[var(--color-pastel-blue)] uppercase tracking-wide font-medium">Sentiment</span>
+              <p className="font-medium text-[var(--color-text-primary)] mt-1 capitalize">{analysis.sentiment}</p>
             </div>
           </div>
-          <p className="text-indigo-800 text-sm leading-relaxed">{analysis.insight_summary}</p>
+          <p className="text-[var(--color-text-secondary)] text-sm md:text-base leading-relaxed relative z-10">{analysis.insight_summary}</p>
         </motion.div>
       )}
     </div>

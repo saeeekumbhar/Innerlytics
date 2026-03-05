@@ -1,18 +1,3 @@
-import { 
-  collection, 
-  addDoc, 
-  query, 
-  where, 
-  getDocs, 
-  orderBy, 
-  limit, 
-  Timestamp,
-  doc,
-  getDoc,
-  updateDoc
-} from 'firebase/firestore';
-import { db } from '../firebase';
-
 export interface JournalEntry {
   id?: string;
   userId: string;
@@ -25,13 +10,28 @@ export interface JournalEntry {
   createdAt: any;
 }
 
+const getStoredEntries = (): JournalEntry[] => {
+  const stored = localStorage.getItem('innerlytics_journals');
+  return stored ? JSON.parse(stored) : [];
+};
+
+const saveEntries = (entries: JournalEntry[]) => {
+  localStorage.setItem('innerlytics_journals', JSON.stringify(entries));
+};
+
 export const addJournalEntry = async (entry: Omit<JournalEntry, 'id' | 'createdAt'>) => {
   try {
-    const docRef = await addDoc(collection(db, 'journal_entries'), {
+    const entries = getStoredEntries();
+    const newEntry: JournalEntry = {
       ...entry,
-      createdAt: Timestamp.now(),
-    });
-    return docRef.id;
+      id: Math.random().toString(36).substring(7),
+      createdAt: new Date().toISOString(),
+    };
+
+    entries.push(newEntry);
+    saveEntries(entries);
+
+    return newEntry.id;
   } catch (error) {
     console.error("Error adding journal entry: ", error);
     throw error;
@@ -40,14 +40,13 @@ export const addJournalEntry = async (entry: Omit<JournalEntry, 'id' | 'createdA
 
 export const getUserEntries = async (userId: string, limitCount = 50) => {
   try {
-    const q = query(
-      collection(db, 'journal_entries'),
-      where('userId', '==', userId),
-      orderBy('date', 'desc'),
-      limit(limitCount)
-    );
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as JournalEntry));
+    const entries = getStoredEntries();
+    const userEntries = entries
+      .filter(e => e.userId === userId)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, limitCount);
+
+    return userEntries;
   } catch (error) {
     console.error("Error getting user entries: ", error);
     throw error;
@@ -57,17 +56,9 @@ export const getUserEntries = async (userId: string, limitCount = 50) => {
 export const getTodayEntry = async (userId: string) => {
   const today = new Date().toISOString().split('T')[0];
   try {
-    const q = query(
-      collection(db, 'journal_entries'),
-      where('userId', '==', userId),
-      where('date', '==', today),
-      limit(1)
-    );
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-      return { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() } as JournalEntry;
-    }
-    return null;
+    const entries = getStoredEntries();
+    const todayEntry = entries.find(e => e.userId === userId && e.date === today);
+    return todayEntry || null;
   } catch (error) {
     console.error("Error getting today's entry: ", error);
     throw error;

@@ -1,6 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+
+// Use a mock User type since we removed firebase/auth
+export interface User {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -16,38 +21,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-    return unsubscribe;
+    // Check local storage for existing session
+    const storedUser = localStorage.getItem('innerlytics_user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    setLoading(false);
   }, []);
 
   const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
     try {
-      const result = await signInWithPopup(auth, provider);
+      // Mock Google Sign In
+      const mockUser: User = {
+        uid: "local-user-" + Math.floor(Math.random() * 10000),
+        email: "localuser@innerlytics.test",
+        displayName: "Local User"
+      };
+
+      localStorage.setItem('innerlytics_user', JSON.stringify(mockUser));
+      setUser(mockUser);
+
       // Create user profile in Firestore if it doesn't exist
-      if (result.user) {
-        const { createUserProfile } = await import('../services/user');
-        await createUserProfile(result.user);
-      }
+      const { createUserProfile } = await import('../services/user');
+      await createUserProfile(mockUser);
     } catch (error: any) {
-      console.error("Error signing in with Google", error);
-      if (error.code === 'auth/popup-closed-by-user') {
-        alert("Sign-in popup was closed. Please try again.");
-      } else if (error.code === 'auth/popup-blocked') {
-        alert("Sign-in popup was blocked. Please allow popups for this site.");
-      } else {
-        alert(`Sign-in failed: ${error.message}`);
-      }
+      console.error("Error signing in", error);
+      alert(`Sign-in failed: ${error.message}`);
     }
   };
 
   const logout = async () => {
     try {
-      await signOut(auth);
+      localStorage.removeItem('innerlytics_user');
+      setUser(null);
     } catch (error) {
       console.error("Error signing out", error);
     }

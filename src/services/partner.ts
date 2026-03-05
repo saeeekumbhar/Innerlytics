@@ -1,6 +1,3 @@
-import { collection, addDoc, query, where, getDocs, updateDoc, doc, Timestamp } from 'firebase/firestore';
-import { db } from '../firebase';
-
 export interface PartnerConnection {
   id?: string;
   requesterId: string;
@@ -11,27 +8,38 @@ export interface PartnerConnection {
   createdAt: any;
 }
 
+const getStoredPartners = (): PartnerConnection[] => {
+  const stored = localStorage.getItem('innerlytics_partners');
+  return stored ? JSON.parse(stored) : [];
+};
+
+const savePartners = (partners: PartnerConnection[]) => {
+  localStorage.setItem('innerlytics_partners', JSON.stringify(partners));
+};
+
 export const sendPartnerRequest = async (requesterId: string, partnerEmail: string) => {
   try {
+    const partners = getStoredPartners();
+
     // Check if request already exists
-    const q = query(
-      collection(db, 'partner_connections'),
-      where('requesterId', '==', requesterId),
-      where('partnerEmail', '==', partnerEmail)
-    );
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
+    const existing = partners.find(p => p.requesterId === requesterId && p.partnerEmail === partnerEmail);
+    if (existing) {
       throw new Error("Request already sent to this email.");
     }
 
-    await addDoc(collection(db, 'partner_connections'), {
+    const newConnection: PartnerConnection = {
+      id: Math.random().toString(36).substring(7),
       requesterId,
       partnerEmail,
       partnerId: '', // Unknown yet
       permissionLevel: 'mood_summary', // Default
       status: 'pending',
-      createdAt: Timestamp.now(),
-    });
+      createdAt: new Date().toISOString(),
+    };
+
+    partners.push(newConnection);
+    savePartners(partners);
+
   } catch (error) {
     console.error("Error sending partner request:", error);
     throw error;
@@ -40,15 +48,12 @@ export const sendPartnerRequest = async (requesterId: string, partnerEmail: stri
 
 export const getPartnerConnections = async (userId: string) => {
   try {
+    const partners = getStoredPartners();
+
     // Get requests sent by user
-    const sentQuery = query(collection(db, 'partner_connections'), where('requesterId', '==', userId));
-    const sentSnap = await getDocs(sentQuery);
-    
-    // Get requests received by user (need to match email, but for MVP let's assume we can query by partnerId if set, or email)
-    // This is tricky without a backend to resolve email to uid securely.
-    // For MVP, we'll just show sent requests.
-    
-    return sentSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as PartnerConnection));
+    const sent = partners.filter(p => p.requesterId === userId);
+
+    return sent;
   } catch (error) {
     console.error("Error getting partner connections:", error);
     throw error;
