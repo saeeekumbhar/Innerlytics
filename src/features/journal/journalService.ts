@@ -5,6 +5,7 @@ export interface JournalEntry {
   moodScore: number;
   moodLabel: string;
   content: string;
+  photoUrl?: string;
   energyLevel?: number;
   stressLevel?: number;
   anxietyLevel?: number;

@@ -75,6 +75,68 @@
     --color-sidebar-hover: #1B1B24;
     --color-sidebar-active: #A5B4FC;
   }
+
+  /* Pastel Palettes */
+  .theme-peach {
+    --color-pastel-purple: #FFD6A5;
+    /* Peach */
+    --color-pastel-blue: #FFCDB2;
+    /* Warmer peach/pink */
+    --color-pastel-teal: #E29578;
+    /* Darker peach accent */
+  }
+
+  .theme-mint {
+    --color-pastel-purple: #DFF5E4;
+    /* Mint */
+    --color-pastel-blue: #B8E0D2;
+    /* Darker Mint */
+    --color-pastel-teal: #95D5B2;
+    /* Even darker Mint for contrast */
+  }
+
+  .theme-skyblue {
+    --color-pastel-purple: #DCEEFF;
+    /* Sky Blue */
+    --color-pastel-blue: #A0C4FF;
+    /* Primary Sky Blue */
+    --color-pastel-teal: #BDE0FE;
+    /* Light Sky Blue */
+  }
+
+  .theme-rosepink {
+    --color-pastel-purple: #FFD6E8;
+    /* Rose Pink */
+    --color-pastel-blue: #FFAFCC;
+    /* Darker Pink */
+    --color-pastel-teal: #FFC4D9;
+    /* Mid Pink */
+  }
+
+  /* Dark mode variants for palettes */
+  .dark.theme-peach {
+    --color-pastel-purple: #E29578;
+    --color-pastel-blue: #FFCDB2;
+    --color-pastel-teal: #FFB5A7;
+  }
+
+  .dark.theme-mint {
+    --color-pastel-purple: #74C69D;
+    --color-pastel-blue: #52B788;
+    --color-pastel-teal: #40916C;
+  }
+
+  .dark.theme-skyblue {
+    --color-pastel-purple: #8ECAE6;
+    --color-pastel-blue: #219EBC;
+    --color-pastel-teal: #A8DADC;
+  }
+
+  .dark.theme-rosepink {
+    --color-pastel-purple: #FFB3C6;
+    --color-pastel-blue: #FF8FAB;
+    --color-pastel-teal: #FB6F92;
+  }
 }
 
 @layer utilities {

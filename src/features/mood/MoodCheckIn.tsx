@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Smile, Meh, Frown, Heart, Zap, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { addJournalEntry, JournalEntry } from '../journal/journalService';
 import { useAuth } from '../../context/AuthContext';
+import { usePreferences } from '../../context/PreferencesContext';
 
 const moods = [
-  { score: 2, label: 'Low', icon: Frown, color: 'text-[var(--color-pastel-blue)]', bg: 'bg-[var(--color-pastel-blue)]/20', ring: 'ring-[var(--color-pastel-blue)]' },
-  { score: 4, label: 'Anxious', icon: Zap, color: 'text-[var(--color-pastel-purple)]', bg: 'bg-[var(--color-pastel-purple)]/20', ring: 'ring-[var(--color-pastel-purple)]' },
-  { score: 6, label: 'Neutral', icon: Meh, color: 'text-[#E5B887]', bg: 'bg-[var(--color-pastel-peach)]/30', ring: 'ring-[var(--color-pastel-peach)]' },
-  { score: 8, label: 'Good', icon: Smile, color: 'text-[var(--color-pastel-teal)]', bg: 'bg-[var(--color-pastel-teal)]/40', ring: 'ring-[var(--color-pastel-teal)]' },
-  { score: 10, label: 'Great', icon: Heart, color: 'text-[var(--color-pastel-pink)]', bg: 'bg-[var(--color-pastel-pink)]/30', ring: 'ring-[var(--color-pastel-pink)]' },
+  { score: 2, label: 'Awful', color: 'text-[var(--color-pastel-blue)]', bg: 'bg-[var(--color-pastel-blue)]/20', ring: 'ring-[var(--color-pastel-blue)]' },
+  { score: 4, label: 'Bad', color: 'text-[var(--color-pastel-purple)]', bg: 'bg-[var(--color-pastel-purple)]/20', ring: 'ring-[var(--color-pastel-purple)]' },
+  { score: 6, label: 'Meh', color: 'text-[#E5B887]', bg: 'bg-[var(--color-pastel-peach)]/30', ring: 'ring-[var(--color-pastel-peach)]' },
+  { score: 8, label: 'Good', color: 'text-[var(--color-pastel-teal)]', bg: 'bg-[var(--color-pastel-teal)]/40', ring: 'ring-[var(--color-pastel-teal)]' },
+  { score: 10, label: 'Happy', color: 'text-[var(--color-pastel-pink)]', bg: 'bg-[var(--color-pastel-pink)]/30', ring: 'ring-[var(--color-pastel-pink)]' },
 ];
 
 const emotionOptions = [
@@ -52,6 +53,7 @@ const SliderInput = ({ label, value, onChange, colorVar }: { label: string; valu
 
 const MoodCheckIn = ({ onComplete }: { onComplete: () => void }) => {
   const { user } = useAuth();
+  const { getEmoji } = usePreferences();
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [note, setNote] = useState('');
   const [energyLevel, setEnergyLevel] = useState(5);
@@ -132,7 +134,7 @@ const MoodCheckIn = ({ onComplete }: { onComplete: () => void }) => {
                       transition={{ duration: 2, repeat: Infinity }}
                     />
                   )}
-                  <mood.icon className={`w-10 h-10 md:w-12 md:h-12 mb-3 drop-shadow-sm ${mood.color}`} />
+                  <span className="text-4xl md:text-5xl mb-3 drop-shadow-sm transition-transform">{getEmoji(mood.label)}</span>
                   <span className={`text-xs md:text-sm font-medium ${selectedMood === mood.score ? mood.color : 'text-[var(--color-text-secondary)]'}`}>{mood.label}</span>
                 </motion.button>
               ))}
