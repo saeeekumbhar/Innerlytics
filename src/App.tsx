@@ -1,21 +1,21 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import Layout from './features/common/Layout';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import Layout from './components/layout/Layout';
+import Login from './features/auth/Login';
+import Dashboard from './features/mood/Dashboard';
 import CalendarPage from './features/mood/CalendarPage';
-import Journal from './features/mood/JournalPage';
-import Chat from './features/insights/Chat';
+import Journal from './features/journal/JournalPage';
+import Chat from './features/insights/ChatPage';
 import Insights from './features/insights/Insights';
 import Partner from './features/partner/Partner';
-import Settings from './pages/Settings';
+import Settings from './features/mood/Settings';
 import Habits from './features/habits/Habits';
 import Wellness from './features/wellness/Wellness';
 import Support from './features/support/Support';
-import Privacy from './features/common/Privacy';
+import Privacy from './features/journal/Privacy';
 
-import ErrorBoundary from './features/common/ErrorBoundary';
+import ErrorBoundary from './components/ui/ErrorBoundary';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();

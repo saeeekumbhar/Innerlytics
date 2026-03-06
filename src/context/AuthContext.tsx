@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(mockUser);
 
       // Create user profile in Firestore if it doesn't exist
-      const { createUserProfile } = await import('../features/profile/userService');
+      const { createUserProfile } = await import('../services/userService');
       await createUserProfile(mockUser);
     } catch (error: any) {
       console.error("Error signing in", error);

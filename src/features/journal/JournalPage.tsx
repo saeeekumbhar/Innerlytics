@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { addJournalEntry } from './journalService';
-import { generateJsonContent } from '../insights/geminiService';
+import { generateJsonContent } from '../../services/geminiService';
 import { motion } from 'motion/react';
 import { PenTool, BookOpen, Save, Loader, Mic } from 'lucide-react';
-import { useSpeechToText } from './useSpeechToText';
+import { useSpeechToText } from '../../hooks/useSpeechToText';
 import { useEffect } from 'react';
 import { Type } from '@google/genai';
 

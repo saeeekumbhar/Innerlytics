@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { sendPartnerRequest, getPartnerConnections, PartnerConnection } from './partnerService';
+import { sendPartnerRequest, getPartnerConnections, PartnerConnection } from '../../services/partnerService';
 import { Users, Mail, Check, Clock } from 'lucide-react';
 
 const Partner = () => {

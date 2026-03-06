@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Sparkles, TrendingUp, Heart, BookOpen, Lightbulb, RefreshCw } from 'lucide-react';
-import { JournalEntry } from '../mood/journalService';
-import { generateEnhancedInsight, AIInsight } from './insightService';
+import { JournalEntry } from '../../features/journal/journalService';
+import { generateEnhancedInsight, AIInsight } from '../../services/aiService';
 
 interface Props {
   entries: JournalEntry[];

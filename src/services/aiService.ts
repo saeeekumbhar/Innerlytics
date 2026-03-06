@@ -1,5 +1,5 @@
 import { generateJsonContent } from './geminiService';
-import { JournalEntry } from '../mood/journalService';
+import { JournalEntry } from '../features/journal/journalService';
 
 export interface AIInsight {
     summary: string;

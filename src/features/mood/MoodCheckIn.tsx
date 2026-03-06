@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Smile, Meh, Frown, Heart, Zap, ChevronDown } from 'lucide-react';
-import { addJournalEntry } from './journalService';
+import { addJournalEntry, JournalEntry } from '../journal/journalService';
 import { useAuth } from '../../context/AuthContext';
 
 const moods = [

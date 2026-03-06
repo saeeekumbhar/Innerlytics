@@ -27,55 +27,53 @@
 
 @layer base {
   :root {
-    --color-bg-primary: #FDF6F0;
-    /* Soft cream pink */
-    --color-bg-secondary: #F8F4FF;
+    --color-bg-primary: #FAFAFC;
+    --color-bg-secondary: #F8F9FB;
     --color-bg-soft: #F1FAF6;
     --color-bg-card: #FFFFFF;
     --color-text-primary: #2B2B3C;
     --color-text-secondary: #5C5C70;
 
-    --color-pastel-purple: #C8B6FF;
-    --color-pastel-blue: #A0C4FF;
-    --color-pastel-teal: #B8E0D2;
-    --color-pastel-pink: #FFAFCC;
+    --color-pastel-purple: #E6DFFF;
+    --color-pastel-blue: #DCEEFF;
+    --color-pastel-teal: #DFF5E4;
+    /* pastelGreen requested */
+    --color-pastel-pink: #FFD6E8;
+    --color-pastel-yellow: #FFF6CC;
     --color-pastel-peach: #FFD6A5;
-    --color-danger: #FF8FAB;
-    /* Muted rose */
+    --color-danger: #FFB3BA;
+    /* Softening danger color */
 
-    --color-pastel-hover: rgba(200, 182, 255, 0.08);
-    --color-border-subtle: rgba(200, 182, 255, 0.2);
-    --color-sidebar-bg: rgba(255, 255, 255, 0.6);
-    --color-sidebar-hover: #F8F4FF;
-    --color-sidebar-active: #C8B6FF;
+    --color-pastel-hover: rgba(230, 223, 255, 0.2);
+    --color-border-subtle: rgba(230, 223, 255, 0.3);
+    --color-sidebar-bg: rgba(255, 255, 255, 0.7);
+    --color-sidebar-hover: #F8F9FB;
+    --color-sidebar-active: #E6DFFF;
   }
 
-  /* Dark Mode - Soft aesthetic night */
+  /* Dark Mode - Requested palette */
   .dark {
-    --color-bg-primary: #1E1E2F;
-    /* Soft navy charcoal */
-    --color-bg-secondary: #23233A;
-    --color-bg-soft: #2C2C44;
-    --color-bg-card: #2C2C44;
-    --color-text-primary: #EAEAF0;
-    /* Off-white */
-    --color-text-secondary: #B8B8C5;
-    /* Soft gray */
+    --color-bg-primary: #0F0F14;
+    --color-bg-secondary: #161622;
+    --color-bg-soft: #1B1B24;
+    --color-bg-card: #1B1B24;
+    --color-text-primary: #E6E6F0;
+    --color-text-secondary: #A0A0B0;
 
-    --color-pastel-purple: #B5A0FF;
-    /* Slightly tweaked for dark contrast */
-    --color-pastel-blue: #A0C4FF;
-    --color-pastel-teal: #94CDB8;
-    --color-pastel-pink: #FFAFCC;
-    /* Muted glow */
-    --color-pastel-peach: #FFD6A5;
-    --color-danger: #FF7597;
+    --color-accent: #A5B4FC;
+    --color-pastel-purple: #A5B4FC;
+    /* Using accent for purple in dark mode */
+    --color-pastel-blue: #818CF8;
+    --color-pastel-teal: #34D399;
+    --color-pastel-pink: #FB7185;
+    --color-pastel-yellow: #FBBF24;
+    --color-danger: #F87171;
 
-    --color-pastel-hover: rgba(200, 182, 255, 0.05);
-    --color-border-subtle: rgba(200, 182, 255, 0.1);
-    --color-sidebar-bg: rgba(44, 44, 68, 0.6);
-    --color-sidebar-hover: #3A3A5A;
-    --color-sidebar-active: #B5A0FF;
+    --color-pastel-hover: rgba(165, 180, 252, 0.1);
+    --color-border-subtle: rgba(165, 180, 252, 0.1);
+    --color-sidebar-bg: rgba(15, 15, 20, 0.8);
+    --color-sidebar-hover: #1B1B24;
+    --color-sidebar-active: #A5B4FC;
   }
 }
 

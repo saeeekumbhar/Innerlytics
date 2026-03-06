@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { LogOut, User, Shield, Download, Trash2, Bell, FileText, ChevronRight } from 'lucide-react';
-import { requestNotificationPermission, areNotificationsEnabled, getReminderTime, setReminderTime } from '../features/common/notificationService';
-import { getUserEntries } from '../features/mood/journalService';
+import { requestNotificationPermission, areNotificationsEnabled, getReminderTime, setReminderTime } from '../../services/notificationService';
+import { getUserEntries } from '../journal/journalService';
 
 const Settings = () => {
   const { user, logout } = useAuth();
@@ -49,8 +49,8 @@ const Settings = () => {
             Profile
           </h2>
           <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4">
-            {user?.photoURL ? (
-              <img src={user.photoURL} alt={user.displayName || 'User'} className="w-20 h-20 rounded-full object-cover border-4 border-[var(--color-bg-card)] soft-shadow flex-shrink-0" referrerPolicy="no-referrer" />
+            {(user as any)?.photoURL ? (
+              <img src={(user as any).photoURL} alt={user.displayName || 'User'} className="w-20 h-20 rounded-full object-cover border-4 border-[var(--color-bg-card)] soft-shadow flex-shrink-0" referrerPolicy="no-referrer" />
             ) : (
               <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white flex items-center justify-center font-bold text-3xl border-4 border-[var(--color-bg-card)] soft-shadow flex-shrink-0">
                 {user?.displayName?.[0] || 'U'}
