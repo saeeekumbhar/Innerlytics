@@ -105,11 +105,20 @@
 
   .theme-rosepink {
     --color-pastel-purple: #FFD6E8;
-    /* Rose Pink */
     --color-pastel-blue: #FFAFCC;
-    /* Darker Pink */
     --color-pastel-teal: #FFC4D9;
-    /* Mid Pink */
+  }
+
+  .theme-forest {
+    --color-pastel-purple: #A3B18A;
+    --color-pastel-blue: #588157;
+    --color-pastel-teal: #3A5A40;
+  }
+
+  .theme-astronomy {
+    --color-pastel-purple: #3C096C;
+    --color-pastel-blue: #5A189A;
+    --color-pastel-teal: #7B2CBF;
   }
 
   /* Dark mode variants for palettes */
@@ -135,6 +144,18 @@
     --color-pastel-purple: #FFB3C6;
     --color-pastel-blue: #FF8FAB;
     --color-pastel-teal: #FB6F92;
+  }
+
+  .dark.theme-forest {
+    --color-pastel-purple: #CCD5AE;
+    --color-pastel-blue: #E9EDC9;
+    --color-pastel-teal: #D4A373;
+  }
+
+  .dark.theme-astronomy {
+    --color-pastel-purple: #9D4EDD;
+    --color-pastel-blue: #C77DFF;
+    --color-pastel-teal: #E0AAFF;
   }
 }
 
