@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { usePreferences } from '../../context/PreferencesContext';
 import { getUserEntries, getTodayEntry, JournalEntry } from '../journal/journalService';
+import { getLifeTrackerEntry, LifeTrackerEntry } from '../../services/lifeTrackerService';
 import MoodCheckIn from './MoodCheckIn';
 import WeeklyMoodGraph from '../../components/charts/WeeklyMoodGraph';
 import AIInsightCard from '../../components/ui/InsightCard';
@@ -13,22 +15,27 @@ import AchievementBadge from '../../components/ui/AchievementBadge';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { getEmoji } = usePreferences();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [todayEntry, setTodayEntry] = useState<JournalEntry | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [lifeEntry, setLifeEntry] = useState<LifeTrackerEntry | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     if (!user) return;
     try {
-      const [recentEntries, today, unlockedAchievements] = await Promise.all([
+      const todayStr = new Date().toISOString().split('T')[0];
+      const [recentEntries, today, unlockedAchievements, todayLife] = await Promise.all([
         getUserEntries(user.uid, 7),
         getTodayEntry(user.uid),
-        getAchievements(user.uid)
+        getAchievements(user.uid),
+        getLifeTrackerEntry(user.uid, todayStr)
       ]);
       setEntries(recentEntries);
       setTodayEntry(today);
       setAchievements(unlockedAchievements);
+      setLifeEntry(todayLife);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -101,9 +108,31 @@ const Dashboard = () => {
                 <p className="text-[var(--color-text-secondary)] mt-1">Great job tracking your mood ✨</p>
               </div>
               <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-3 bg-[var(--color-bg-primary)]/50 p-3 md:p-4 rounded-2xl relative z-10">
-                <span className="text-3xl drop-shadow-sm">{todayEntry.moodLabel === 'Great' ? '🤩' : todayEntry.moodLabel === 'Good' ? '🙂' : todayEntry.moodLabel === 'Neutral' ? '😐' : todayEntry.moodLabel === 'Anxious' ? '😟' : '😢'}</span>
+                <span className="text-3xl drop-shadow-sm">{getEmoji(todayEntry.moodLabel)}</span>
                 <span className="font-medium text-[var(--color-text-primary)]">{todayEntry.moodLabel}</span>
               </div>
+            </motion.div>
+          )}
+
+          {lifeEntry ? (
+            <motion.div variants={itemVariants} className="glass rounded-[2rem] p-6 lg:p-8 soft-shadow border-none relative overflow-hidden">
+              <h3 className="text-xl font-serif font-bold text-[var(--color-text-primary)] mb-4">Today's Life Summary</h3>
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(lifeEntry.ratings).map(([cat, stars]) => (
+                  <div key={cat} className="px-3 py-1.5 bg-[var(--color-bg-primary)]/50 rounded-xl text-sm font-medium border border-[var(--color-border-subtle)]/50 flex items-center gap-1.5">
+                    <span className="capitalize text-[var(--color-text-primary)]">{cat.replace('_', ' ')}</span>
+                    <span className="text-[var(--color-pastel-yellow)] drop-shadow-sm">{'★'.repeat(stars)}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div variants={itemVariants} className="glass rounded-[2rem] p-6 lg:p-8 soft-shadow border-none flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-serif font-bold text-[var(--color-text-primary)]">Life Tracker Pending</h3>
+                <p className="text-[var(--color-text-secondary)] mt-1">Track your daily 10 dimensions for better AI insights.</p>
+              </div>
+              <Link to="/life" className="shrink-0 px-6 py-3 bg-[var(--color-pastel-purple)]/10 text-[var(--color-pastel-purple)] rounded-full font-medium hover:bg-[var(--color-pastel-purple)] hover:text-white transition-all text-center">Open Tracker</Link>
             </motion.div>
           )}
 

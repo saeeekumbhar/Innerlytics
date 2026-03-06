@@ -1,70 +1,80 @@
 import { JournalEntry, getUserEntries } from '../features/journal/journalService';
-import { Habit, getHabits } from './habitService';
 
 export interface Achievement {
     id: string;
     title: string;
     description: string;
     emoji: string;
-    unlockedAt?: string;
     type: 'streak' | 'consistency' | 'depth' | 'wellness' | 'habit';
+    unlockedAt?: string;
+    isUnlocked?: boolean;
 }
 
 const ALL_ACHIEVEMENTS: Achievement[] = [
-    { id: 'first_step', title: 'First Step', description: 'Saved your first journal entry.', emoji: '🌱', type: 'consistency' },
-    { id: 'seven_day_streak', title: 'Weekly Warrior', description: 'Journaled for 7 days in a row.', emoji: '🔥', type: 'streak' },
-    { id: 'mood_architect', title: 'Mood Architect', description: 'Logged 10 multi-dimensional entries.', emoji: '🏛️', type: 'depth' },
-    { id: 'habit_hero', title: 'Habit Hero', description: 'Maintained a 5-day habit streak.', emoji: '🏆', type: 'habit' },
-    { id: 'zen_master', title: 'Zen Master', description: 'Used wellness tools 10 times.', emoji: '🧘', type: 'wellness' },
-    { id: 'reflection_pro', title: 'Deep Reflection', description: 'Average journal entry length over 100 words.', emoji: '✍️', type: 'depth' },
+    { id: 'first_entry', title: 'First Entry', description: 'Saved your first journal entry.', emoji: '🌱', type: 'consistency' },
+    { id: 'three_day_streak', title: 'Getting Started', description: 'Journaled for 3 days in a row.', emoji: '🔥', type: 'streak' },
+    { id: 'seven_day_streak', title: 'Weekly Warrior', description: 'Journaled for 7 days in a row.', emoji: '🌟', type: 'streak' },
+    { id: 'thirty_entries', title: 'Dedicated', description: 'Logged 30 total entries.', emoji: '📚', type: 'consistency' },
+    { id: 'mood_beginner', title: 'Mood Tracker Beginner', description: 'Logged your mood for the first time.', emoji: '🙂', type: 'depth' },
+    { id: 'emotion_deep_dive', title: 'Emotion Deep Dive', description: 'Used AI Insights 5 times.', emoji: '🧠', type: 'depth' },
 ];
 
-export const getAchievements = async (userId: string): Promise<Achievement[]> => {
-    const entries = await getUserEntries(userId, 100);
-    const habits = getHabits();
+export const getAchievementsInfo = async (userId: string): Promise<Achievement[]> => {
+    const entries = await getUserEntries(userId, 500);
+    const achievements = ALL_ACHIEVEMENTS.map(a => ({ ...a, isUnlocked: false }));
 
-    const unlocked: Achievement[] = [];
+    // Track dates logically
+    const dates = new Set(entries.map(e => e.date));
 
-    // 1. First Step
-    if (entries.length > 0) {
-        unlocked.push({ ...ALL_ACHIEVEMENTS[0], unlockedAt: entries[entries.length - 1].createdAt });
-    }
-
-    // 2. 7-Day Streak
+    // Quick streak logic 
     let currentStreak = 0;
-    if (entries.length >= 7) {
-        const dates = new Set(entries.map(e => e.date));
-        let checkDate = new Date();
-        for (let i = 0; i < 30; i++) {
-            const dStr = checkDate.toISOString().split('T')[0];
-            if (dates.has(dStr)) {
-                currentStreak++;
-                checkDate.setDate(checkDate.getDate() - 1);
-            } else if (i === 0) {
-                checkDate.setDate(checkDate.getDate() - 1);
-                continue;
-            } else {
-                break;
-            }
-        }
-        if (currentStreak >= 7) {
-            unlocked.push({ ...ALL_ACHIEVEMENTS[1], unlockedAt: new Date().toISOString() });
+    let checkDate = new Date();
+    for (let i = 0; i < 30; i++) {
+        const dStr = checkDate.toISOString().split('T')[0];
+        if (dates.has(dStr)) {
+            currentStreak++;
+            checkDate.setDate(checkDate.getDate() - 1);
+        } else if (i === 0 && Array.from(dates).includes(dStr) === false) {
+            checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+            break;
         }
     }
 
-    // 3. Mood Architect
-    const multiDimCount = entries.filter(e => e.energyLevel !== undefined).length;
-    if (multiDimCount >= 10) {
-        unlocked.push({ ...ALL_ACHIEVEMENTS[2], unlockedAt: new Date().toISOString() });
-    }
+    // Evaluate
+    achievements.forEach(ach => {
+        if (ach.id === 'first_entry' && entries.length > 0) {
+            ach.isUnlocked = true;
+            ach.unlockedAt = entries[entries.length - 1].date;
+        }
+        if (ach.id === 'mood_beginner' && entries.length > 0) {
+            ach.isUnlocked = true;
+            ach.unlockedAt = entries[entries.length - 1].date;
+        }
+        if (ach.id === 'thirty_entries' && entries.length >= 30) {
+            ach.isUnlocked = true;
+            ach.unlockedAt = new Date().toISOString();
+        }
+        if (ach.id === 'three_day_streak' && currentStreak >= 3) {
+            ach.isUnlocked = true;
+            ach.unlockedAt = new Date().toISOString();
+        }
+        if (ach.id === 'seven_day_streak' && currentStreak >= 7) {
+            ach.isUnlocked = true;
+            ach.unlockedAt = new Date().toISOString();
+        }
+        const hasInsightsCount = entries.filter(e => e.aiAnalysisJson).length;
+        if (ach.id === 'emotion_deep_dive' && hasInsightsCount >= 5) {
+            ach.isUnlocked = true;
+            ach.unlockedAt = new Date().toISOString();
+        }
+    });
 
-    // 4. Habit Hero
-    const maxHabitStreak = Math.max(0, ...habits.map(h => {
-        // Basic streak calculation if not available in habits.ts
-        return 0; // Placeholder until streak logic is expanded
-    }));
-    // Note: habits.ts already has getStreak, but use it here if needed.
+    return achievements;
+};
 
-    // For now, let's keep it simple and return the list
-    return unlocked;
+// Keep backwards compat for dashboard (returns only unlocked)
+export const getAchievements = async (userId: string): Promise<Achievement[]> => {
+    const all = await getAchievementsInfo(userId);
+    return all.filter(a => a.isUnlocked);
 };

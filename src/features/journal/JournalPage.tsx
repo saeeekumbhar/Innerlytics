@@ -3,23 +3,24 @@ import { useAuth } from '../../context/AuthContext';
 import { addJournalEntry } from './journalService';
 import { generateJsonContent } from '../../services/geminiService';
 import { motion } from 'motion/react';
-import { PenTool, BookOpen, Save, Loader, Mic } from 'lucide-react';
+import { PenTool, BookOpen, Save, Loader, Mic, Image as ImageIcon, X } from 'lucide-react';
 import { useSpeechToText } from '../../hooks/useSpeechToText';
 import { useEffect } from 'react';
 import { Type } from '@google/genai';
 
-const prompts = [
-  "What triggered today's strongest emotion?",
-  "What thoughts kept repeating today?",
-  "What did you handle well?",
-  "What are you grateful for right now?",
-  "Describe a moment where you felt at peace."
+type Template = { id: string, name: string, prompts: string[] };
+const templates: Template[] = [
+  { id: 'daily', name: 'Daily Reflection', prompts: ['How was your day?', 'What went well today?', 'What could be better tomorrow?'] },
+  { id: 'gratitude', name: 'Gratitude Journal', prompts: ['List three things you are grateful for today:', '1. ', '2. ', '3. '] },
+  { id: 'stress', name: 'Stress Release', prompts: ['What is bothering you right now?', 'Why does it feel stressful?'] },
+  { id: 'self', name: 'Self Reflection', prompts: ['What did I learn about myself today?', 'How did I react to challenges?'] }
 ];
 
 const Journal = () => {
   const { user } = useAuth();
   const [mode, setMode] = useState<'free' | 'guided'>('free');
   const [content, setContent] = useState('');
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [moodScore, setMoodScore] = useState(5); // Default neutral
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
@@ -32,8 +33,35 @@ const Journal = () => {
     }
   }, [transcript, setTranscript]);
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800;
+        const scaleSize = MAX_WIDTH / img.width;
+        canvas.width = MAX_WIDTH;
+        canvas.height = img.height * scaleSize;
+
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        setPhotoUrl(dataUrl);
+      };
+      if (typeof event.target?.result === 'string') {
+        img.src = event.target.result;
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async () => {
-    if (!content.trim() || !user) return;
+    if ((!content.trim() && !photoUrl) || !user) return;
 
     setIsSubmitting(true);
     try {
@@ -57,17 +85,19 @@ const Journal = () => {
 
       setAnalysis(aiResult);
 
-      // 2. Save to Firestore
+      // 2. Save to Firestore Local Mock
       await addJournalEntry({
         userId: user.uid,
         date: new Date().toISOString().split('T')[0],
         moodScore: moodScore,
         moodLabel: aiResult.primary_emotion || 'Neutral',
         content,
+        photoUrl: photoUrl || undefined,
         aiAnalysisJson: JSON.stringify(aiResult),
       });
 
       setContent('');
+      setPhotoUrl(null);
       alert('Journal entry saved!');
     } catch (error) {
       console.error("Error saving journal:", error);
@@ -110,15 +140,15 @@ const Journal = () => {
         <div className="p-6 md:p-8 space-y-6 relative z-10">
           {mode === 'guided' && (
             <div className="space-y-4">
-              <p className="text-sm font-medium text-[var(--color-text-secondary)]">Choose a prompt:</p>
+              <p className="text-sm font-medium text-[var(--color-text-secondary)]">Choose a guided template:</p>
               <div className="flex flex-wrap gap-2">
-                {prompts.map((prompt, index) => (
+                {templates.map((template) => (
                   <button
-                    key={index}
-                    onClick={() => setContent(prev => prev + (prev ? '\n\n' : '') + prompt + '\n')}
-                    className="px-4 py-2 bg-[var(--color-bg-primary)]/50 border border-[var(--color-border-subtle)] text-[var(--color-text-primary)] text-xs md:text-sm rounded-full hover:bg-[var(--color-pastel-purple)]/10 hover:text-[var(--color-pastel-purple)] hover:border-[var(--color-pastel-purple)]/30 transition-all duration-300"
+                    key={template.id}
+                    onClick={() => setContent(template.prompts.map(p => p + '\n\n').join(''))}
+                    className="px-4 py-2 bg-[var(--color-bg-primary)]/50 border border-[var(--color-border-subtle)] text-[var(--color-text-primary)] text-xs md:text-sm rounded-full hover:bg-[var(--color-pastel-purple)]/10 hover:text-[var(--color-pastel-purple)] hover:border-[var(--color-pastel-purple)]/30 transition-all duration-300 font-medium soft-shadow-sm"
                   >
-                    {prompt}
+                    {template.name}
                   </button>
                 ))}
               </div>
@@ -130,12 +160,29 @@ const Journal = () => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder={mode === 'free' ? "Start writing..." : "Select a prompt above or start writing..."}
-              className="w-full h-64 p-5 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/30 focus:outline-none resize-none text-[var(--color-text-primary)] leading-relaxed transition-colors placeholder:text-[var(--color-text-secondary)]/70 font-sans"
+              className={`w-full ${photoUrl ? 'h-32' : 'h-64'} p-5 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/30 focus:outline-none resize-none text-[var(--color-text-primary)] leading-relaxed transition-all placeholder:text-[var(--color-text-secondary)]/70 font-sans`}
             />
           </div>
 
+          {photoUrl && (
+            <div className="relative inline-block mt-4 group">
+              <img src={photoUrl} alt="Journal Attachment" className="max-h-48 rounded-xl object-cover soft-shadow" />
+              <button
+                onClick={() => setPhotoUrl(null)}
+                className="absolute top-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/70"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
           <div className="flex justify-between items-center pt-6 border-t border-[var(--color-border-subtle)]">
             <div className="flex items-center space-x-3">
+              <label className="p-3 rounded-full bg-[var(--color-pastel-blue)]/10 text-[var(--color-pastel-blue)] hover:bg-[var(--color-pastel-blue)]/20 cursor-pointer transition-colors" title="Attach Photo">
+                <ImageIcon className="w-5 h-5" />
+                <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+              </label>
+
               {isSupported && (
                 <button
                   onClick={isListening ? stopListening : startListening}
@@ -153,7 +200,7 @@ const Journal = () => {
             </div>
             <button
               onClick={handleSubmit}
-              disabled={isSubmitting || !content.trim()}
+              disabled={isSubmitting || (!content.trim() && !photoUrl)}
               className="flex items-center px-8 py-3 bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white rounded-full font-medium transition-all duration-300 soft-shadow hover:shadow-[0_8px_25px_-8px_rgba(200,182,255,0.6)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
