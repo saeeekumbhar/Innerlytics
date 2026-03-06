@@ -34,18 +34,16 @@
     --color-text-primary: #2B2B3C;
     --color-text-secondary: #5C5C70;
 
-    --color-pastel-purple: #E6DFFF;
-    --color-pastel-blue: #DCEEFF;
-    --color-pastel-teal: #DFF5E4;
-    /* pastelGreen requested */
-    --color-pastel-pink: #FFD6E8;
-    --color-pastel-yellow: #FFF6CC;
-    --color-pastel-peach: #FFD6A5;
-    --color-danger: #FFB3BA;
-    /* Softening danger color */
+    --color-pastel-purple: #C8B6FF;
+    --color-pastel-blue: #A0C4FF;
+    --color-pastel-teal: #6BCB77;
+    --color-pastel-pink: #FF8FAB;
+    --color-pastel-yellow: #FFD97D;
+    --color-pastel-peach: #FFAF7A;
+    --color-danger: #FF6B6B;
 
-    --color-pastel-hover: rgba(230, 223, 255, 0.2);
-    --color-border-subtle: rgba(230, 223, 255, 0.3);
+    --color-pastel-hover: rgba(200, 182, 255, 0.15);
+    --color-border-subtle: rgba(200, 182, 255, 0.25);
     --color-sidebar-bg: rgba(255, 255, 255, 0.7);
     --color-sidebar-hover: #F8F9FB;
     --color-sidebar-active: #E6DFFF;
