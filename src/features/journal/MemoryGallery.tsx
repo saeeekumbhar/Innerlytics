@@ -10,20 +10,18 @@ const MemoryGallery = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchPhotos = async () => {
+        const fetchEntries = async () => {
             if (!user) return;
             try {
-                const allEntries = await getUserEntries(user.uid, 500);
-                // Only keep entries that have a photo
-                const photoEntries = allEntries.filter(e => e.photoUrl);
-                setEntries(photoEntries);
+                const allEntries = await getUserEntries(user.uid, 50); // Get latest 50 entries
+                setEntries(allEntries);
             } catch (error) {
-                console.error("Error fetching photo entries:", error);
+                console.error("Error fetching entries:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchPhotos();
+        fetchEntries();
     }, [user]);
 
     if (loading) {
@@ -48,9 +46,9 @@ const MemoryGallery = () => {
         <div className="max-w-6xl mx-auto pb-10 space-y-8">
             <header>
                 <h1 className="text-3xl md:text-4xl font-serif font-bold text-[var(--color-text-primary)] flex items-center gap-3">
-                    Memory Gallery <ImageIcon className="w-8 h-8 text-[var(--color-pastel-purple)]" />
+                    Memory Timeline <ImageIcon className="w-8 h-8 text-[var(--color-pastel-purple)]" />
                 </h1>
-                <p className="text-[var(--color-text-secondary)] mt-1.5 text-lg">A visual collection of your journal moments.</p>
+                <p className="text-[var(--color-text-secondary)] mt-1.5 text-lg">Your private feed of moments and reflections.</p>
             </header>
 
             {entries.length === 0 ? (
@@ -58,44 +56,77 @@ const MemoryGallery = () => {
                     <div className="w-24 h-24 bg-[var(--color-pastel-purple)]/10 rounded-full flex items-center justify-center mb-6">
                         <ImageIcon className="w-10 h-10 text-[var(--color-pastel-purple)] opacity-50" />
                     </div>
-                    <h3 className="text-xl font-medium text-[var(--color-text-primary)] mb-2">No photos yet</h3>
+                    <h3 className="text-xl font-medium text-[var(--color-text-primary)] mb-2">No entries yet</h3>
                     <p className="text-[var(--color-text-secondary)] max-w-sm">
-                        Attach photos to your journal entries to start building your memory gallery here.
+                        Start journaling to build your memory timeline.
                     </p>
                 </div>
             ) : (
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="show"
-                    className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4"
-                >
+                <div className="max-w-xl mx-auto space-y-8">
                     {entries.map((entry) => (
-                        <motion.div
+                        <motion.article
                             key={entry.id}
-                            variants={itemVariants}
-                            className="group relative break-inside-avoid glass rounded-2xl overflow-hidden soft-shadow"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            className="glass rounded-[2rem] overflow-hidden soft-shadow border border-[var(--color-border-subtle)]"
                         >
-                            <img
-                                src={entry.photoUrl!}
-                                alt={`Memory from ${entry.date}`}
-                                className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
-                                loading="lazy"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col justify-end p-4">
-                                <div className="text-white">
-                                    <div className="flex items-center gap-1.5 text-xs font-medium mb-1 drop-shadow-md">
-                                        <Calendar className="w-3.5 h-3.5" />
-                                        {new Date(entry.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                            {/* Header: Date + Mood */}
+                            <div className="p-4 flex items-center justify-between border-b border-[var(--color-border-subtle)]/50">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-[var(--color-pastel-purple)]/10 flex items-center justify-center text-xl shadow-inner">
+                                        {/* using a fallback emoji since we don't have getEmoji here easily, but moodLabel is text */}
+                                        {entry.moodLabel === 'Happy' ? '😄' :
+                                            entry.moodLabel === 'Excited' ? '🤩' :
+                                                entry.moodLabel === 'Productive' ? '🎯' :
+                                                    entry.moodLabel === 'Peaceful' ? '😌' :
+                                                        entry.moodLabel === 'Good' ? '🙂' :
+                                                            entry.moodLabel === 'Meh' ? '😐' :
+                                                                entry.moodLabel === 'Awful' || entry.moodLabel === 'Burnt Out' ? '🫠' : '🥺'}
                                     </div>
-                                    {entry.content && (
-                                        <p className="text-sm line-clamp-2 drop-shadow-md">{entry.content}</p>
-                                    )}
+                                    <div>
+                                        <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{entry.moodLabel}</h3>
+                                        <span className="text-xs text-[var(--color-text-secondary)] flex items-center gap-1">
+                                            <Calendar className="w-3 h-3" />
+                                            {new Date(entry.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </motion.div>
+
+                            {/* Photo (if any) */}
+                            {entry.photoUrl && (
+                                <div className="w-full aspect-[4/5] bg-[var(--color-bg-secondary)] overflow-hidden">
+                                    <img
+                                        src={entry.photoUrl}
+                                        alt={`Memory from ${entry.date}`}
+                                        className="w-full h-full object-cover"
+                                        loading="lazy"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Content */}
+                            <div className="p-5 space-y-3 bg-[var(--color-bg-primary)]/40">
+                                {entry.emotionTags && entry.emotionTags.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mb-2">
+                                        {entry.emotionTags.map(tag => (
+                                            <span key={tag} className="text-[0.65rem] uppercase font-bold text-[var(--color-text-secondary)] bg-[var(--color-border-subtle)] px-2 py-1 rounded-sm tracking-wider">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {entry.content && (
+                                    <p className="text-sm md:text-base text-[var(--color-text-primary)] leading-relaxed whitespace-pre-wrap">
+                                        {entry.content}
+                                    </p>
+                                )}
+                            </div>
+                        </motion.article>
                     ))}
-                </motion.div>
+                </div>
             )}
         </div>
     );
