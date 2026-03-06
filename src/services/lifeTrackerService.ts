@@ -1,6 +1,3 @@
-import { collection, addDoc, query, where, getDocs, doc, setDoc, orderBy } from 'firebase/firestore';
-import { db } from '../firebase';
-
 export interface LifeTrackerEntry {
     id?: string;
     userId: string;
@@ -9,46 +6,44 @@ export interface LifeTrackerEntry {
     updatedAt: string;
 }
 
+const getStoredEntries = (): LifeTrackerEntry[] => {
+    const stored = localStorage.getItem('innerlytics_lifetracker');
+    return stored ? JSON.parse(stored) : [];
+};
+
+const saveStoredEntries = (entries: LifeTrackerEntry[]) => {
+    localStorage.setItem('innerlytics_lifetracker', JSON.stringify(entries));
+};
+
 export const getLifeTrackerEntry = async (userId: string, date: string): Promise<LifeTrackerEntry | null> => {
-    const q = query(
-        collection(db, 'lifeTracker'),
-        where('userId', '==', userId),
-        where('date', '==', date)
-    );
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) return null;
-    const docData = snapshot.docs[0];
-    return { id: docData.id, ...docData.data() } as LifeTrackerEntry;
+    const entries = getStoredEntries();
+    return entries.find(e => e.userId === userId && e.date === date) || null;
 };
 
 export const saveLifeTrackerEntry = async (entry: Omit<LifeTrackerEntry, 'id' | 'updatedAt'>) => {
-    const existing = await getLifeTrackerEntry(entry.userId, entry.date);
-    const payload = { ...entry, updatedAt: new Date().toISOString() };
+    const entries = getStoredEntries();
+    const existingIndex = entries.findIndex(e => e.userId === entry.userId && e.date === entry.date);
 
-    if (existing && existing.id) {
-        const docRef = doc(db, 'lifeTracker', existing.id);
-        await setDoc(docRef, payload, { merge: true });
-        return existing.id;
+    const payload: LifeTrackerEntry = {
+        ...entry,
+        id: existingIndex >= 0 ? entries[existingIndex].id : Math.random().toString(36).substring(7),
+        updatedAt: new Date().toISOString()
+    };
+
+    if (existingIndex >= 0) {
+        entries[existingIndex] = payload;
     } else {
-        const docRef = await addDoc(collection(db, 'lifeTracker'), payload);
-        return docRef.id;
+        entries.push(payload);
     }
+
+    saveStoredEntries(entries);
+    return payload.id;
 };
 
 export const getRecentLifeTrackerEntries = async (userId: string, limitDays: number = 7): Promise<LifeTrackerEntry[]> => {
-    // Try getting all for user and sorting in memory to avoid needing complex composite indexes
-    const q = query(
-        collection(db, 'lifeTracker'),
-        where('userId', '==', userId)
-    );
-
-    const snapshot = await getDocs(q);
-    let entries: LifeTrackerEntry[] = [];
-
-    snapshot.forEach(doc => {
-        entries.push({ id: doc.id, ...doc.data() } as LifeTrackerEntry);
-    });
-
-    entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    return entries.slice(0, limitDays);
+    const entries = getStoredEntries()
+        .filter(e => e.userId === userId)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, limitDays);
+    return entries;
 };

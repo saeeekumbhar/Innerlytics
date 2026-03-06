@@ -19,7 +19,7 @@ const WeeklyMoodGraph = ({ data }: { data: DataPoint[] }) => {
 
       <h2 className="text-xl font-serif font-bold text-[var(--color-text-primary)] mb-6 relative z-10">Weekly Mood Trend</h2>
       <div className="h-64 w-full relative z-10">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
           <AreaChart data={sortedData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorMood" x1="0" y1="0" x2="0" y2="1">

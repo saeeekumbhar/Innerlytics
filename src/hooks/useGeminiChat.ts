@@ -21,7 +21,7 @@ export const useGeminiChat = (mode: ChatMode) => {
   useEffect(() => {
     // Reset chat when mode changes
     chatSession.current = ai.chats.create({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash",
       config: {
         systemInstruction: SYSTEM_INSTRUCTIONS[mode],
       },

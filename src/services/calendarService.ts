@@ -1,6 +1,3 @@
-import { collection, addDoc, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { db } from '../firebase';
-
 export interface ImportantDay {
     id?: string;
     userId: string;
@@ -9,17 +6,31 @@ export interface ImportantDay {
     type: 'birthday' | 'exam' | 'trip' | 'anniversary' | 'achievement' | 'other';
 }
 
+const getStoredDays = (): ImportantDay[] => {
+    const stored = localStorage.getItem('innerlytics_importantdays');
+    return stored ? JSON.parse(stored) : [];
+};
+
+const saveStoredDays = (days: ImportantDay[]) => {
+    localStorage.setItem('innerlytics_importantdays', JSON.stringify(days));
+};
+
 export const getImportantDays = async (userId: string): Promise<ImportantDay[]> => {
-    const q = query(collection(db, 'importantDays'), where('userId', '==', userId));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ImportantDay));
+    return getStoredDays().filter(d => d.userId === userId);
 };
 
 export const addImportantDay = async (day: Omit<ImportantDay, 'id'>) => {
-    const docRef = await addDoc(collection(db, 'importantDays'), day);
-    return docRef.id;
+    const days = getStoredDays();
+    const newDay: ImportantDay = {
+        ...day,
+        id: Math.random().toString(36).substring(7)
+    };
+    days.push(newDay);
+    saveStoredDays(days);
+    return newDay.id;
 };
 
 export const deleteImportantDay = async (id: string) => {
-    await deleteDoc(doc(db, 'importantDays', id));
+    const days = getStoredDays().filter(d => d.id !== id);
+    saveStoredDays(days);
 };
