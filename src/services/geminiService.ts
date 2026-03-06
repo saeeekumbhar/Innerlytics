@@ -11,7 +11,7 @@ const ai = new GoogleGenAI({ apiKey: apiKey || "" });
 export const generateContent = async (prompt: string) => {
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash",
       contents: prompt,
     });
     return response.text;
@@ -24,7 +24,7 @@ export const generateContent = async (prompt: string) => {
 export const generateJsonContent = async (prompt: string, schema: any) => {
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",

@@ -191,7 +191,7 @@ const Insights = () => {
                 <TrendingUp className="w-5 h-5 text-[var(--color-pastel-purple)]" /> Mood Trend
               </h3>
               <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                   <LineChart data={moodData}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
                     <XAxis dataKey="date" tickFormatter={(str) => { try { return format(parseISO(str), 'MM/dd'); } catch { return str; } }} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
@@ -211,7 +211,7 @@ const Insights = () => {
                 <Zap className="w-5 h-5 text-[var(--color-pastel-teal)]" /> Energy vs Stress
               </h3>
               <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                   <LineChart data={moodData}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
                     <XAxis dataKey="date" tickFormatter={(str) => { try { return format(parseISO(str), 'MM/dd'); } catch { return str; } }} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
@@ -232,7 +232,7 @@ const Insights = () => {
               </h3>
               <div className="h-64">
                 {emotionData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                     <BarChart data={emotionData} layout="vertical">
                       <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--color-border-subtle)" />
                       <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
@@ -259,7 +259,7 @@ const Insights = () => {
               </h3>
               <div className="h-64">
                 {contextData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                     <BarChart data={contextData}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
                       <XAxis dataKey="context" tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
@@ -286,7 +286,7 @@ const Insights = () => {
                   <Brain className="w-5 h-5 text-[var(--color-pastel-peach)]" /> Wellness Overview
                 </h3>
                 <div className="h-72 max-w-lg mx-auto">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                     <RadarChart data={avgDimensions}>
                       <PolarGrid stroke="var(--color-border-subtle)" />
                       <PolarAngleAxis dataKey="dimension" tick={{ fontSize: 13, fill: 'var(--color-text-secondary)', fontWeight: 500 }} />
