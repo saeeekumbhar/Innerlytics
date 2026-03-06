@@ -1,9 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
   <defs>
     <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF9A5C" />
-      <stop offset="50%" stop-color="#FF6B8A" />
-      <stop offset="100%" stop-color="#B197FC" />
+      <stop offset="0%" stop-color="#B197FC" />
+      <stop offset="100%" stop-color="#74B9FF" />
     </linearGradient>
   </defs>
   <!-- 

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
-export type ColorPalette = 'lavender' | 'peach' | 'mint' | 'sky_blue' | 'rose_pink';
+export type ColorPalette = 'lavender' | 'peach' | 'mint' | 'sky_blue' | 'rose_pink' | 'forest' | 'astronomy';
 export type EmojiTheme = 'classic' | 'cute' | 'minimal';
 
 interface PreferencesContextType {
@@ -57,7 +57,7 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }, [themeMode]);
 
     useEffect(() => {
-        document.body.classList.remove('theme-lavender', 'theme-peach', 'theme-mint', 'theme-skyblue', 'theme-rosepink');
+        document.body.classList.remove('theme-lavender', 'theme-peach', 'theme-mint', 'theme-skyblue', 'theme-rosepink', 'theme-forest', 'theme-astronomy');
         const paletteClass = colorPalette === 'sky_blue' ? 'theme-skyblue' : colorPalette === 'rose_pink' ? 'theme-rosepink' : `theme-${colorPalette}`;
         document.body.classList.add(paletteClass);
     }, [colorPalette]);

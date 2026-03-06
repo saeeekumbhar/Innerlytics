@@ -42,6 +42,8 @@ const Settings = () => {
     { id: 'mint', name: 'Mint', hex: '#84DCC6' },
     { id: 'sky_blue', name: 'Sky Blue', hex: '#A0C4FF' },
     { id: 'rose_pink', name: 'Rose Pink', hex: '#FFAFCC' },
+    { id: 'forest', name: 'Forest', hex: '#A3B18A' },
+    { id: 'astronomy', name: 'Astronomy', hex: '#3C096C' },
   ];
 
   const emojis: { id: EmojiTheme, name: string, sample: string }[] = [
@@ -229,7 +231,7 @@ const Settings = () => {
                 <Palette className="w-5 h-5 mr-2 text-[var(--color-pastel-pink)]" />
                 Color Palette
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
                 {palettes.map((palette) => (
                   <button
                     key={palette.id}

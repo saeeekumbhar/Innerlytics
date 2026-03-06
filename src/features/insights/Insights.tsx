@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getUserEntries, JournalEntry } from '../journal/journalService';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, Radar, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, Radar, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { format, parseISO } from 'date-fns';
 import { motion } from 'motion/react';
 import { TrendingUp, Zap, Brain, Tag, MapPin, FileText, Activity as ActivityIcon, Sparkles, Loader, Link as LinkIcon } from 'lucide-react';
@@ -214,14 +214,24 @@ const Insights = () => {
               </h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
-                  <LineChart data={moodData}>
+                  <AreaChart data={moodData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorMoodInsights" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#C8B6FF" stopOpacity={0.5} />
+                        <stop offset="95%" stopColor="#C8B6FF" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="colorAnxietyInsights" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#FFAFCC" stopOpacity={0.5} />
+                        <stop offset="95%" stopColor="#FFAFCC" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
-                    <XAxis dataKey="date" tickFormatter={(str) => { try { return format(parseISO(str), 'MM/dd'); } catch { return str; } }} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
-                    <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
+                    <XAxis dataKey="date" tickFormatter={(str) => { try { return format(parseISO(str), 'MM/dd'); } catch { return str; } }} axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} dy={10} />
+                    <YAxis domain={[0, 10]} axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
                     <Tooltip contentStyle={tooltipStyle} />
-                    <Line type="monotone" dataKey="mood" stroke="#C8B6FF" strokeWidth={2.5} name="Mood" dot={{ fill: '#C8B6FF', r: 3 }} />
-                    <Line type="monotone" dataKey="anxiety" stroke="#FFAFCC" strokeWidth={2} name="Anxiety" dot={{ fill: '#FFAFCC', r: 2 }} strokeDasharray="5 5" />
-                  </LineChart>
+                    <Area type="monotone" dataKey="mood" stroke="#C8B6FF" strokeWidth={3} name="Mood" fillOpacity={1} fill="url(#colorMoodInsights)" />
+                    <Area type="monotone" dataKey="anxiety" stroke="#FFAFCC" strokeWidth={2} name="Anxiety" strokeDasharray="5 5" fillOpacity={0.5} fill="url(#colorAnxietyInsights)" />
+                  </AreaChart>
                 </ResponsiveContainer>
               </div>
             </motion.div>
@@ -234,14 +244,24 @@ const Insights = () => {
               </h3>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
-                  <LineChart data={moodData}>
+                  <AreaChart data={moodData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorEnergyInsights" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#B8E0D2" stopOpacity={0.6} />
+                        <stop offset="95%" stopColor="#B8E0D2" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="colorStressInsights" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#FFD6A5" stopOpacity={0.6} />
+                        <stop offset="95%" stopColor="#FFD6A5" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
-                    <XAxis dataKey="date" tickFormatter={(str) => { try { return format(parseISO(str), 'MM/dd'); } catch { return str; } }} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
-                    <YAxis domain={[0, 10]} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
+                    <XAxis dataKey="date" tickFormatter={(str) => { try { return format(parseISO(str), 'MM/dd'); } catch { return str; } }} axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} dy={10} />
+                    <YAxis domain={[0, 10]} axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--color-text-secondary)' }} />
                     <Tooltip contentStyle={tooltipStyle} />
-                    <Line type="monotone" dataKey="energy" stroke="#B8E0D2" strokeWidth={2.5} name="Energy" dot={{ fill: '#B8E0D2', r: 3 }} />
-                    <Line type="monotone" dataKey="stress" stroke="#FFD6A5" strokeWidth={2.5} name="Stress" dot={{ fill: '#FFD6A5', r: 3 }} />
-                  </LineChart>
+                    <Area type="monotone" dataKey="energy" stroke="#B8E0D2" strokeWidth={3} name="Energy" fillOpacity={1} fill="url(#colorEnergyInsights)" />
+                    <Area type="monotone" dataKey="stress" stroke="#FFD6A5" strokeWidth={3} name="Stress" fillOpacity={1} fill="url(#colorStressInsights)" />
+                  </AreaChart>
                 </ResponsiveContainer>
               </div>
             </motion.div>
