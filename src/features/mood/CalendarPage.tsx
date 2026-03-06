@@ -6,10 +6,12 @@ import { useAuth } from '../../context/AuthContext';
 import { getUserEntries, JournalEntry } from '../journal/journalService';
 import { getImportantDays, addImportantDay, ImportantDay } from '../../services/calendarService';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, Calendar as CalendarIcon, Grid } from 'lucide-react';
+import YearInPixels from '../../components/charts/YearInPixels';
 
 const CalendarPage = () => {
   const { user } = useAuth();
+  const [viewMode, setViewMode] = useState<'calendar' | 'pixels'>('calendar');
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [importantDays, setImportantDays] = useState<ImportantDay[]>([]);
   const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
@@ -23,7 +25,7 @@ const CalendarPage = () => {
   const fetchAllData = async () => {
     if (user) {
       const [entriesData, daysData] = await Promise.all([
-        getUserEntries(user.uid, 100),
+        getUserEntries(user.uid, 365), // Fetch 365 mapping to support Year in Pixels
         getImportantDays(user.uid)
       ]);
       setEntries(entriesData);
@@ -96,8 +98,22 @@ const CalendarPage = () => {
         <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-pastel-purple)]/10 rounded-full blur-3xl -mt-20 -mr-20 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-[var(--color-pastel-peach)]/10 rounded-full blur-2xl -mb-10 -ml-10 pointer-events-none"></div>
 
-        <div className="relative z-10 h-full">
-          <div className="flex justify-end mb-4 absolute right-0 top-0 z-50">
+        <div className="relative z-10 h-full flex flex-col">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <div className="bg-[var(--color-bg-primary)] p-1 rounded-full flex border border-[var(--color-border-subtle)] soft-shadow">
+              <button
+                onClick={() => setViewMode('calendar')}
+                className={`flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all ${viewMode === 'calendar' ? 'bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white shadow-md' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
+              >
+                <CalendarIcon className="w-4 h-4 mr-2" /> Month
+              </button>
+              <button
+                onClick={() => setViewMode('pixels')}
+                className={`flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all ${viewMode === 'pixels' ? 'bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white shadow-md' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
+              >
+                <Grid className="w-4 h-4 mr-2" /> Year in Pixels
+              </button>
+            </div>
             <button
               onClick={() => setShowAddModal(true)}
               className="flex items-center px-4 py-2 bg-[var(--color-pastel-purple)]/10 text-[var(--color-pastel-purple)] hover:bg-[var(--color-pastel-purple)]/20 text-sm font-medium rounded-full transition-transform hover:scale-105"
@@ -105,18 +121,32 @@ const CalendarPage = () => {
               <Plus className="w-4 h-4 mr-1" /> Add Important Day
             </button>
           </div>
-          <FullCalendar
-            plugins={[dayGridPlugin, interactionPlugin]}
-            initialView="dayGridMonth"
-            events={allEvents}
-            eventClick={handleEventClick}
-            headerToolbar={{
-              left: 'prev,next today',
-              center: 'title',
-              right: 'dayGridMonth'
-            }}
-            height="100%"
-          />
+
+          <div className="flex-1 min-h-0 bg-white/40 dark:bg-black/20 rounded-2xl p-4">
+            {viewMode === 'calendar' ? (
+              <FullCalendar
+                plugins={[dayGridPlugin, interactionPlugin]}
+                initialView="dayGridMonth"
+                events={allEvents}
+                eventClick={handleEventClick}
+                headerToolbar={{
+                  left: 'prev,next today',
+                  center: 'title',
+                  right: ''
+                }}
+                height="100%"
+              />
+            ) : (
+              <div className="h-full overflow-y-auto w-full pt-4">
+                <h2 className="text-2xl font-serif font-bold text-[var(--color-text-primary)] mb-6 text-center">Your Year in Pixels</h2>
+                <YearInPixels
+                  entries={entries}
+                  year={new Date().getFullYear()}
+                  onDayClick={(entry) => setSelectedEntry(entry)}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

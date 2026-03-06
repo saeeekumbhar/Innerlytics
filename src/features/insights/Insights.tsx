@@ -4,8 +4,9 @@ import { getUserEntries, JournalEntry } from '../journal/journalService';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, Radar, PieChart, Pie, Cell } from 'recharts';
 import { format, parseISO } from 'date-fns';
 import { motion } from 'motion/react';
-import { TrendingUp, Zap, Brain, Tag, MapPin, FileText, Activity as ActivityIcon, Sparkles, Loader } from 'lucide-react';
+import { TrendingUp, Zap, Brain, Tag, MapPin, FileText, Activity as ActivityIcon, Sparkles, Loader, Link as LinkIcon } from 'lucide-react';
 import { generateJsonContent } from '../../services/geminiService';
+import { getHabits, Habit } from '../../services/habitService';
 import { Type } from '@google/genai';
 
 const PASTEL_COLORS = ['#C8B6FF', '#FFAFCC', '#A0C4FF', '#B8E0D2', '#FFD6A5', '#FF8FAB', '#94CDB8', '#B5A0FF'];
@@ -13,19 +14,21 @@ const PASTEL_COLORS = ['#C8B6FF', '#FFAFCC', '#A0C4FF', '#B8E0D2', '#FFD6A5', '#
 const Insights = () => {
   const { user } = useAuth();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
-  const [weeklyReport, setWeeklyReport] = useState<string | null>(null);
+  const [weeklyReport, setWeeklyReport] = useState<{ summary: string, happiest_day: string, top_trigger: string, mood_stability: string } | null>(null);
   const [generatingReport, setGeneratingReport] = useState(false);
 
   useEffect(() => {
-    const fetchEntries = async () => {
+    const fetchData = async () => {
       if (user) {
         const data = await getUserEntries(user.uid, 50);
         setEntries(data.reverse());
+        setHabits(getHabits());
         setLoading(false);
       }
     };
-    fetchEntries();
+    fetchData();
   }, [user]);
 
   if (loading) {
@@ -92,6 +95,20 @@ const Insights = () => {
     { dimension: 'Anxiety', value: Math.round(entries.filter(e => e.anxietyLevel).reduce((s, e) => s + (e.anxietyLevel || 0), 0) / Math.max(entries.filter(e => e.anxietyLevel).length, 1) * 10) / 10 },
   ] : [];
 
+  // Habit Impact Correlation
+  const habitImpacts = habits.map(habit => {
+    const withHabit = entries.filter(e => habit.completedDates.includes(e.date));
+    const withoutHabit = entries.filter(e => !habit.completedDates.includes(e.date));
+
+    if (withHabit.length < 2 || withoutHabit.length < 2) return null; // Need min baseline
+
+    const avgWith = withHabit.reduce((s, e) => s + e.moodScore, 0) / withHabit.length;
+    const avgWithout = withoutHabit.reduce((s, e) => s + e.moodScore, 0) / withoutHabit.length;
+
+    const impact = avgWith - avgWithout;
+    return { habit, impact, avgWith, avgWithout };
+  }).filter(h => h !== null).sort((a, b) => b!.impact - a!.impact) as { habit: Habit, impact: number, avgWith: number, avgWithout: number }[];
+
   const containerVariants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } },
@@ -118,12 +135,17 @@ const Insights = () => {
 
       const schema = {
         type: Type.OBJECT,
-        properties: { summary: { type: Type.STRING } },
-        required: ["summary"]
+        properties: {
+          summary: { type: Type.STRING },
+          happiest_day: { type: Type.STRING },
+          top_trigger: { type: Type.STRING },
+          mood_stability: { type: Type.STRING }
+        },
+        required: ["summary", "happiest_day", "top_trigger", "mood_stability"]
       };
 
-      const aiResult = await generateJsonContent(`Summarize this week's emotional journey:\n${textForAi}`, schema);
-      setWeeklyReport(aiResult.summary);
+      const aiResult = await generateJsonContent(`Summarize this week's emotional journey and identify the happiest day, top triggers (like work, social, etc based on context and text), and mood stability (e.g. erratic, calm, mostly positive):\n${textForAi}`, schema);
+      setWeeklyReport(aiResult);
     } catch (error) {
       console.error(error);
       alert("Failed to generate report");
@@ -278,6 +300,41 @@ const Insights = () => {
               </div>
             </motion.div>
 
+            {/* Habit Impact Correlation */}
+            <motion.div variants={itemVariants} className="lg:col-span-2 glass rounded-[2rem] border-none soft-shadow p-6 lg:p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-pastel-teal)]/10 rounded-full blur-3xl -mt-10 -mr-10 pointer-events-none" />
+              <h3 className="text-xl font-serif font-bold text-[var(--color-text-primary)] mb-6 flex items-center gap-2 relative z-10">
+                <LinkIcon className="w-5 h-5 text-[var(--color-pastel-teal)]" /> Habit Impact Correlator
+              </h3>
+              {habitImpacts.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 relative z-10">
+                  {habitImpacts.map(({ habit, impact }) => {
+                    const isPositive = impact > 0;
+                    const percentage = Math.round(impact * 10); // scale 1-10 to 1-100%
+                    return (
+                      <div key={habit.id} className="p-5 bg-[var(--color-bg-primary)]/40 rounded-[1.5rem] border border-[var(--color-border-subtle)] flex flex-col justify-between">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-3xl">{habit.emoji}</span>
+                          <span className="font-semibold text-sm text-[var(--color-text-primary)] truncate">{habit.name}</span>
+                        </div>
+                        <div className={`text-2xl font-bold font-serif ${isPositive ? 'text-[var(--color-pastel-teal)]' : 'text-[var(--color-danger)]'}`}>
+                          {isPositive ? '+' : ''}{percentage}% mood
+                        </div>
+                        <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+                          when completed
+                        </p>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="text-center p-8 bg-[var(--color-bg-primary)]/40 rounded-[1.5rem] border border-[var(--color-border-subtle)]">
+                  <p className="text-[var(--color-text-secondary)]">Not enough correlation data yet.</p>
+                  <p className="text-xs text-[var(--color-text-secondary)]/70 mt-1">Track habits and moods for a few days to see insights.</p>
+                </div>
+              )}
+            </motion.div>
+
             {/* Wellness Dimensions Radar — only if multi-dim data exists */}
             {hasMultiDim && avgDimensions.length > 0 && (
               <motion.div variants={itemVariants} className="lg:col-span-2 glass rounded-[2rem] border-none soft-shadow p-6 lg:p-8 relative overflow-hidden">
@@ -319,8 +376,27 @@ const Insights = () => {
               </div>
 
               {weeklyReport && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-6 bg-[var(--color-bg-primary)]/50 rounded-2xl border border-[var(--color-pastel-purple)]/20 leading-relaxed text-[var(--color-text-primary)] relative z-10">
-                  {weeklyReport}
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-6 bg-[var(--color-bg-primary)]/50 rounded-2xl border border-[var(--color-pastel-purple)]/20 relative z-10 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div className="bg-[var(--color-bg-card)] p-4 rounded-xl border border-[var(--color-border-subtle)] soft-shadow-sm flex flex-col items-center text-center">
+                      <span className="text-[2rem] leading-none mb-2 block">🌟</span>
+                      <span className="text-xs text-[var(--color-text-secondary)] font-bold uppercase tracking-wider mb-1">Happiest Day</span>
+                      <span className="text-[var(--color-text-primary)] font-medium text-sm">{weeklyReport.happiest_day}</span>
+                    </div>
+                    <div className="bg-[var(--color-bg-card)] p-4 rounded-xl border border-[var(--color-border-subtle)] soft-shadow-sm flex flex-col items-center text-center">
+                      <span className="text-[2rem] leading-none mb-2 block">🎯</span>
+                      <span className="text-xs text-[var(--color-text-secondary)] font-bold uppercase tracking-wider mb-1">Top Trigger</span>
+                      <span className="text-[var(--color-text-primary)] font-medium text-sm">{weeklyReport.top_trigger}</span>
+                    </div>
+                    <div className="bg-[var(--color-bg-card)] p-4 rounded-xl border border-[var(--color-border-subtle)] soft-shadow-sm flex flex-col items-center text-center">
+                      <span className="text-[2rem] leading-none mb-2 block">⚖️</span>
+                      <span className="text-xs text-[var(--color-text-secondary)] font-bold uppercase tracking-wider mb-1">Stability</span>
+                      <span className="text-[var(--color-text-primary)] font-medium text-sm capitalize">{weeklyReport.mood_stability}</span>
+                    </div>
+                  </div>
+                  <p className="leading-relaxed text-[var(--color-text-primary)] text-sm md:text-base border-t border-[var(--color-border-subtle)] pt-4">
+                    {weeklyReport.summary}
+                  </p>
                 </motion.div>
               )}
             </motion.div>

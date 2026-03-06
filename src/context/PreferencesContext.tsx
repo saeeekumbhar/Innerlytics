@@ -65,13 +65,13 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const getEmoji = (mood: string) => {
         const emojis = {
             classic: {
-                awful: '😭', bad: '😞', meh: '😐', good: '🙂', happy: '😄'
+                awful: '😭', bad: '😞', "burnt out": '🫠', overwhelmed: '😵‍💫', meh: '😐', peaceful: '😌', productive: '🎯', good: '🙂', happy: '😄', excited: '🤩'
             },
             cute: {
-                awful: '😿', bad: '🥺', meh: '😶', good: '🥰', happy: '🤩'
+                awful: '😿', bad: '🥺', "burnt out": '🫥', overwhelmed: '🤯', meh: '😶', peaceful: '🌸', productive: '✨', good: '🥰', happy: '🤩', excited: '🎉'
             },
             minimal: {
-                awful: '⛈️', bad: '🌧️', meh: '☁️', good: '🌤️', happy: '☀️'
+                awful: '⛈️', bad: '🌧️', "burnt out": '🔥', overwhelmed: '🌪️', meh: '☁️', peaceful: '🍃', productive: '⚡', good: '🌤️', happy: '☀️', excited: '🌟'
             }
         };
 

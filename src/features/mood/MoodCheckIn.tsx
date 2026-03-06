@@ -4,13 +4,16 @@ import { ChevronDown } from 'lucide-react';
 import { addJournalEntry, JournalEntry } from '../journal/journalService';
 import { useAuth } from '../../context/AuthContext';
 import { usePreferences } from '../../context/PreferencesContext';
+import EmotionWheel from '../../components/ui/EmotionWheel';
 
 const moods = [
-  { score: 2, label: 'Awful', color: 'text-[var(--color-pastel-blue)]', bg: 'bg-[var(--color-pastel-blue)]/20', ring: 'ring-[var(--color-pastel-blue)]' },
-  { score: 4, label: 'Bad', color: 'text-[var(--color-pastel-purple)]', bg: 'bg-[var(--color-pastel-purple)]/20', ring: 'ring-[var(--color-pastel-purple)]' },
+  { score: 10, label: 'Excited', color: 'text-[var(--color-pastel-pink)]', bg: 'bg-[var(--color-pastel-pink)]/30', ring: 'ring-[var(--color-pastel-pink)]' },
+  { score: 9, label: 'Happy', color: 'text-[var(--color-pastel-teal)]', bg: 'bg-[var(--color-pastel-teal)]/40', ring: 'ring-[var(--color-pastel-teal)]' },
+  { score: 8, label: 'Productive', color: 'text-[var(--color-pastel-purple)]', bg: 'bg-[var(--color-pastel-purple)]/30', ring: 'ring-[var(--color-pastel-purple)]' },
+  { score: 7, label: 'Peaceful', color: 'text-[var(--color-pastel-blue)]', bg: 'bg-[var(--color-pastel-blue)]/30', ring: 'ring-[var(--color-pastel-blue)]' },
   { score: 6, label: 'Meh', color: 'text-[#E5B887]', bg: 'bg-[var(--color-pastel-peach)]/30', ring: 'ring-[var(--color-pastel-peach)]' },
-  { score: 8, label: 'Good', color: 'text-[var(--color-pastel-teal)]', bg: 'bg-[var(--color-pastel-teal)]/40', ring: 'ring-[var(--color-pastel-teal)]' },
-  { score: 10, label: 'Happy', color: 'text-[var(--color-pastel-pink)]', bg: 'bg-[var(--color-pastel-pink)]/30', ring: 'ring-[var(--color-pastel-pink)]' },
+  { score: 4, label: 'Overwhelmed', color: 'text-[var(--color-danger)]', bg: 'bg-[var(--color-danger)]/30', ring: 'ring-[var(--color-danger)]' },
+  { score: 2, label: 'Burnt Out', color: 'text-[var(--color-text-secondary)]', bg: 'bg-[var(--color-bg-secondary)]', ring: 'ring-[var(--color-text-secondary)]' },
 ];
 
 const emotionOptions = [
@@ -114,7 +117,7 @@ const MoodCheckIn = ({ onComplete }: { onComplete: () => void }) => {
         {step === 1 && (
           <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
             <h2 className="text-2xl font-serif font-semibold text-[var(--color-text-primary)] mb-6 text-center">How are you feeling today?</h2>
-            <div className="flex justify-between mb-6 px-2 md:px-6">
+            <div className="flex flex-wrap justify-center gap-3 mb-6 px-2 md:px-6">
               {moods.map((mood) => (
                 <motion.button
                   key={mood.score}
@@ -164,24 +167,10 @@ const MoodCheckIn = ({ onComplete }: { onComplete: () => void }) => {
               <SliderInput label="💭 Anxiety Level" value={anxietyLevel} onChange={setAnxietyLevel} colorVar="--color-pastel-pink" />
             </div>
 
-            {/* Emotion Chips */}
+            {/* Emotion Wheel */}
             <div>
-              <p className="text-sm font-medium text-[var(--color-text-secondary)] mb-3">What emotions resonate? <span className="opacity-60">(up to 5)</span></p>
-              <div className="flex flex-wrap gap-2">
-                {emotionOptions.map(emotion => (
-                  <motion.button
-                    key={emotion}
-                    whileTap={{ scale: 0.92 }}
-                    onClick={() => toggleEmotion(emotion)}
-                    className={`px-3.5 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${selectedEmotions.includes(emotion)
-                      ? 'bg-[var(--color-pastel-purple)]/20 border-[var(--color-pastel-purple)]/50 text-[var(--color-pastel-purple)] shadow-sm'
-                      : 'border-[var(--color-border-subtle)]/50 text-[var(--color-text-secondary)] hover:border-[var(--color-pastel-purple)]/30 hover:bg-[var(--color-pastel-hover)]'
-                      }`}
-                  >
-                    {emotion}
-                  </motion.button>
-                ))}
-              </div>
+              <p className="text-sm font-medium text-[var(--color-text-secondary)] mb-3">Explore your emotions <span className="opacity-60">(up to 5)</span></p>
+              <EmotionWheel selectedEmotions={selectedEmotions} onToggleEmotion={toggleEmotion} />
             </div>
 
             {/* Context Selector */}

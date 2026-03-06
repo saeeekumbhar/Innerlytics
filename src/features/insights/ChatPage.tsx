@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useGeminiChat, ChatMode } from '../../hooks/useGeminiChat';
-import { Send, MessageSquare, Wind, Brain, HeartHandshake } from 'lucide-react';
+import { Send, MessageSquare, Wind, Brain, HeartHandshake, Search, Lightbulb } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const modes: { id: ChatMode; label: string; icon: any; desc: string }[] = [
-  { id: 'vent', label: 'Vent Mode', icon: MessageSquare, desc: 'Just let it all out. I\'m here to listen.' },
-  { id: 'reflection', label: 'Reflection', icon: Brain, desc: 'Deepen your understanding with questions.' },
+  { id: 'vent', label: 'Vent', icon: MessageSquare, desc: 'Just let it all out. I\'m here to listen.' },
+  { id: 'reflect', label: 'Reflect', icon: Brain, desc: 'Deepen your understanding with questions.' },
+  { id: 'analyze', label: 'Analyze', icon: Search, desc: 'Logically break down your situation.' },
+  { id: 'advice', label: 'Advice', icon: Lightbulb, desc: 'Get actionable, practical steps forward.' },
   { id: 'cbt', label: 'CBT Coach', icon: HeartHandshake, desc: 'Reframe negative thoughts together.' },
   { id: 'grounding', label: 'Grounding', icon: Wind, desc: 'Calm down with breathing exercises.' },
 ];

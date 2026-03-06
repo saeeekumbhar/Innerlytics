@@ -12,6 +12,8 @@ import { Link } from 'react-router-dom';
 
 import { getAchievements, Achievement } from '../../services/achievementService';
 import AchievementBadge from '../../components/ui/AchievementBadge';
+import BreathingOrb from '../../components/ui/BreathingOrb';
+import EmotionAvatar from '../../components/ui/EmotionAvatar';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -143,8 +145,25 @@ const Dashboard = () => {
 
         {/* Right Column */}
         <div className="space-y-8">
+          {/* Quick Calm Card */}
+          <motion.div variants={itemVariants} className="glass rounded-[2rem] p-6 lg:p-8 soft-shadow border-none relative overflow-hidden flex flex-col items-center text-center">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-pastel-teal)]/10 rounded-full blur-2xl -mt-10 -mr-10 pointer-events-none"></div>
+            <BreathingOrb />
+            <div className="mt-4 relative z-10 w-full">
+              <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)]">Feeling overwhelmed?</h3>
+              <p className="text-sm text-[var(--color-text-secondary)] mt-1 mb-4">Take a moment to center yourself.</p>
+              <Link to="/wellness" className="block w-full py-3 rounded-full font-medium bg-[var(--color-pastel-teal)]/10 text-[var(--color-pastel-teal)] hover:bg-[var(--color-pastel-teal)] hover:text-white transition-all duration-300">
+                Explore Calm Tools ✨
+              </Link>
+            </div>
+          </motion.div>
+
           <motion.div variants={itemVariants}>
             <AIInsightCard entries={entries} />
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <EmotionAvatar />
           </motion.div>
 
           <motion.div variants={itemVariants} className="glass rounded-[2rem] p-6 lg:p-8 soft-shadow border-none relative overflow-hidden">
