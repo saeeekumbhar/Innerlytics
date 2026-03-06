@@ -119,7 +119,7 @@ const Layout = () => {
           )}
         </AnimatePresence>
 
-        <div className="max-w-7xl w-full mx-auto p-4 md:p-8 flex-1">
+        <div className="w-full p-4 md:p-8 flex-1">
           <Outlet />
         </div>
       </main>

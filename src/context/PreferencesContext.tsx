@@ -17,7 +17,7 @@ interface PreferencesContextType {
 const PreferencesContext = createContext<PreferencesContextType | undefined>(undefined);
 
 export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [themeMode, setThemeModeState] = useState<ThemeMode>(() => (localStorage.getItem('themeMode') as ThemeMode) || 'system');
+    const [themeMode, setThemeModeState] = useState<ThemeMode>(() => (localStorage.getItem('themeMode') as ThemeMode) || 'light');
     const [colorPalette, setColorPaletteState] = useState<ColorPalette>(() => (localStorage.getItem('colorPalette') as ColorPalette) || 'lavender');
     const [emojiTheme, setEmojiThemeState] = useState<EmojiTheme>(() => (localStorage.getItem('emojiTheme') as EmojiTheme) || 'classic');
 
