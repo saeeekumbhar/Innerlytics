@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9A5C" />
+      <stop offset="50%" stop-color="#FF6B8A" />
+      <stop offset="100%" stop-color="#B197FC" />
+    </linearGradient>
+  </defs>
+  <!-- 
+    Path starts curled and tangled on the left, 
+    moves to center, and forms a heart.
+  -->
+  <path 
+    d="M 10,70 C 5,50 30,30 20,60 C 15,80 40,80 30,50 C 25,30 40,20 50,40 C 60,10 85,10 90,30 C 95,50 85,70 50,90 C 15,70 5,50 10,30 C 15,10 40,10 50,40"
+    fill="none" 
+    stroke="url(#logoGrad)" 
+    stroke-width="5" 
+    stroke-linecap="round"
+  />
+</svg>

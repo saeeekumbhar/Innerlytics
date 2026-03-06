@@ -27,9 +27,10 @@
 
 @layer base {
   :root {
-    --color-bg-primary: #FDF6EC;
-    --color-bg-secondary: #FAF0E0;
-    --color-bg-soft: #F5ECD7;
+    --color-bg-primary: #F8EDD8;
+    /* Warmer background beige */
+    --color-bg-secondary: #F0E3CB;
+    --color-bg-soft: #E8DAC0;
     --color-bg-card: #FFFFFF;
     --color-text-primary: #2B2B3C;
     --color-text-secondary: #6B6582;
