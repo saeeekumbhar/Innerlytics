@@ -184,7 +184,7 @@ const Wellness = () => {
                         onClick={() => setActiveTool(activeTool === tool.id ? null : tool.id)}
                         className={`glass rounded-2xl p-5 soft-shadow border-none text-center transition-all duration-300 ${activeTool === tool.id ? 'ring-2 ring-offset-4 ring-offset-[var(--color-bg-primary)]' : 'hover:shadow-md hover:scale-[1.02]'
                             }`}
-                        style={{ ...(activeTool === tool.id ? { ringColor: `var(${tool.color})` } : {}) }}
+                        style={{ ...(activeTool === tool.id ? { '--tw-ring-color': `var(${tool.color})` } as React.CSSProperties : {}) }}
                     >
                         <div className="w-12 h-12 rounded-2xl mx-auto mb-3 flex items-center justify-center" style={{ backgroundColor: `var(${tool.color})`, opacity: 0.2 }}>
                             <tool.icon className="w-6 h-6" style={{ color: `var(${tool.color})` }} />

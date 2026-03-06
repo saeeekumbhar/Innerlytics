@@ -3,7 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useAuth } from '../../context/AuthContext';
-import { getUserEntries, JournalEntry } from './journalService';
+import { getUserEntries, JournalEntry } from '../journal/journalService';
 import { motion } from 'motion/react';
 
 const CalendarPage = () => {

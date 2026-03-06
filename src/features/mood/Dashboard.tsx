@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { getUserEntries, getTodayEntry, JournalEntry } from '../features/mood/journalService';
-import MoodCheckIn from '../features/mood/MoodCheckIn';
-import WeeklyMoodGraph from '../features/mood/WeeklyMoodGraph';
-import AIInsightCard from '../features/insights/InsightCard';
+import { useAuth } from '../../context/AuthContext';
+import { getUserEntries, getTodayEntry, JournalEntry } from '../journal/journalService';
+import MoodCheckIn from './MoodCheckIn';
+import WeeklyMoodGraph from '../../components/charts/WeeklyMoodGraph';
+import AIInsightCard from '../../components/ui/InsightCard';
 import { motion } from 'motion/react';
 import { Plus, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-import { getAchievements, Achievement } from '../features/profile/achievementService';
-import AchievementBadge from '../features/profile/AchievementBadge';
+import { getAchievements, Achievement } from '../../services/achievementService';
+import AchievementBadge from '../../components/ui/AchievementBadge';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -58,7 +58,7 @@ const Dashboard = () => {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: any = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };

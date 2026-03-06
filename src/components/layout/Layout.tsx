@@ -3,8 +3,8 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Calendar, BookOpen, MessageSquare, BarChart2, Users, Settings, LogOut, Activity, Heart, Shield } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { motion } from 'motion/react';
-import ThemeToggle from './ThemeToggle';
-import Onboarding from './Onboarding';
+import ThemeToggle from '../ui/ThemeToggle';
+import Onboarding from '../ui/Onboarding';
 
 const Layout = () => {
   const { user, logout } = useAuth();

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useGeminiChat, ChatMode } from './useGeminiChat';
+import { useGeminiChat, ChatMode } from '../../hooks/useGeminiChat';
 import { Send, MessageSquare, Wind, Brain, HeartHandshake } from 'lucide-react';
 import { motion } from 'motion/react';
 

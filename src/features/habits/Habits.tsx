@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Flame, Check, Trash2, X } from 'lucide-react';
-import { Habit, getHabits, addHabit, removeHabit, toggleHabitCompletion, getStreak } from './habitService';
+import { Habit, getHabits, addHabit, removeHabit, toggleHabitCompletion, getStreak } from '../../services/habitService';
 
 const habitEmojis = ['🧘', '📖', '💧', '🏃', '🎨', '✍️', '🛌', '🥗', '🧠', '🎵', '💪', '🌿'];
 
@@ -55,7 +55,7 @@ const Habits = () => {
         hidden: { opacity: 0 },
         show: { opacity: 1, transition: { staggerChildren: 0.08 } },
     };
-    const itemVariants = {
+    const itemVariants: any = {
         hidden: { opacity: 0, y: 20 },
         show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
     };
