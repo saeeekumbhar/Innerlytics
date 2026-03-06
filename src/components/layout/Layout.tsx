@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import ThemeToggle from '../ui/ThemeToggle';
 import Onboarding from '../ui/Onboarding';
 import { useReminders } from '../../hooks/useReminders';
+import { Logo } from '../ui/Logo';
 
 const Layout = () => {
   const { user, logout } = useAuth();
@@ -45,11 +46,14 @@ const Layout = () => {
       {/* ═══ Top Header Bar ═══ */}
       <header className="flex items-center justify-between px-6 md:px-10 py-4 bg-[var(--color-bg-card)]/80 backdrop-blur-xl border-b border-[var(--color-border-subtle)]/50 z-30 relative">
         {/* Logo */}
-        <NavLink to="/" className="flex items-center gap-2 group">
-          <h1 className="text-2xl font-serif font-bold tracking-tight bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-transparent bg-clip-text">
-            Innerlytics
-          </h1>
-          <span className="text-[var(--color-pastel-purple)] text-lg group-hover:rotate-45 transition-transform duration-300">✦</span>
+        <NavLink to="/" className="flex items-center gap-3 group">
+          <Logo className="w-9 h-9 group-hover:scale-110 transition-transform duration-300" />
+          <div>
+            <h1 className="text-xl font-serif font-bold tracking-tight bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-transparent bg-clip-text leading-tight">
+              Innerlytics
+            </h1>
+            <p className="text-[10px] text-[var(--color-text-secondary)] tracking-widest uppercase -mt-0.5">Digital Diary</p>
+          </div>
         </NavLink>
 
         {/* Right side */}
@@ -119,8 +123,8 @@ const Layout = () => {
                   whileHover={{ scale: 1.15, y: -6 }}
                   whileTap={{ scale: 0.9 }}
                   className={`flex flex-col items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl transition-all duration-200 ${isActive
-                      ? 'bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white shadow-lg shadow-[var(--color-pastel-purple)]/30'
-                      : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-pastel-hover)]'
+                    ? 'bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white shadow-lg shadow-[var(--color-pastel-purple)]/30'
+                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-pastel-hover)]'
                     }`}
                 >
                   <item.icon className="w-5 h-5" />
@@ -151,8 +155,8 @@ const Layout = () => {
               whileHover={{ scale: 1.15, y: -6 }}
               whileTap={{ scale: 0.9 }}
               className={`flex flex-col items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl transition-all duration-200 ${moreOpen
-                  ? 'bg-[var(--color-pastel-purple)]/20 text-[var(--color-pastel-purple)]'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-pastel-hover)]'
+                ? 'bg-[var(--color-pastel-purple)]/20 text-[var(--color-pastel-purple)]'
+                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-pastel-hover)]'
                 }`}
             >
               {moreOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -189,8 +193,8 @@ const Layout = () => {
                       to={item.path}
                       onClick={() => setMoreOpen(false)}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                          ? 'bg-[var(--color-pastel-purple)]/15 text-[var(--color-pastel-purple)] font-medium'
-                          : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-pastel-hover)] hover:text-[var(--color-text-primary)]'
+                        ? 'bg-[var(--color-pastel-purple)]/15 text-[var(--color-pastel-purple)] font-medium'
+                        : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-pastel-hover)] hover:text-[var(--color-text-primary)]'
                         }`}
                     >
                       <item.icon className="w-4 h-4" />
