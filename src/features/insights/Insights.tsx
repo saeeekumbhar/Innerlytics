@@ -4,12 +4,51 @@ import { getUserEntries, JournalEntry } from '../journal/journalService';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, Radar, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { format, parseISO } from 'date-fns';
 import { motion } from 'motion/react';
-import { TrendingUp, Zap, Brain, Tag, MapPin, FileText, Activity as ActivityIcon, Sparkles, Loader, Link as LinkIcon } from 'lucide-react';
+import { TrendingUp, Zap, Brain, Tag, MapPin, FileText, Activity as ActivityIcon, Sparkles, Loader, Link as LinkIcon, Calendar, Flame, CheckCircle2 } from 'lucide-react';
 import { generateJsonContent } from '../../services/geminiService';
 import { getHabits, Habit } from '../../services/habitService';
 import { Type } from '@google/genai';
 
 const PASTEL_COLORS = ['#C8B6FF', '#FFAFCC', '#A0C4FF', '#B8E0D2', '#FFD6A5', '#FF8FAB', '#94CDB8', '#B5A0FF'];
+
+// ─── Quick Stats Row ─────────────────────────
+const QuickStats = ({ entries, streak, habitsCount }: { entries: JournalEntry[], streak: number, habitsCount: number }) => {
+  const avgMood = entries.length > 0
+    ? (entries.reduce((s, e) => s + e.moodScore, 0) / entries.length).toFixed(1)
+    : '—';
+  const weekEntries = entries.filter(e => {
+    const d = new Date(e.date);
+    const now = new Date();
+    return (now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24) <= 7;
+  }).length;
+
+  const stats = [
+    { icon: TrendingUp, label: 'Avg Mood', value: `${avgMood}/10`, color: '--color-pastel-purple' },
+    { icon: Calendar, label: 'This Week', value: `${weekEntries} entries`, color: '--color-pastel-blue' },
+    { icon: Flame, label: 'Streak', value: `${streak} days`, color: '--color-pastel-peach' },
+    { icon: CheckCircle2, label: 'Habits', value: `${habitsCount} active`, color: '--color-pastel-teal' },
+  ];
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {stats.map(stat => (
+        <motion.div key={stat.label}
+          whileHover={{ scale: 1.04, y: -2 }}
+          className="glass rounded-2xl p-4 soft-shadow border-none glow-card flex items-center gap-3 relative z-10"
+        >
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: `color-mix(in srgb, var(${stat.color}) 20%, transparent)` }}>
+            <stat.icon className="w-5 h-5" style={{ color: `var(${stat.color})` }} />
+          </div>
+          <div>
+            <p className="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">{stat.label}</p>
+            <p className="text-lg font-bold text-[var(--color-text-primary)] leading-tight">{stat.value}</p>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
 
 const Insights = () => {
   const { user } = useAuth();
@@ -40,6 +79,22 @@ const Insights = () => {
   }
 
   // --- Data Processing ---
+  const computeStreak = (list: JournalEntry[]) => {
+    const dates = new Set(list.map(e => e.date));
+    let s = 0;
+    const d = new Date();
+    for (let i = 0; i < 60; i++) {
+      const dStr = d.toISOString().split('T')[0];
+      if (dates.has(dStr)) { s++; d.setDate(d.getDate() - 1); }
+      else if (i === 0) { d.setDate(d.getDate() - 1); }
+      else break;
+    }
+    return s;
+  };
+
+  const streak = computeStreak(entries);
+  const habitsCount = habits.length;
+
   const activityCount = entries.length;
   const avgMood = Math.round(entries.reduce((s, e) => s + e.moodScore, 0) / Math.max(activityCount, 1) * 10) / 10;
 
@@ -170,40 +225,21 @@ const Insights = () => {
         <div className="space-y-8">
 
           {/* Top Level Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <motion.div variants={itemVariants} className="glass p-6 rounded-[2rem] border-none soft-shadow relative overflow-hidden flex items-center gap-4 group">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-pastel-purple)]/10 rounded-full blur-xl -mt-10 -mr-10"></div>
-              <div className="w-14 h-14 bg-[var(--color-bg-primary)]/50 rounded-2xl flex items-center justify-center text-[var(--color-pastel-purple)] shadow-sm group-hover:scale-110 transition-transform">
-                <FileText className="w-7 h-7" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-[var(--color-text-secondary)]">Activity Count</p>
-                <h3 className="text-2xl font-bold text-[var(--color-text-primary)]">{activityCount} entries</h3>
-              </div>
-            </motion.div>
+          <motion.div variants={itemVariants}>
+            <QuickStats entries={entries} streak={streak} habitsCount={habitsCount} />
+          </motion.div>
 
-            <motion.div variants={itemVariants} className="glass p-6 rounded-[2rem] border-none soft-shadow relative overflow-hidden flex items-center gap-4 group">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-pastel-teal)]/10 rounded-full blur-xl -mt-10 -mr-10"></div>
-              <div className="w-14 h-14 bg-[var(--color-bg-primary)]/50 rounded-2xl flex items-center justify-center text-[var(--color-pastel-teal)] shadow-sm group-hover:scale-110 transition-transform">
-                <TrendingUp className="w-7 h-7" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-[var(--color-text-secondary)]">Average Daily Mood</p>
-                <h3 className="text-2xl font-bold text-[var(--color-text-primary)]">{avgMood} / 10</h3>
-              </div>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="glass p-6 rounded-[2rem] border-none soft-shadow relative overflow-hidden flex items-center gap-4 group">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-pastel-peach)]/10 rounded-full blur-xl -mt-10 -mr-10"></div>
-              <div className="w-14 h-14 bg-[var(--color-bg-primary)]/50 rounded-2xl flex items-center justify-center text-[var(--color-pastel-peach)] shadow-sm group-hover:scale-110 transition-transform">
-                <ActivityIcon className="w-7 h-7" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-[var(--color-text-secondary)]">Mood Stability</p>
-                <h3 className="text-lg font-bold text-[var(--color-text-primary)] leading-tight">{moodStability}</h3>
-              </div>
-            </motion.div>
-          </div>
+          {/* Mood Stability Extra Card (since it was removed from top row) */}
+          <motion.div variants={itemVariants} className="glass p-5 rounded-[2rem] border-none soft-shadow relative overflow-hidden flex items-center gap-4 group justify-center max-w-sm">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-pastel-peach)]/10 rounded-full blur-xl -mt-10 -mr-10"></div>
+            <div className="w-12 h-12 bg-[var(--color-bg-primary)]/50 rounded-2xl flex items-center justify-center text-[var(--color-pastel-peach)] shadow-sm group-hover:scale-110 transition-transform">
+              <ActivityIcon className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-[var(--color-text-secondary)]">Mood Stability</p>
+              <h3 className="text-lg font-bold text-[var(--color-text-primary)] leading-tight">{moodStability}</h3>
+            </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Mood & Anxiety Trend */}
