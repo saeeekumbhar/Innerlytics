@@ -11,9 +11,9 @@ export const Logo: React.FC<{ className?: string }> = ({ className = '' }) => {
             >
                 <defs>
                     <linearGradient id="logoGradAnim" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#FF9A5C" />
-                        <stop offset="50%" stopColor="#FF6B8A" />
-                        <stop offset="100%" stopColor="#B197FC" />
+                        <stop offset="0%" stopColor="#C8B6FF" />   {/* pastel-purple */}
+                        <stop offset="50%" stopColor="#A0C4FF" />  {/* pastel-blue */}
+                        <stop offset="100%" stopColor="#94CDB8" /> {/* pastel-teal */}
                     </linearGradient>
                 </defs>
                 <motion.path

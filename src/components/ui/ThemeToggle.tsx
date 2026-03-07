@@ -58,10 +58,10 @@ const ThemeToggle = () => {
                     left: isDark ? 'calc(100% - 32px)' : '4px',
                     background: isDark
                         ? 'linear-gradient(135deg, #B5A0FF, #A0C4FF)'
-                        : 'linear-gradient(135deg, #FFD6A5, #FFAFCC)',
+                        : 'linear-gradient(135deg, #C8B6FF, #E0C3FC)', /* changed from peach/pink to lavender */
                     boxShadow: isDark
                         ? '0 2px 8px rgba(181,160,255,0.5)'
-                        : '0 2px 8px rgba(255,175,204,0.4)',
+                        : '0 2px 8px rgba(200,182,255,0.4)', /* changed shadow to lavender */
                 }}
             >
                 {isDark ? (
