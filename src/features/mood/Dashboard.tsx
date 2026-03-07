@@ -21,45 +21,6 @@ import { getAchievements, Achievement } from '../../services/achievementService'
 import AchievementBadge from '../../components/ui/AchievementBadge';
 import EmotionAvatar from '../../components/ui/EmotionAvatar';
 
-// ─── Quick Stats Row ─────────────────────────
-const QuickStats = ({ entries, streak, habitsCount }: { entries: JournalEntry[], streak: number, habitsCount: number }) => {
-  const avgMood = entries.length > 0
-    ? (entries.reduce((s, e) => s + e.moodScore, 0) / entries.length).toFixed(1)
-    : '—';
-  const weekEntries = entries.filter(e => {
-    const d = new Date(e.date);
-    const now = new Date();
-    return (now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24) <= 7;
-  }).length;
-
-  const stats = [
-    { icon: TrendingUp, label: 'Avg Mood', value: `${avgMood}/10`, color: '--color-pastel-purple' },
-    { icon: Calendar, label: 'This Week', value: `${weekEntries} entries`, color: '--color-pastel-blue' },
-    { icon: Flame, label: 'Streak', value: `${streak} days`, color: '--color-pastel-peach' },
-    { icon: CheckCircle2, label: 'Habits', value: `${habitsCount} active`, color: '--color-pastel-teal' },
-  ];
-
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {stats.map(stat => (
-        <motion.div key={stat.label}
-          whileHover={{ scale: 1.04, y: -2 }}
-          className="glass rounded-2xl p-4 soft-shadow border-none glow-card flex items-center gap-3 relative z-10"
-        >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: `color-mix(in srgb, var(${stat.color}) 20%, transparent)` }}>
-            <stat.icon className="w-5 h-5" style={{ color: `var(${stat.color})` }} />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">{stat.label}</p>
-            <p className="text-lg font-bold text-[var(--color-text-primary)] leading-tight">{stat.value}</p>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-};
-
 // ─── Swipeable Insight Carousel ──────────────
 const SwipeableInsights = ({ entries }: { entries: JournalEntry[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -462,10 +423,6 @@ const Dashboard = () => {
           </motion.div>
         </div>
 
-        {/* ── 2. High-Level Metrics ── */}
-        <motion.div variants={itemVariants}>
-          <QuickStats entries={entries} streak={streak} habitsCount={habitsCount} />
-        </motion.div>
 
         {/* ── 3. Insights (AI & Daily) ── */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
