@@ -27,13 +27,13 @@
 
 @layer base {
   :root {
-    --color-bg-primary: #F8EDD8;
-    /* Warmer background beige */
-    --color-bg-secondary: #F0E3CB;
-    --color-bg-soft: #E8DAC0;
+    --color-bg-primary: #F5F6F2;
+    /* Soft pale greenish off-white from screenshot */
+    --color-bg-secondary: #EBECE8;
+    --color-bg-soft: #E1E3DF;
     --color-bg-card: #FFFFFF;
-    --color-text-primary: #2B2B3C;
-    --color-text-secondary: #6B6582;
+    --color-text-primary: #2E3330;
+    --color-text-secondary: #6A706C;
 
     --color-pastel-purple: #B197FC;
     --color-pastel-blue: #74B9FF;
@@ -46,7 +46,7 @@
     --color-pastel-hover: rgba(177, 151, 252, 0.12);
     --color-border-subtle: rgba(177, 151, 252, 0.25);
     --color-sidebar-bg: rgba(255, 255, 255, 0.85);
-    --color-sidebar-hover: #FAF0E0;
+    --color-sidebar-hover: #EBECE8;
     --color-sidebar-active: #B197FC;
   }
 
