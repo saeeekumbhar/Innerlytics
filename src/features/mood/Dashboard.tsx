@@ -384,48 +384,13 @@ const Dashboard = () => {
           </div>
         </motion.header>
 
-        {/* ── Quick Actions ── */}
-        <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {[
-            { to: '#mood-checkin', icon: Smile, label: 'Log Mood', color: '--color-pastel-purple', gradient: 'from-[var(--color-pastel-purple)]/15 to-[var(--color-pastel-purple)]/5' },
-            { to: '/journal', icon: BookOpen, label: 'Write Journal', color: '--color-pastel-blue', gradient: 'from-[var(--color-pastel-blue)]/15 to-[var(--color-pastel-blue)]/5' },
-            { to: '/chat', icon: MessageSquare, label: 'AI Reflection', color: '--color-pastel-pink', gradient: 'from-[var(--color-pastel-pink)]/15 to-[var(--color-pastel-pink)]/5' },
-            { to: '/habits', icon: Activity, label: 'Add Habit', color: '--color-pastel-teal', gradient: 'from-[var(--color-pastel-teal)]/15 to-[var(--color-pastel-teal)]/5' },
-          ].map(action => (
-            <Link key={action.label} to={action.to} onClick={(e) => {
-              if (action.to.startsWith('#')) {
-                e.preventDefault();
-                document.getElementById(action.to.substring(1))?.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}>
-              <motion.div whileHover={{ scale: 1.05, y: -4 }} whileTap={{ scale: 0.95 }}
-                className={`bg-gradient-to-br ${action.gradient} rounded-2xl p-5 text-center cursor-pointer border border-[var(--color-border-subtle)]/40 soft-shadow glow-card`}
-              >
-                <div className="w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center relative">
-                  <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 2.5, delay: Math.random() * 2 }} className="absolute inset-0 rounded-2xl" style={{ backgroundColor: `var(${action.color})`, opacity: 0.2 }} />
-                  <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 2.5, delay: Math.random() * 2 }} className="relative z-10 w-full h-full flex items-center justify-center">
-                    <action.icon className="w-6 h-6 drop-shadow-sm" style={{ color: `var(${action.color})` }} />
-                  </motion.div>
-                </div>
-                <span className="text-sm font-semibold text-[var(--color-text-primary)]">{action.label}</span>
-              </motion.div>
-            </Link>
-          ))}
-        </motion.div>
-        {/* ── Quick Stats ── */}
-        <motion.div variants={itemVariants}>
-          <QuickStats entries={entries} streak={streak} habitsCount={habitsCount} />
-        </motion.div>
-
-        {/* ── 3-Column Grid ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-
-          {/* Mood Check-In or Today's Mood */}
-          <motion.div variants={itemVariants} className="md:col-span-2 xl:col-span-2">
+        {/* ── 1. Action & Identity Row (Prioritized) ── */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <motion.div variants={itemVariants} className="xl:col-span-2">
             {!todayEntry ? (
               <MoodCheckIn onComplete={handleMoodComplete} />
             ) : (
-              <div className="glass rounded-[2rem] p-6 lg:p-8 soft-shadow border-none flex items-center justify-between relative overflow-hidden glow-card group">
+              <div className="glass rounded-[2rem] p-6 lg:p-8 soft-shadow border-none flex items-center justify-between relative overflow-hidden glow-card group h-full">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-pastel-peach)]/10 rounded-full blur-2xl -mt-10 -mr-10 pointer-events-none" />
                 <div className="relative z-10">
                   <h3 className="text-xl font-serif font-bold text-[var(--color-text-primary)]">You've checked in today</h3>
@@ -438,36 +403,37 @@ const Dashboard = () => {
               </div>
             )}
           </motion.div>
-
-          {/* Emotion Avatar */}
-          <motion.div variants={itemVariants}>
+          <motion.div variants={itemVariants} className="xl:col-span-1 h-full">
             <EmotionAvatar />
           </motion.div>
+        </div>
 
-          {/* Swipeable Insights */}
-          <motion.div variants={itemVariants} className="md:col-span-2 xl:col-span-2">
+        {/* ── 2. High-Level Metrics ── */}
+        <motion.div variants={itemVariants}>
+          <QuickStats entries={entries} streak={streak} habitsCount={habitsCount} />
+        </motion.div>
+
+        {/* ── 3. Insights (AI & Daily) ── */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <motion.div variants={itemVariants} className="h-full">
             <SwipeableInsights entries={entries} />
           </motion.div>
-
-          {/* Growth Tree */}
-          <motion.div variants={itemVariants}>
-            <GrowthTree streak={streak} />
+          <motion.div variants={itemVariants} className="h-full">
+            <AIInsightCard entries={entries} />
           </motion.div>
+        </div>
 
-          {/* Weekly Mood Graph */}
-          <motion.div variants={itemVariants} className="md:col-span-2 xl:col-span-2">
-            <WeeklyMoodGraph data={entries.slice(0, 7).map(e => ({ date: e.date, moodScore: e.moodScore }))} />
-          </motion.div>
-
-          {/* Mood Heatmap - GitHub style */}
-          <motion.div variants={itemVariants}>
+        {/* ── 4. Tracking & Progress ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <motion.div variants={itemVariants} className="h-full">
             <MoodHeatmap entries={entries} getEmoji={getEmoji} />
           </motion.div>
-
-          {/* Life Tracker */}
-          <motion.div variants={itemVariants}>
+          <motion.div variants={itemVariants} className="h-full">
+            <GrowthTree streak={streak} />
+          </motion.div>
+          <motion.div variants={itemVariants} className="h-full">
             {lifeEntry ? (
-              <div className="glass rounded-[2rem] p-6 soft-shadow border-none relative overflow-hidden glow-card">
+              <div className="glass rounded-[2rem] p-6 soft-shadow border-none relative overflow-hidden glow-card h-full">
                 <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)] mb-4">Today's Life Summary</h3>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(lifeEntry.ratings).map(([cat, stars]) => (
@@ -479,49 +445,49 @@ const Dashboard = () => {
                 </div>
               </div>
             ) : (
-              <div className="glass rounded-[2rem] p-6 soft-shadow border-none flex flex-col justify-between gap-4 glow-card">
+              <div className="glass rounded-[2rem] p-6 soft-shadow border-none flex flex-col justify-between gap-4 glow-card h-full">
                 <div>
                   <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)]">Life Tracker</h3>
                   <p className="text-sm text-[var(--color-text-secondary)] mt-1">Track 10 daily dimensions.</p>
                 </div>
-                <Link to="/life" className="block text-center px-5 py-3 bg-[var(--color-pastel-purple)]/15 text-[var(--color-pastel-purple)] rounded-full font-medium hover:bg-[var(--color-pastel-purple)] hover:text-white transition-all border border-[var(--color-pastel-purple)]/20">Open Tracker</Link>
+                <Link to="/life" className="block text-center px-5 py-3 bg-[var(--color-pastel-purple)]/15 text-[var(--color-pastel-purple)] rounded-full font-medium hover:bg-[var(--color-pastel-purple)] hover:text-white transition-all border border-[var(--color-pastel-purple)]/20 shadow-sm mt-auto">Open Tracker</Link>
               </div>
             )}
           </motion.div>
+        </div>
 
-          {/* Mood Timeline */}
-          <motion.div variants={itemVariants}>
+        {/* ── 5. Historical Flow ── */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <motion.div variants={itemVariants} className="h-full">
+            <WeeklyMoodGraph data={entries.slice(0, 7).map(e => ({ date: e.date, moodScore: e.moodScore }))} />
+          </motion.div>
+          <motion.div variants={itemVariants} className="h-full">
             <MoodTimeline entries={entries} getEmoji={getEmoji} />
           </motion.div>
-
-          {/* AI Insight */}
-          <motion.div variants={itemVariants} className="xl:col-span-2">
-            <AIInsightCard entries={entries} />
-          </motion.div>
-
-          {/* Achievements */}
-          <motion.div variants={itemVariants} className="md:col-span-2 xl:col-span-3">
-            <div className="glass rounded-[2rem] p-6 soft-shadow border-none relative overflow-hidden glow-card">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-pastel-purple)]/10 rounded-full blur-2xl -mt-10 -mr-10 pointer-events-none" />
-              <div className="flex items-center justify-between mb-5 relative z-10">
-                <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)]">Your Growth</h3>
-                <Link to="/achievements" className="text-xs font-medium text-[var(--color-pastel-purple)] hover:underline flex items-center gap-1">
-                  View all <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-3 relative z-10">
-                {achievements.slice(0, 6).map((achievement) => (
-                  <AchievementBadge key={achievement.id} achievement={achievement} />
-                ))}
-                {achievements.length === 0 && (
-                  <div className="sm:col-span-3 lg:col-span-6 p-6 text-center border-2 border-dashed border-[var(--color-border-subtle)] rounded-2xl">
-                    <p className="text-sm text-[var(--color-text-secondary)]">Keep journaling to unlock badges! 🌱</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </motion.div>
         </div>
+
+        {/* ── 6. Gamification Showcase ── */}
+        <motion.div variants={itemVariants}>
+          <div className="glass rounded-[2rem] p-6 soft-shadow border-none relative overflow-hidden glow-card">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-pastel-purple)]/10 rounded-full blur-2xl -mt-10 -mr-10 pointer-events-none" />
+            <div className="flex items-center justify-between mb-5 relative z-10">
+              <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)] relative z-10">Your Growth</h3>
+              <Link to="/achievements" className="text-xs font-medium text-[var(--color-pastel-purple)] hover:underline flex items-center gap-1 relative z-10">
+                View all <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-6 gap-3 relative z-10">
+              {achievements.slice(0, 6).map((achievement) => (
+                <AchievementBadge key={achievement.id} achievement={achievement} />
+              ))}
+              {achievements.length === 0 && (
+                <div className="sm:col-span-3 xl:col-span-6 p-6 text-center border-2 border-dashed border-[var(--color-border-subtle)] rounded-2xl">
+                  <p className="text-sm text-[var(--color-text-secondary)]">Keep journaling to unlock badges! 🌱</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.div>
       </motion.div>
 
       {user && <QuickJournalFAB userId={user.uid} onComplete={fetchData} />}
