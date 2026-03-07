@@ -110,15 +110,40 @@
   }
 
   .theme-forest {
-    --color-pastel-purple: #A3B18A;
+    --color-bg-primary: #DCE5D6;
+    --color-bg-secondary: #C8D5BF;
+    --color-bg-soft: #B5C4A8;
+    --color-bg-card: rgba(255, 255, 255, 0.7);
+    --color-text-primary: #2C4A2D;
+    --color-text-secondary: #4A6B4B;
+    --color-pastel-purple: #79A371;
+    /* overriding primary pastel logic for mono look */
     --color-pastel-blue: #588157;
     --color-pastel-teal: #3A5A40;
+    --color-pastel-pink: #A3B18A;
+    --color-pastel-yellow: #8FA27C;
+    --color-pastel-peach: #658A59;
+    --color-sidebar-bg: rgba(220, 229, 214, 0.85);
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.83-1.66 1.66-.83-.83.83-.83zM27 33l-1.5-1.5 3-3L30 30l-3 3zm-9 15l-1.5-1.5 3-3L19.5 45l-1.5 1.5l-6-6 1.5-1.5 3 3 6-6 1.5 1.5-3 3 6 6-1.5 1.5-3-3l-6 6zm18-36l-1.5-1.5 3-3 1.5 1.5-3 3zm-21 9l-1.5-1.5 3-3 1.5 1.5-3 3zm21 21l-1.5-1.5 3-3 1.5 1.5-3 3z' fill='%23588157' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-attachment: fixed;
   }
 
   .theme-astronomy {
-    --color-pastel-purple: #3C096C;
-    --color-pastel-blue: #5A189A;
-    --color-pastel-teal: #7B2CBF;
+    --color-bg-primary: #0F172A;
+    --color-bg-secondary: #1E293B;
+    --color-bg-soft: #0B1120;
+    --color-bg-card: rgba(30, 41, 59, 0.7);
+    --color-text-primary: #E2E8F0;
+    --color-text-secondary: #94A3B8;
+    --color-pastel-purple: #818CF8;
+    --color-pastel-blue: #38BDF8;
+    --color-pastel-teal: #2DD4BF;
+    --color-pastel-pink: #C084FC;
+    --color-pastel-yellow: #FCD34D;
+    --color-pastel-peach: #FB923C;
+    --color-sidebar-bg: rgba(15, 23, 42, 0.85);
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='1' fill='%23C77DFF' fill-opacity='0.3'/%3E%3Ccircle cx='50' cy='50' r='1.5' fill='%23C77DFF' fill-opacity='0.4'/%3E%3Ccircle cx='90' cy='30' r='1' fill='%23C77DFF' fill-opacity='0.2'/%3E%3Ccircle cx='30' cy='80' r='2' fill='%23C77DFF' fill-opacity='0.1'/%3E%3Ccircle cx='70' cy='90' r='1' fill='%23C77DFF' fill-opacity='0.3'/%3E%3C/svg%3E");
+    background-attachment: fixed;
   }
 
   /* Dark mode variants for palettes */
@@ -147,15 +172,28 @@
   }
 
   .dark.theme-forest {
+    --color-bg-primary: #1A2E1F;
+    --color-bg-secondary: #233D29;
+    --color-bg-card: rgba(35, 61, 41, 0.7);
+    --color-text-primary: #E9EDC9;
+    --color-text-secondary: #A3B18A;
     --color-pastel-purple: #CCD5AE;
     --color-pastel-blue: #E9EDC9;
-    --color-pastel-teal: #D4A373;
+    --color-pastel-teal: #A3B18A;
+    --color-sidebar-bg: rgba(26, 46, 31, 0.85);
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.83-1.66 1.66-.83-.83.83-.83zM27 33l-1.5-1.5 3-3L30 30l-3 3zm-9 15l-1.5-1.5 3-3L19.5 45l-1.5 1.5l-6-6 1.5-1.5 3 3 6-6 1.5 1.5-3 3 6 6-1.5 1.5-3-3l-6 6zm18-36l-1.5-1.5 3-3 1.5 1.5-3 3zm-21 9l-1.5-1.5 3-3 1.5 1.5-3 3zm21 21l-1.5-1.5 3-3 1.5 1.5-3 3z' fill='%23A3B18A' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-attachment: fixed;
   }
 
   .dark.theme-astronomy {
-    --color-pastel-purple: #9D4EDD;
-    --color-pastel-blue: #C77DFF;
-    --color-pastel-teal: #E0AAFF;
+    --color-bg-primary: #020617;
+    --color-bg-secondary: #0F172A;
+    --color-bg-card: rgba(15, 23, 42, 0.7);
+    --color-pastel-purple: #A78BFA;
+    --color-pastel-blue: #38BDF8;
+    --color-pastel-teal: #2DD4BF;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='1' fill='%23E0AAFF' fill-opacity='0.4'/%3E%3Ccircle cx='50' cy='50' r='1.5' fill='%23A78BFA' fill-opacity='0.5'/%3E%3Ccircle cx='90' cy='30' r='1' fill='%2338BDF8' fill-opacity='0.3'/%3E%3Ccircle cx='30' cy='80' r='2' fill='%23E0AAFF' fill-opacity='0.2'/%3E%3Ccircle cx='70' cy='90' r='1' fill='%23A78BFA' fill-opacity='0.4'/%3E%3C/svg%3E");
+    background-attachment: fixed;
   }
 }
 
@@ -237,53 +275,70 @@ body {
     0 0 20px rgba(165, 180, 252, 0.1);
 }
 
-/* Floating background blobs */
-.dashboard-bg {
+/* Floating background blobs (Now applied globally to the main layout) */
+.app-bg {
   position: relative;
+  overflow: hidden;
+  min-height: 100vh;
 }
 
-.dashboard-bg::before,
-.dashboard-bg::after {
+.app-bg::before,
+.app-bg::after {
   content: '';
-  position: fixed;
+  position: absolute;
   border-radius: 50%;
   pointer-events: none;
   z-index: 0;
-  animation: blob-float 12s ease-in-out infinite alternate;
+  animation: blob-float 15s ease-in-out infinite alternate;
 }
 
-.dashboard-bg::before {
-  width: 400px;
-  height: 400px;
-  top: 10%;
-  left: 5%;
-  background: radial-gradient(circle, rgba(200, 182, 255, 0.12), transparent);
+.app-bg::before {
+  width: 50vw;
+  height: 50vw;
+  max-width: 600px;
+  max-height: 600px;
+  top: -10%;
+  left: -10%;
+  background: radial-gradient(circle, var(--color-pastel-purple), transparent 60%);
+  opacity: 0.15;
 }
 
-.dashboard-bg::after {
-  width: 350px;
-  height: 350px;
-  bottom: 10%;
-  right: 8%;
-  background: radial-gradient(circle, rgba(255, 143, 171, 0.1), transparent);
-  animation-delay: -4s;
+.app-bg::after {
+  width: 40vw;
+  height: 40vw;
+  max-width: 500px;
+  max-height: 500px;
+  bottom: -5%;
+  right: -5%;
+  background: radial-gradient(circle, var(--color-pastel-blue), transparent 60%);
+  opacity: 0.12;
+  animation-delay: -7s;
+  animation-direction: alternate-reverse;
 }
 
-.dark .dashboard-bg::before {
-  background: radial-gradient(circle, rgba(165, 180, 252, 0.06), transparent);
+.dark .app-bg::before {
+  opacity: 0.08;
 }
 
-.dark .dashboard-bg::after {
-  background: radial-gradient(circle, rgba(251, 113, 133, 0.04), transparent);
+.dark .app-bg::after {
+  opacity: 0.06;
 }
 
 @keyframes blob-float {
   0% {
-    transform: translate(0, 0) scale(1);
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+
+  33% {
+    transform: translate(3vw, 5vh) scale(1.05) rotate(2deg);
+  }
+
+  66% {
+    transform: translate(-2vw, 8vh) scale(0.95) rotate(-2deg);
   }
 
   100% {
-    transform: translate(30px, -20px) scale(1.1);
+    transform: translate(-4vw, -2vh) scale(1) rotate(0deg);
   }
 }
 

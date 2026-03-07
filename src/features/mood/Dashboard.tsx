@@ -372,7 +372,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <motion.div className="dashboard-bg space-y-8 pb-24 relative z-10" variants={containerVariants} initial="hidden" animate="show">
+      <motion.div className="space-y-8 pb-24 relative z-10" variants={containerVariants} initial="hidden" animate="show">
 
         {/* ── Header ── */}
         <motion.header variants={itemVariants} className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
@@ -387,26 +387,31 @@ const Dashboard = () => {
         {/* ── Quick Actions ── */}
         <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { to: '/', icon: Smile, label: 'Log Mood', color: '--color-pastel-purple', gradient: 'from-[var(--color-pastel-purple)]/15 to-[var(--color-pastel-purple)]/5' },
+            { to: '#mood-checkin', icon: Smile, label: 'Log Mood', color: '--color-pastel-purple', gradient: 'from-[var(--color-pastel-purple)]/15 to-[var(--color-pastel-purple)]/5' },
             { to: '/journal', icon: BookOpen, label: 'Write Journal', color: '--color-pastel-blue', gradient: 'from-[var(--color-pastel-blue)]/15 to-[var(--color-pastel-blue)]/5' },
             { to: '/chat', icon: MessageSquare, label: 'AI Reflection', color: '--color-pastel-pink', gradient: 'from-[var(--color-pastel-pink)]/15 to-[var(--color-pastel-pink)]/5' },
             { to: '/habits', icon: Activity, label: 'Add Habit', color: '--color-pastel-teal', gradient: 'from-[var(--color-pastel-teal)]/15 to-[var(--color-pastel-teal)]/5' },
           ].map(action => (
-            <Link key={action.label} to={action.to}>
+            <Link key={action.label} to={action.to} onClick={(e) => {
+              if (action.to.startsWith('#')) {
+                e.preventDefault();
+                document.getElementById(action.to.substring(1))?.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}>
               <motion.div whileHover={{ scale: 1.05, y: -4 }} whileTap={{ scale: 0.95 }}
                 className={`bg-gradient-to-br ${action.gradient} rounded-2xl p-5 text-center cursor-pointer border border-[var(--color-border-subtle)]/40 soft-shadow glow-card`}
               >
-                <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 2.5, delay: Math.random() * 2 }}
-                  className="w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center"
-                  style={{ backgroundColor: `color-mix(in srgb, var(${action.color}) 25%, transparent)` }}>
-                  <action.icon className="w-6 h-6" style={{ color: `var(${action.color})` }} />
-                </motion.div>
+                <div className="w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center relative">
+                  <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 2.5, delay: Math.random() * 2 }} className="absolute inset-0 rounded-2xl" style={{ backgroundColor: `var(${action.color})`, opacity: 0.2 }} />
+                  <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 2.5, delay: Math.random() * 2 }} className="relative z-10 w-full h-full flex items-center justify-center">
+                    <action.icon className="w-6 h-6 drop-shadow-sm" style={{ color: `var(${action.color})` }} />
+                  </motion.div>
+                </div>
                 <span className="text-sm font-semibold text-[var(--color-text-primary)]">{action.label}</span>
               </motion.div>
             </Link>
           ))}
         </motion.div>
-
         {/* ── Quick Stats ── */}
         <motion.div variants={itemVariants}>
           <QuickStats entries={entries} streak={streak} habitsCount={habitsCount} />
@@ -519,7 +524,6 @@ const Dashboard = () => {
         </div>
       </motion.div>
 
-      {/* Floating Action Button */}
       {user && <QuickJournalFAB userId={user.uid} onComplete={fetchData} />}
     </>
   );

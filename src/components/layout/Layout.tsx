@@ -42,7 +42,6 @@ const Layout = () => {
 
   return (
     <div className="flex flex-col h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] font-sans overflow-hidden transition-colors duration-500">
-
       {/* ═══ Top Header Bar ═══ */}
       <header className="flex items-center justify-between px-6 md:px-10 py-4 bg-[var(--color-bg-card)]/80 backdrop-blur-xl border-b border-[var(--color-border-subtle)]/50 z-30 relative">
         {/* Logo */}
@@ -79,7 +78,7 @@ const Layout = () => {
       </header>
 
       {/* ═══ Main Content ═══ */}
-      <main className="flex-1 overflow-y-auto relative">
+      <main className="flex-1 overflow-y-auto w-full">
         <AnimatePresence>
           {showUINotification && (
             <motion.div
@@ -123,12 +122,12 @@ const Layout = () => {
                   whileHover={{ scale: 1.15, y: -6 }}
                   whileTap={{ scale: 0.9 }}
                   className={`flex flex-col items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl transition-all duration-200 ${isActive
-                    ? 'bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white shadow-lg shadow-[var(--color-pastel-purple)]/30'
-                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-pastel-hover)]'
+                    ? 'bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-[var(--color-bg-primary)] shadow-lg shadow-[var(--color-pastel-purple)]/30'
+                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-pastel-purple)] hover:bg-[var(--color-pastel-hover)]'
                     }`}
                 >
-                  <item.icon className="w-5 h-5" />
-                  <span className="text-[10px] font-medium mt-0.5 leading-none">{item.label}</span>
+                  <item.icon className={`w-5 h-5 ${isActive ? 'text-[var(--color-bg-primary)]' : ''}`} />
+                  <span className={`text-[10px] font-medium mt-0.5 leading-none ${isActive ? 'text-[var(--color-bg-primary)]' : ''}`}>{item.label}</span>
                 </motion.div>
 
                 {/* Active dot indicator */}
@@ -194,12 +193,12 @@ const Layout = () => {
                       onClick={() => setMoreOpen(false)}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
                         ? 'bg-[var(--color-pastel-purple)]/15 text-[var(--color-pastel-purple)] font-medium'
-                        : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-pastel-hover)] hover:text-[var(--color-text-primary)]'
+                        : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-pastel-hover)] hover:text-[var(--color-pastel-purple)]'
                         }`}
                     >
-                      <item.icon className="w-4 h-4" />
+                      <item.icon className={`w-4 h-4 ${isActive ? 'text-[var(--color-pastel-purple)]' : 'group-hover:text-[var(--color-pastel-purple)]'}`} />
                       <span className="text-sm flex-1">{item.label}</span>
-                      <ChevronRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-70 group-hover:translate-x-0.5 transition-all" />
+                      <ChevronRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-70 group-hover:translate-x-0.5 transition-all text-[var(--color-pastel-purple)]" />
                     </NavLink>
                   );
                 })}

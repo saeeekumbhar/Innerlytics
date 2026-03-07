@@ -154,11 +154,12 @@ const Habits = () => {
                                 <div className="flex items-center gap-4 relative z-10">
                                     {/* Check button */}
                                     <motion.button
+                                        whileHover={{ scale: 1.15, y: -2 }}
                                         whileTap={{ scale: 0.85 }}
                                         onClick={() => handleToggle(habit.id)}
                                         className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all duration-300 border-2 ${isCompletedToday
                                             ? 'bg-[var(--color-pastel-teal)] border-[var(--color-pastel-teal)] text-white shadow-md'
-                                            : 'border-[var(--color-border-subtle)] hover:border-[var(--color-pastel-teal)] hover:bg-[var(--color-pastel-teal)]/10'
+                                            : 'border-[var(--color-border-subtle)] hover:border-[var(--color-pastel-teal)] hover:bg-[var(--color-pastel-teal)]/10 text-[var(--color-text-primary)]'
                                             }`}
                                     >
                                         {isCompletedToday ? <Check className="w-6 h-6" /> : <span className="text-xl">{habit.emoji}</span>}
@@ -166,7 +167,7 @@ const Habits = () => {
 
                                     {/* Info */}
                                     <div className="flex-1 min-w-0">
-                                        <p className={`font-medium text-lg ${isCompletedToday ? 'line-through opacity-60' : ''} text-[var(--color-text-primary)]`}>
+                                        <p className={`font-medium text-lg transition-colors ${isCompletedToday ? 'line-through opacity-60' : ''} text-[var(--color-text-primary)]`}>
                                             {habit.emoji} {habit.name}
                                         </p>
                                         <div className="flex items-center gap-3 mt-1">
@@ -193,9 +194,13 @@ const Habits = () => {
                                     </div>
 
                                     {/* Delete */}
-                                    <button onClick={() => handleRemove(habit.id)} className="p-2 rounded-full hover:bg-[var(--color-danger)]/10 transition-colors opacity-40 hover:opacity-100">
+                                    <motion.button
+                                        whileHover={{ scale: 1.2, y: -2 }}
+                                        onClick={() => handleRemove(habit.id)}
+                                        className="p-2 rounded-full hover:bg-[var(--color-danger)]/10 transition-colors opacity-40 hover:opacity-100"
+                                    >
                                         <Trash2 className="w-4 h-4 text-[var(--color-danger)]" />
-                                    </button>
+                                    </motion.button>
                                 </div>
                             </motion.div>
                         );

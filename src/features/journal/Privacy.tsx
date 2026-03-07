@@ -41,8 +41,9 @@ const Privacy = () => {
                 {sections.map(section => (
                     <div key={section.title} className="glass rounded-[2rem] p-8 soft-shadow border-none relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 opacity-10 blur-3xl rounded-full -mt-10 -mr-10 pointer-events-none" style={{ backgroundColor: `var(${section.color})` }} />
-                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style={{ backgroundColor: `var(${section.color})`, opacity: 0.2 }}>
-                            <section.icon className="w-6 h-6" style={{ color: `var(${section.color})` }} />
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 relative">
+                            <div className="absolute inset-0 rounded-2xl" style={{ backgroundColor: `var(${section.color})`, opacity: 0.2 }} />
+                            <section.icon className="w-6 h-6 relative z-10" style={{ color: `var(${section.color})` }} />
                         </div>
                         <h3 className="text-xl font-serif font-bold text-[var(--color-text-primary)] mb-3">{section.title}</h3>
                         <p className="text-[var(--color-text-secondary)] leading-relaxed">{section.description}</p>
