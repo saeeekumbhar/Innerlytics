@@ -56,22 +56,77 @@ const Layout = () => {
         </NavLink>
 
         {/* Right side */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 relative z-50">
           <ThemeToggle />
 
+          {/* More menu button in header */}
+          <div className="relative">
+            <button
+              onClick={() => setMoreOpen(!moreOpen)}
+              className={`p-2 rounded-full transition-colors flex items-center justify-center border border-transparent ${moreOpen ? 'bg-[var(--color-pastel-purple)]/10 text-[var(--color-pastel-purple)] border-[var(--color-pastel-purple)]/30 scale-105' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-pastel-hover)] hover:text-[var(--color-text-primary)]'}`}
+              title="More Options"
+            >
+              {moreOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+
+            {/* "More" Flyout Menu Dropdown */}
+            <AnimatePresence>
+              {moreOpen && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-40 pointer-events-auto"
+                    onClick={() => setMoreOpen(false)}
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    className="absolute top-full mt-3 right-0 w-56 z-50 pointer-events-auto bg-[var(--color-bg-card)] backdrop-blur-2xl border border-[var(--color-border-subtle)]/50 rounded-2xl soft-shadow p-2 origin-top"
+                  >
+                    <div className="px-3 py-2 border-b border-[var(--color-border-subtle)]/50 mb-2">
+                      <p className="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">Features</p>
+                    </div>
+                    {moreItems.map((item) => {
+                      const isActive = location.pathname === item.path;
+                      return (
+                        <NavLink
+                          key={item.path}
+                          to={item.path}
+                          onClick={() => setMoreOpen(false)}
+                          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${isActive
+                            ? 'bg-[var(--color-pastel-purple)]/15 text-[var(--color-pastel-purple)] font-medium'
+                            : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-pastel-hover)] hover:text-[var(--color-text-primary)]'
+                            }`}
+                        >
+                          <item.icon className={`w-4 h-4 ${isActive ? 'text-[var(--color-pastel-purple)]' : 'group-hover:text-[var(--color-pastel-purple)]'}`} />
+                          <span className="text-sm flex-1">{item.label}</span>
+                          {isActive && <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-pastel-purple)] mr-1" />}
+                        </NavLink>
+                      );
+                    })}
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
+
           {/* User avatar */}
-          <NavLink to="/settings" className="flex items-center gap-2.5 px-3 py-2 rounded-full hover:bg-[var(--color-pastel-hover)] transition-colors group">
+          <NavLink to="/settings" className="flex items-center gap-2 px-2.5 py-1.5 rounded-full hover:bg-[var(--color-bg-primary)] transition-colors group border border-[var(--color-border-subtle)]/50">
             {(user as any)?.photoURL ? (
-              <img src={(user as any).photoURL} alt="" className="w-8 h-8 rounded-full object-cover border-2 border-[var(--color-pastel-purple)]/30" referrerPolicy="no-referrer" />
+              <img src={(user as any).photoURL} alt="" className="w-7 h-7 rounded-full object-cover border border-[var(--color-pastel-purple)]/30" referrerPolicy="no-referrer" />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white flex items-center justify-center font-bold text-sm">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white flex items-center justify-center font-bold text-xs ring-2 ring-white/20">
                 {user?.displayName?.[0] || 'U'}
               </div>
             )}
-            <span className="text-sm font-medium text-[var(--color-text-primary)] hidden md:block">{user?.displayName?.split(' ')[0] || 'User'}</span>
+            <span className="text-sm font-medium text-[var(--color-text-primary)] hidden md:block pr-1">{user?.displayName?.split(' ')[0] || 'User'}</span>
           </NavLink>
 
-          <button onClick={logout} className="p-2.5 rounded-full text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10 transition-colors" title="Sign Out">
+          <button onClick={logout} className="p-2 rounded-full text-[var(--color-danger)] opacity-70 hover:opacity-100 hover:bg-[var(--color-danger)]/10 transition-all border border-transparent hover:border-[var(--color-danger)]/20" title="Sign Out">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
@@ -142,70 +197,7 @@ const Layout = () => {
             );
           })}
 
-          {/* Divider */}
-          <div className="w-px h-8 bg-[var(--color-border-subtle)]/50 mx-1" />
-
-          {/* More button */}
-          <button
-            onClick={() => setMoreOpen(!moreOpen)}
-            className="relative group"
-          >
-            <motion.div
-              whileHover={{ scale: 1.15, y: -6 }}
-              whileTap={{ scale: 0.9 }}
-              className={`flex flex-col items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl transition-all duration-200 ${moreOpen
-                ? 'bg-[var(--color-pastel-purple)]/20 text-[var(--color-pastel-purple)]'
-                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-pastel-hover)]'
-                }`}
-            >
-              {moreOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              <span className="text-[10px] font-medium mt-0.5 leading-none">More</span>
-            </motion.div>
-          </button>
         </motion.nav>
-
-        {/* ═══ "More" Flyout Menu ═══ */}
-        <AnimatePresence>
-          {moreOpen && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[-1] pointer-events-auto"
-                onClick={() => setMoreOpen(false)}
-              />
-              {/* Menu */}
-              <motion.div
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                className="absolute bottom-full mb-3 right-0 md:left-1/2 md:-translate-x-1/2 pointer-events-auto bg-[var(--color-bg-card)] backdrop-blur-2xl border border-[var(--color-border-subtle)]/50 rounded-2xl soft-shadow p-2 min-w-[220px] origin-bottom"
-              >
-                {moreItems.map((item) => {
-                  const isActive = location.pathname === item.path;
-                  return (
-                    <NavLink
-                      key={item.path}
-                      to={item.path}
-                      onClick={() => setMoreOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                        ? 'bg-[var(--color-pastel-purple)]/15 text-[var(--color-pastel-purple)] font-medium'
-                        : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-pastel-hover)] hover:text-[var(--color-pastel-purple)]'
-                        }`}
-                    >
-                      <item.icon className={`w-4 h-4 ${isActive ? 'text-[var(--color-pastel-purple)]' : 'group-hover:text-[var(--color-pastel-purple)]'}`} />
-                      <span className="text-sm flex-1">{item.label}</span>
-                      <ChevronRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-70 group-hover:translate-x-0.5 transition-all text-[var(--color-pastel-purple)]" />
-                    </NavLink>
-                  );
-                })}
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
       </div>
 
       <Onboarding />
