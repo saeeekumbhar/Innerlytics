@@ -113,22 +113,22 @@ const Journal = () => {
 
   return (
     <div className="max-w-4xl mx-auto h-[calc(100vh-220px)] flex flex-col gap-6">
-      <header className="shrink-0">
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-[var(--color-text-primary)]">Journal</h1>
-        <div className="flex justify-between items-center mt-1.5">
-          <p className="text-[var(--color-text-secondary)] text-lg">Reflect on your thoughts and feelings.</p>
-          {/* Notebook Style Selector */}
-          <div className="flex bg-[var(--color-bg-card)]/50 rounded-full p-1 border border-[var(--color-border-subtle)]/30 backdrop-blur-sm">
-            {(['blank', 'lined', 'dotted'] as const).map(style => (
-              <button
-                key={style}
-                onClick={() => setNotebookStyle(style)}
-                className={`px-3 py-1 text-xs font-semibold capitalize rounded-full transition-all ${notebookStyle === style ? 'bg-[var(--color-pastel-purple)] text-white shadow-sm' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
-              >
-                {style}
-              </button>
-            ))}
-          </div>
+      <header className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-serif font-bold text-[var(--color-text-primary)]">Journal</h1>
+          <p className="text-[var(--color-text-secondary)] text-sm mt-1">Reflect on your thoughts and feelings.</p>
+        </div>
+        {/* Notebook Style Selector */}
+        <div className="flex bg-[var(--color-bg-card)]/50 rounded-full p-1 border border-[var(--color-border-subtle)]/30 backdrop-blur-sm self-start md:self-auto">
+          {(['blank', 'lined', 'dotted'] as const).map(style => (
+            <button
+              key={style}
+              onClick={() => setNotebookStyle(style)}
+              className={`px-4 py-1.5 text-xs font-semibold capitalize rounded-full transition-all ${notebookStyle === style ? 'bg-[var(--color-pastel-purple)] text-white shadow-sm' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
+            >
+              {style}
+            </button>
+          ))}
         </div>
       </header>
 
