@@ -404,19 +404,7 @@ const Dashboard = () => {
           <motion.div variants={itemVariants} className="xl:col-span-2">
             {!todayEntry ? (
               <MoodCheckIn onComplete={handleMoodComplete} />
-            ) : (
-              <div className="glass rounded-[2rem] p-6 lg:p-8 soft-shadow border-none flex items-center justify-between relative overflow-hidden glow-card group h-full">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-pastel-peach)]/10 rounded-full blur-2xl -mt-10 -mr-10 pointer-events-none" />
-                <div className="relative z-10">
-                  <h3 className="text-xl font-serif font-bold text-[var(--color-text-primary)]">You've checked in today</h3>
-                  <p className="text-[var(--color-text-secondary)] mt-1">Great job tracking your mood ✨</p>
-                </div>
-                <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-3 bg-[var(--color-bg-primary)]/60 p-3 md:p-4 rounded-2xl relative z-10 border border-[var(--color-border-subtle)]/30">
-                  <span className="text-3xl drop-shadow-sm">{getEmoji(todayEntry.moodLabel)}</span>
-                  <span className="font-medium text-[var(--color-text-primary)]">{todayEntry.moodLabel}</span>
-                </div>
-              </div>
-            )}
+            ) : null}
           </motion.div>
           <motion.div variants={itemVariants} className="xl:col-span-1 h-full">
             <EmotionAvatar />
