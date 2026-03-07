@@ -112,27 +112,51 @@ const Journal = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-220px)] flex flex-col gap-6">
-      <header className="shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-serif font-bold text-[var(--color-text-primary)]">Journal</h1>
-          <p className="text-[var(--color-text-secondary)] text-sm mt-1">Reflect on your thoughts and feelings.</p>
-        </div>
-        {/* Notebook Style Selector */}
-        <div className="flex bg-[var(--color-bg-card)]/50 rounded-full p-1 border border-[var(--color-border-subtle)]/30 backdrop-blur-sm self-start md:self-auto">
-          {(['blank', 'lined', 'dotted'] as const).map(style => (
-            <button
-              key={style}
-              onClick={() => setNotebookStyle(style)}
-              className={`px-4 py-1.5 text-xs font-semibold capitalize rounded-full transition-all ${notebookStyle === style ? 'bg-[var(--color-pastel-purple)] text-white shadow-sm' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
-            >
-              {style}
-            </button>
-          ))}
-        </div>
-      </header>
+    <div className="flex flex-col md:flex-row h-[calc(100vh-220px)] gap-5 max-w-7xl mx-auto w-full relative">
 
-      <div className="glass rounded-[2rem] soft-shadow border-none overflow-hidden relative flex-1 flex flex-col min-h-0">
+      {/* Left Sidebar - Desktop */}
+      <div className="w-full md:w-56 lg:w-64 shrink-0 flex flex-col gap-5 order-1 md:order-none hidden md:flex">
+        <header className="px-2">
+          <h1 className="text-3xl font-serif font-bold text-[var(--color-text-primary)]">Journal</h1>
+          <p className="text-[var(--color-text-secondary)] text-sm mt-1">Reflect on your thoughts.</p>
+        </header>
+
+        <div className="glass rounded-[2rem] p-5 soft-shadow border-none flex flex-col gap-4 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-pastel-purple)]/10 rounded-full blur-2xl -mt-10 -mr-10 pointer-events-none"></div>
+          <h3 className="text-sm font-bold text-[var(--color-text-primary)] px-2 relative z-10">Notebook Style</h3>
+          <div className="flex flex-col space-y-2 relative z-10">
+            {(['blank', 'lined', 'dotted'] as const).map(style => (
+              <button
+                key={style}
+                onClick={() => setNotebookStyle(style)}
+                className={`w-full flex items-center px-4 py-3 rounded-2xl text-left capitalize transition-all duration-300 font-medium text-sm ${notebookStyle === style ? 'bg-[var(--color-pastel-purple)]/20 text-[var(--color-pastel-purple)] shadow-sm' : 'hover:bg-[var(--color-sidebar-hover)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
+              >
+                {style}
+                {notebookStyle === style && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[var(--color-pastel-purple)]"></span>}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 glass rounded-[2rem] soft-shadow border-none overflow-hidden relative flex flex-col min-h-0 order-2 md:order-none">
+        {/* Mobile Header */}
+        <div className="md:hidden p-4 border-b border-[var(--color-border-subtle)] flex items-center justify-between bg-[var(--color-bg-primary)]/50">
+          <h1 className="text-xl font-serif font-bold text-[var(--color-text-primary)]">Journal</h1>
+          <div className="flex bg-[var(--color-bg-card)]/50 rounded-full p-1 border border-[var(--color-border-subtle)]/30 backdrop-blur-sm">
+            {(['blank', 'lined', 'dotted'] as const).map(style => (
+              <button
+                key={style}
+                onClick={() => setNotebookStyle(style)}
+                className={`px-3 py-1 text-xs font-semibold capitalize rounded-full transition-all ${notebookStyle === style ? 'bg-[var(--color-pastel-purple)] text-white shadow-sm' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
+              >
+                {style}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-pastel-pink)]/10 rounded-full blur-3xl -mt-20 -mr-20 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-[var(--color-pastel-teal)]/10 rounded-full blur-2xl -mb-10 -ml-10 pointer-events-none"></div>
 
@@ -202,23 +226,39 @@ const Journal = () => {
               </button>
             </div>
           )}
+        </div>
+      </div>
 
-          {/* Stickers Toolbar */}
-          <div className="shrink-0 flex items-center space-x-2 pb-2 overflow-x-auto hide-scrollbar">
-            {stickers.map(s => (
-              <button
-                key={s}
-                onClick={() => setContent(prev => prev + s)}
-                className="w-8 h-8 rounded-full hover:bg-[var(--color-bg-primary)] flex items-center justify-center text-lg transition-transform hover:scale-110 active:scale-90"
-              >
-                {s}
-              </button>
-            ))}
+      {/* Right Sidebar - Desktop */}
+      <div className="w-full md:w-56 lg:w-64 shrink-0 flex flex-col gap-5 order-3 hidden md:flex">
+        <div className="glass rounded-[2rem] p-5 soft-shadow border-none flex flex-col gap-5 flex-1 overflow-y-auto hide-scrollbar relative">
+          <div className="absolute bottom-0 right-0 w-40 h-40 bg-[var(--color-pastel-blue)]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div>
+            <h3 className="text-sm font-bold text-[var(--color-text-primary)] px-2 mb-3">Stickers</h3>
+            <div className="grid grid-cols-4 lg:grid-cols-5 gap-2 relative z-10">
+              {stickers.map(s => (
+                <button
+                  key={s}
+                  onClick={() => setContent(prev => prev + s)}
+                  className="aspect-square rounded-xl hover:bg-[var(--color-bg-primary)] flex items-center justify-center text-lg transition-transform hover:scale-110 active:scale-90"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="flex justify-between items-center pt-4 border-t border-[var(--color-border-subtle)] shrink-0">
-            <div className="flex items-center space-x-3">
-              <label className="p-3 rounded-full bg-[var(--color-pastel-blue)]/10 text-[var(--color-pastel-blue)] hover:bg-[var(--color-pastel-blue)]/20 cursor-pointer transition-colors" title="Attach Photo">
+          <div className="mt-auto flex flex-col gap-4 relative z-10">
+            <div className="flex justify-between items-center px-2">
+              <span className="text-xs text-[var(--color-text-secondary)] font-medium">Word Count</span>
+              <span className="text-xs font-bold text-[var(--color-pastel-purple)]">
+                {content.split(/\s+/).filter(w => w.length > 0).length}
+              </span>
+            </div>
+
+            <div className="flex gap-2">
+              <label className="flex-1 py-3 flex justify-center items-center rounded-2xl bg-[var(--color-pastel-blue)]/10 text-[var(--color-pastel-blue)] hover:bg-[var(--color-pastel-blue)]/20 cursor-pointer transition-colors" title="Attach Photo">
                 <ImageIcon className="w-5 h-5" />
                 <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
               </label>
@@ -226,7 +266,7 @@ const Journal = () => {
               {isSupported && (
                 <button
                   onClick={isListening ? stopListening : startListening}
-                  className={`p-3 rounded-full transition-all duration-300 ${isListening
+                  className={`flex-1 py-3 flex justify-center items-center rounded-2xl transition-all duration-300 ${isListening
                     ? 'bg-[var(--color-danger)] text-white animate-pulse'
                     : 'bg-[var(--color-pastel-purple)]/10 text-[var(--color-pastel-purple)] hover:bg-[var(--color-pastel-purple)]/20'}`}
                   title={isListening ? "Stop listening" : "Start voice journaling"}
@@ -234,24 +274,19 @@ const Journal = () => {
                   <Mic className={`w-5 h-5 ${isListening ? 'scale-110' : ''}`} />
                 </button>
               )}
-              <span className="text-xs text-[var(--color-text-secondary)] font-medium">
-                {content.split(/\s+/).filter(w => w.length > 0).length} words
-              </span>
             </div>
+
             <button
               onClick={handleSubmit}
               disabled={isSubmitting || (!content.trim() && !photoUrl)}
-              className="flex items-center px-8 py-3 bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white rounded-full font-medium transition-all duration-300 soft-shadow hover:shadow-[0_8px_25px_-8px_rgba(200,182,255,0.6)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+              className="w-full py-4 bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white rounded-2xl font-bold transition-all duration-300 soft-shadow hover:shadow-lg hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed flex justify-center items-center"
             >
               {isSubmitting ? (
-                <>
-                  <Loader className="w-5 h-5 mr-3 animate-spin" />
-                  Analyzing & Saving...
-                </>
+                <Loader className="w-5 h-5 animate-spin" />
               ) : (
                 <>
                   <Save className="w-5 h-5 mr-2" />
-                  Save Entry ✨
+                  Save Entry
                 </>
               )}
             </button>
@@ -259,28 +294,61 @@ const Journal = () => {
         </div>
       </div>
 
-      {analysis && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass rounded-[2rem] p-6 lg:p-8 border-none relative overflow-hidden bg-[var(--color-pastel-purple)]/5"
-        >
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-[var(--color-pastel-purple)]/10 rounded-full blur-2xl pointer-events-none"></div>
-          <h3 className="text-xl font-serif font-bold text-[var(--color-text-primary)] mb-4 relative z-10 flex items-center">
-            AI Analysis
-          </h3>
-          <div className="grid grid-cols-2 gap-4 mb-5 relative z-10">
-            <div className="bg-[var(--color-bg-primary)]/40 p-4 rounded-[1.5rem]">
-              <span className="text-xs text-[var(--color-pastel-purple)] uppercase tracking-wide font-medium">Primary Emotion</span>
-              <p className="font-medium text-[var(--color-text-primary)] mt-1">{analysis.primary_emotion}</p>
-            </div>
-            <div className="bg-[var(--color-bg-primary)]/40 p-4 rounded-[1.5rem]">
-              <span className="text-xs text-[var(--color-pastel-blue)] uppercase tracking-wide font-medium">Sentiment</span>
-              <p className="font-medium text-[var(--color-text-primary)] mt-1 capitalize">{analysis.sentiment}</p>
-            </div>
+      {/* Mobile Footer (Hidden on Desktop) */}
+      <div className="md:hidden glass rounded-3xl p-4 flex flex-col gap-3 order-4">
+        <div className="flex w-full items-center justify-between">
+          <div className="flex gap-2">
+            <label className="p-3 rounded-full bg-[var(--color-pastel-blue)]/10 text-[var(--color-pastel-blue)] cursor-pointer">
+              <ImageIcon className="w-5 h-5" />
+              <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+            </label>
+            {isSupported && (
+              <button onClick={isListening ? stopListening : startListening} className="p-3 rounded-full bg-[var(--color-pastel-purple)]/10 text-[var(--color-pastel-purple)]">
+                <Mic className={`w-5 h-5 ${isListening ? 'scale-110' : ''}`} />
+              </button>
+            )}
           </div>
-          <p className="text-[var(--color-text-secondary)] text-sm md:text-base leading-relaxed relative z-10">{analysis.insight_summary}</p>
-        </motion.div>
+          <button onClick={handleSubmit} disabled={isSubmitting || (!content.trim() && !photoUrl)} className="px-6 py-3 bg-[var(--color-pastel-purple)] text-white rounded-full font-bold text-sm flex items-center shadow-sm disabled:opacity-50">
+            {isSubmitting ? <Loader className="w-4 h-4 animate-spin" /> : <><Save className="w-4 h-4 mr-2" /> Save</>}
+          </button>
+        </div>
+        <div className="flex overflow-x-auto hide-scrollbar gap-2 pt-2 border-t border-[var(--color-border-subtle)]">
+          {stickers.map(s => <button key={s} onClick={() => setContent(prev => prev + s)} className="text-xl px-2 shrink-0">{s}</button>)}
+        </div>
+      </div>
+
+      {/* AI Analysis Modal Overlay */}
+      {analysis && (
+        <div className="fixed inset-0 z-[100] bg-[var(--color-bg-primary)]/80 backdrop-blur-md flex items-center justify-center p-4" onClick={() => setAnalysis(null)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="glass w-full max-w-lg rounded-[2rem] p-6 lg:p-8 border-[var(--color-border-subtle)] shadow-xl relative overflow-hidden bg-[var(--color-bg-card)]"
+            onClick={e => e.stopPropagation()}
+          >
+            <button onClick={() => setAnalysis(null)} className="absolute top-5 right-5 p-2 rounded-full hover:bg-[var(--color-pastel-hover)] transition-colors z-20">
+              <X className="w-5 h-5 text-[var(--color-text-secondary)]" />
+            </button>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-pastel-purple)]/10 rounded-full blur-2xl pointer-events-none"></div>
+            <h3 className="text-xl font-serif font-bold text-[var(--color-text-primary)] mb-5 relative z-10 flex items-center">
+              Entry Saved! ✨ Analysis Preview
+            </h3>
+            <div className="grid grid-cols-2 gap-4 mb-6 relative z-10">
+              <div className="bg-[var(--color-bg-primary)] p-4 rounded-[1.5rem] border border-[var(--color-border-subtle)]/50">
+                <span className="text-[10px] text-[var(--color-pastel-purple)] uppercase tracking-wide font-bold">Primary Emotion</span>
+                <p className="font-bold text-[var(--color-text-primary)] mt-1 text-lg">{analysis.primary_emotion}</p>
+              </div>
+              <div className="bg-[var(--color-bg-primary)] p-4 rounded-[1.5rem] border border-[var(--color-border-subtle)]/50">
+                <span className="text-[10px] text-[var(--color-pastel-blue)] uppercase tracking-wide font-bold">Sentiment</span>
+                <p className="font-bold text-[var(--color-text-primary)] mt-1 text-lg capitalize">{analysis.sentiment}</p>
+              </div>
+            </div>
+            <p className="text-[var(--color-text-secondary)] text-sm md:text-base leading-relaxed relative z-10">{analysis.insight_summary}</p>
+            <button onClick={() => setAnalysis(null)} className="w-full mt-6 py-3 bg-[var(--color-pastel-purple)] text-white rounded-xl font-bold transition-all hover:bg-[var(--color-pastel-purple)]/90">
+              Close
+            </button>
+          </motion.div>
+        </div>
       )}
     </div>
   );
