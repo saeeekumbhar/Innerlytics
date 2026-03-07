@@ -184,7 +184,7 @@ const Layout = () => {
                 <motion.div
                   whileHover={{ scale: 1.15, y: -6 }}
                   whileTap={{ scale: 0.9 }}
-                  className={`flex flex-col items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl transition-all duration-200 ${isActive
+                  className={`flex flex-col items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full transition-all duration-200 ${isActive
                     ? 'bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-[var(--color-bg-primary)] shadow-lg shadow-[var(--color-pastel-purple)]/30'
                     : 'text-[var(--color-text-secondary)] hover:text-[var(--color-pastel-purple)] hover:bg-[var(--color-pastel-hover)]'
                     }`}

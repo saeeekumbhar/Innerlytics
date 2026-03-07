@@ -158,10 +158,10 @@ const CBTReframe = () => {
 
 // --- Main Page ---
 const tools = [
-    { id: 'breathing', label: 'Breathing', icon: Wind, color: '--color-pastel-blue', component: BreathingExercise },
-    { id: 'grounding', label: '5-4-3-2-1', icon: Eye, color: '--color-pastel-purple', component: GroundingExercise },
-    { id: 'affirmations', label: 'Affirmations', icon: Sparkles, color: '--color-pastel-pink', component: Affirmations },
-    { id: 'cbt', label: 'Reframe', icon: Brain, color: '--color-pastel-teal', component: CBTReframe },
+    { id: 'breathing', label: 'Breathing', desc: 'Find your center with guided breathing', icon: Wind, color: '--color-pastel-blue', component: BreathingExercise },
+    { id: 'grounding', label: '5-4-3-2-1 Grounding', desc: 'Bring your mind back to the present moment', icon: Eye, color: '--color-pastel-purple', component: GroundingExercise },
+    { id: 'affirmations', label: 'Affirmations', desc: 'Positive reminders for your daily life', icon: Sparkles, color: '--color-pastel-pink', component: Affirmations },
+    { id: 'cbt', label: 'Thought Reframe', desc: 'Challenge unhelpful thoughts with compassion', icon: Brain, color: '--color-pastel-teal', component: CBTReframe },
 ];
 
 const Wellness = () => {
@@ -176,24 +176,29 @@ const Wellness = () => {
             </header>
 
             {/* Tool Selector */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {tools.map(tool => (
                     <motion.button
                         key={tool.id}
-                        whileHover={{ scale: 1.05, y: -4 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{ scale: 1.02, y: -4 }}
+                        whileTap={{ scale: 0.98 }}
                         onClick={() => setActiveTool(activeTool === tool.id ? null : tool.id)}
-                        className={`glass rounded-2xl p-5 soft-shadow border-none text-center transition-all duration-300 ${activeTool === tool.id ? 'ring-2 ring-offset-4 ring-offset-[var(--color-bg-primary)]' : 'hover:shadow-lg'
+                        className={`glass rounded-[2rem] p-6 soft-shadow border-none flex flex-col items-start text-left transition-all duration-300 relative overflow-hidden group ${activeTool === tool.id ? 'ring-2 ring-offset-4 ring-offset-[var(--color-bg-primary)]' : 'hover:shadow-lg'
                             }`}
                         style={{ ...(activeTool === tool.id ? { '--tw-ring-color': `var(${tool.color})` } as React.CSSProperties : {}) }}
                     >
+                        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl -mt-10 -mr-10 pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: `var(${tool.color})` }}></div>
+
                         <div
-                            className="w-12 h-12 rounded-2xl mx-auto mb-3 flex items-center justify-center glow-card relative"
+                            className="w-14 h-14 rounded-[1.5rem] mb-4 flex items-center justify-center glow-card relative"
                         >
-                            <div className="absolute inset-0 rounded-2xl" style={{ backgroundColor: `var(${tool.color})`, opacity: 0.2 }} />
-                            <tool.icon className="w-6 h-6 relative z-10" style={{ color: `var(${tool.color})` }} />
+                            <div className="absolute inset-0 rounded-[1.5rem]" style={{ backgroundColor: `var(${tool.color})`, opacity: 0.2 }} />
+                            <tool.icon className="w-7 h-7 relative z-10" style={{ color: `var(${tool.color})` }} />
                         </div>
-                        <p className="text-sm font-medium text-[var(--color-text-primary)]">{tool.label}</p>
+                        <div>
+                            <h3 className="text-xl font-bold text-[var(--color-text-primary)]">{tool.label}</h3>
+                            <p className="text-sm text-[var(--color-text-secondary)] mt-1.5 leading-relaxed">{tool.desc}</p>
+                        </div>
                     </motion.button>
                 ))}
             </div>
