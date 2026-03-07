@@ -3,8 +3,8 @@ import { useAuth } from '../../context/AuthContext';
 import { getUserEntries, JournalEntry } from '../journal/journalService';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, Radar, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { format, parseISO } from 'date-fns';
-import { motion } from 'motion/react';
-import { TrendingUp, Zap, Brain, Tag, MapPin, FileText, Activity as ActivityIcon, Sparkles, Loader, Link as LinkIcon, Calendar, Flame, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { TrendingUp, Zap, Brain, Tag, MapPin, FileText, Activity as ActivityIcon, Sparkles, Loader, Link as LinkIcon, Calendar, Flame, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { generateJsonContent } from '../../services/geminiService';
 import { getHabits, Habit } from '../../services/habitService';
 import { Type } from '@google/genai';
@@ -46,6 +46,88 @@ const QuickStats = ({ entries, streak, habitsCount }: { entries: JournalEntry[],
           </div>
         </motion.div>
       ))}
+    </div>
+  );
+};
+
+// ─── Swipeable Insight Carousel ──────────────
+const SwipeableInsights = ({ entries }: { entries: JournalEntry[] }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const reflectionPrompts = [
+    "What made you smile today? 😊",
+    "What's one kind thing you did for yourself?",
+    "Who brought positivity into your day?",
+    "What are you grateful for right now?",
+    "What challenge did you overcome recently?",
+  ];
+
+  const cards = [
+    {
+      emoji: '🧠', title: "Today's Emotional Insight",
+      body: entries.length > 0
+        ? `You've been feeling mostly "${entries[0].moodLabel}" recently. Keep tracking to see patterns.`
+        : 'Start journaling to unlock personalized insights!',
+      gradient: 'from-[var(--color-pastel-purple)]/20 to-[var(--color-pastel-blue)]/10',
+    },
+    {
+      emoji: '📊', title: 'Pattern Detected',
+      body: entries.length >= 3
+        ? `Over ${entries.length} entries, avg mood is ${(entries.reduce((s, e) => s + e.moodScore, 0) / entries.length).toFixed(1)}/10. ${entries[0].moodScore > 6 ? "Trending up! 🎉" : "Let's work on lifting spirits."}`
+        : "Journal a few more days to detect patterns.",
+      gradient: 'from-[var(--color-pastel-blue)]/20 to-[var(--color-pastel-teal)]/10',
+    },
+    {
+      emoji: '🌿', title: 'Self-Care Suggestion',
+      body: entries.length > 0 && entries[0].moodScore < 5
+        ? 'Tough stretch. Try a breathing exercise in Wellness.'
+        : 'Keep nurturing wellbeing — try a mindful walk today? 🚶‍♀️',
+      gradient: 'from-[var(--color-pastel-teal)]/20 to-[var(--color-pastel-peach)]/10',
+    },
+    {
+      emoji: '💭', title: 'Reflection Prompt',
+      body: reflectionPrompts[new Date().getDate() % reflectionPrompts.length],
+      gradient: 'from-[var(--color-pastel-pink)]/20 to-[var(--color-pastel-purple)]/10',
+    },
+  ];
+
+  const next = () => setCurrentIndex((currentIndex + 1) % cards.length);
+  const prev = () => setCurrentIndex((currentIndex - 1 + cards.length) % cards.length);
+
+  return (
+    <div className="glass rounded-[2rem] p-6 soft-shadow border-none overflow-hidden glow-card relative z-10 w-full">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)] flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-[var(--color-pastel-purple)]" /> Daily Insights
+        </h3>
+        <span className="text-xs text-[var(--color-text-secondary)] font-medium tabular-nums">{currentIndex + 1}/{cards.length}</span>
+      </div>
+      <div className="relative">
+        <AnimatePresence mode="wait">
+          <motion.div key={currentIndex} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.25 }}
+            className={`bg-gradient-to-br ${cards[currentIndex].gradient} rounded-2xl p-6 border border-[var(--color-border-subtle)]/30 min-h-[140px] flex flex-col justify-center relative z-10`}
+          >
+            <span className="text-3xl block mb-3">{cards[currentIndex].emoji}</span>
+            <h4 className="font-bold text-sm text-[var(--color-text-primary)] mb-1.5">{cards[currentIndex].title}</h4>
+            <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed md:pr-12">{cards[currentIndex].body}</p>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Navigation Arrows on Slide */}
+        <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between pointer-events-none px-2 z-20">
+          <button onClick={prev} className="pointer-events-auto p-2 rounded-full bg-[var(--color-bg-primary)]/80 backdrop-blur-md shadow-sm border border-[var(--color-border-subtle)]/50 hover:bg-[var(--color-bg-primary)] hover:scale-110 transition-all text-[var(--color-text-primary)] -ml-4" aria-label="Previous Insight">
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button onClick={next} className="pointer-events-auto p-2 rounded-full bg-[var(--color-bg-primary)]/80 backdrop-blur-md shadow-sm border border-[var(--color-border-subtle)]/50 hover:bg-[var(--color-bg-primary)] hover:scale-110 transition-all text-[var(--color-text-primary)] -mr-4" aria-label="Next Insight">
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+      <div className="flex justify-center gap-1.5 mt-5 relative z-20">
+        {cards.map((_, i) => (
+          <button key={i} onClick={() => setCurrentIndex(i)} className={`w-2 h-2 rounded-full transition-all ${i === currentIndex ? 'bg-[var(--color-pastel-purple)] w-6' : 'bg-[var(--color-border-subtle)] hover:bg-[var(--color-text-secondary)]/50'}`} aria-label={`Go to slide ${i + 1}`} />
+        ))}
+      </div>
     </div>
   );
 };
@@ -229,17 +311,23 @@ const Insights = () => {
             <QuickStats entries={entries} streak={streak} habitsCount={habitsCount} />
           </motion.div>
 
-          {/* Mood Stability Extra Card (since it was removed from top row) */}
-          <motion.div variants={itemVariants} className="glass p-5 rounded-[2rem] border-none soft-shadow relative overflow-hidden flex items-center gap-4 group justify-center max-w-sm">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-pastel-peach)]/10 rounded-full blur-xl -mt-10 -mr-10"></div>
-            <div className="w-12 h-12 bg-[var(--color-bg-primary)]/50 rounded-2xl flex items-center justify-center text-[var(--color-pastel-peach)] shadow-sm group-hover:scale-110 transition-transform">
-              <ActivityIcon className="w-6 h-6" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-[var(--color-text-secondary)]">Mood Stability</p>
-              <h3 className="text-lg font-bold text-[var(--color-text-primary)] leading-tight">{moodStability}</h3>
-            </div>
-          </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <motion.div variants={itemVariants}>
+              <SwipeableInsights entries={entries} />
+            </motion.div>
+
+            {/* Mood Stability Extra Card (since it was removed from top row) */}
+            <motion.div variants={itemVariants} className="glass p-6 rounded-[2rem] border-none soft-shadow relative overflow-hidden flex items-center gap-5 group justify-center w-full h-full">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-pastel-peach)]/10 rounded-full blur-2xl -mt-10 -mr-10"></div>
+              <div className="w-14 h-14 bg-[var(--color-bg-primary)]/70 backdrop-blur-sm rounded-2xl flex items-center justify-center text-[var(--color-pastel-peach)] shadow-sm group-hover:scale-110 transition-transform">
+                <ActivityIcon className="w-7 h-7" />
+              </div>
+              <div>
+                <p className="text-sm font-bold tracking-wide uppercase text-[var(--color-text-secondary)] mb-1">Mood Stability</p>
+                <h3 className="text-2xl font-serif font-bold text-[var(--color-text-primary)] leading-tight capitalize">{moodStability}</h3>
+              </div>
+            </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Mood & Anxiety Trend */}
