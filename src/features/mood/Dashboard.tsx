@@ -21,79 +21,6 @@ import { getAchievements, Achievement } from '../../services/achievementService'
 import AchievementBadge from '../../components/ui/AchievementBadge';
 import EmotionAvatar from '../../components/ui/EmotionAvatar';
 
-// ─── Swipeable Insight Carousel ──────────────
-const SwipeableInsights = ({ entries }: { entries: JournalEntry[] }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const reflectionPrompts = [
-    "What made you smile today? 😊",
-    "What's one kind thing you did for yourself?",
-    "Who brought positivity into your day?",
-    "What are you grateful for right now?",
-    "What challenge did you overcome recently?",
-  ];
-
-  const cards = [
-    {
-      emoji: '🧠', title: "Today's Emotional Insight",
-      body: entries.length > 0
-        ? `You've been feeling mostly "${entries[0].moodLabel}" recently. Keep tracking to see patterns.`
-        : 'Start journaling to unlock personalized insights!',
-      gradient: 'from-[var(--color-pastel-purple)]/20 to-[var(--color-pastel-blue)]/10',
-    },
-    {
-      emoji: '📊', title: 'Pattern Detected',
-      body: entries.length >= 3
-        ? `Over ${entries.length} entries, avg mood is ${(entries.reduce((s, e) => s + e.moodScore, 0) / entries.length).toFixed(1)}/10. ${entries[0].moodScore > 6 ? "Trending up! 🎉" : "Let's work on lifting spirits."}`
-        : "Journal a few more days to detect patterns.",
-      gradient: 'from-[var(--color-pastel-blue)]/20 to-[var(--color-pastel-teal)]/10',
-    },
-    {
-      emoji: '🌿', title: 'Self-Care Suggestion',
-      body: entries.length > 0 && entries[0].moodScore < 5
-        ? 'Tough stretch. Try a breathing exercise in Wellness.'
-        : 'Keep nurturing wellbeing — try a mindful walk today? 🚶‍♀️',
-      gradient: 'from-[var(--color-pastel-teal)]/20 to-[var(--color-pastel-peach)]/10',
-    },
-    {
-      emoji: '💭', title: 'Reflection Prompt',
-      body: reflectionPrompts[new Date().getDate() % reflectionPrompts.length],
-      gradient: 'from-[var(--color-pastel-pink)]/20 to-[var(--color-pastel-purple)]/10',
-    },
-  ];
-
-  const next = () => setCurrentIndex((currentIndex + 1) % cards.length);
-  const prev = () => setCurrentIndex((currentIndex - 1 + cards.length) % cards.length);
-
-  return (
-    <div className="glass rounded-[2rem] p-6 soft-shadow border-none overflow-hidden glow-card relative z-10">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)] flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-[var(--color-pastel-purple)]" /> Daily Insights
-        </h3>
-        <div className="flex items-center gap-2">
-          <button onClick={prev} className="p-1.5 rounded-full hover:bg-[var(--color-pastel-hover)] transition-colors"><ChevronLeft className="w-4 h-4 text-[var(--color-text-secondary)]" /></button>
-          <span className="text-xs text-[var(--color-text-secondary)] font-medium tabular-nums">{currentIndex + 1}/{cards.length}</span>
-          <button onClick={next} className="p-1.5 rounded-full hover:bg-[var(--color-pastel-hover)] transition-colors"><ChevronRight className="w-4 h-4 text-[var(--color-text-secondary)]" /></button>
-        </div>
-      </div>
-      <AnimatePresence mode="wait">
-        <motion.div key={currentIndex} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.25 }}
-          className={`bg-gradient-to-br ${cards[currentIndex].gradient} rounded-2xl p-5 border border-[var(--color-border-subtle)]/30`}
-        >
-          <span className="text-3xl block mb-3">{cards[currentIndex].emoji}</span>
-          <h4 className="font-bold text-sm text-[var(--color-text-primary)] mb-1">{cards[currentIndex].title}</h4>
-          <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{cards[currentIndex].body}</p>
-        </motion.div>
-      </AnimatePresence>
-      <div className="flex justify-center gap-1.5 mt-4">
-        {cards.map((_, i) => (
-          <button key={i} onClick={() => setCurrentIndex(i)} className={`w-2 h-2 rounded-full transition-all ${i === currentIndex ? 'bg-[var(--color-pastel-purple)] w-5' : 'bg-[var(--color-border-subtle)]'}`} />
-        ))}
-      </div>
-    </div>
-  );
-};
 
 // ─── Growth Tree ─────────────────────────────
 const GrowthTree = ({ streak }: { streak: number }) => {
@@ -412,11 +339,7 @@ const Dashboard = () => {
         </div>
 
 
-        {/* ── 3. Insights (AI & Daily) ── */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <motion.div variants={itemVariants} className="h-full">
-            <SwipeableInsights entries={entries} />
-          </motion.div>
+        <div className="grid grid-cols-1 xl:grid-cols-1 gap-6">
           <motion.div variants={itemVariants} className="h-full">
             <AIInsightCard entries={entries} />
           </motion.div>
