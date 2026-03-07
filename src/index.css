@@ -128,7 +128,7 @@
     background-attachment: fixed;
   }
 
-  .theme-astronomy {
+  .theme-galactic {
     --color-bg-primary: #0F172A;
     --color-bg-secondary: #1E293B;
     --color-bg-soft: #0B1120;
@@ -185,7 +185,7 @@
     background-attachment: fixed;
   }
 
-  .dark.theme-astronomy {
+  .dark.theme-galactic {
     --color-bg-primary: #020617;
     --color-bg-secondary: #0F172A;
     --color-bg-card: rgba(15, 23, 42, 0.7);

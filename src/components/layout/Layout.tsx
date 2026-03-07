@@ -41,7 +41,7 @@ const Layout = () => {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] font-sans overflow-hidden transition-colors duration-500">
+    <div className="app-bg flex flex-col h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] font-sans overflow-hidden transition-colors duration-500">
       {/* ═══ Top Header Bar ═══ */}
       <header className="flex items-center justify-between px-6 md:px-10 py-4 bg-[var(--color-bg-card)]/80 backdrop-blur-xl border-b border-[var(--color-border-subtle)]/50 z-30 relative">
         {/* Logo */}
@@ -182,7 +182,7 @@ const Layout = () => {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 20, scale: 0.95 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                className="absolute bottom-full mb-3 right-4 pointer-events-auto bg-[var(--color-bg-card)] backdrop-blur-2xl border border-[var(--color-border-subtle)]/50 rounded-2xl soft-shadow p-2 min-w-[220px]"
+                className="absolute bottom-full mb-3 right-0 md:left-1/2 md:-translate-x-1/2 pointer-events-auto bg-[var(--color-bg-card)] backdrop-blur-2xl border border-[var(--color-border-subtle)]/50 rounded-2xl soft-shadow p-2 min-w-[220px] origin-bottom"
               >
                 {moreItems.map((item) => {
                   const isActive = location.pathname === item.path;

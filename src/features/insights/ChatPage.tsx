@@ -33,7 +33,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] gap-6">
+    <div className="flex h-[calc(100vh-220px)] gap-6">
       {/* Sidebar */}
       <div className="w-64 glass rounded-[2rem] border-none p-5 flex flex-col space-y-3 soft-shadow relative overflow-hidden hidden md:flex">
         <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-pastel-purple)]/10 rounded-full blur-2xl -mt-10 -mr-10 pointer-events-none"></div>

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
-export type ColorPalette = 'lavender' | 'peach' | 'mint' | 'sky_blue' | 'rose_pink' | 'forest' | 'astronomy';
+export type ColorPalette = 'lavender' | 'peach' | 'mint' | 'sky_blue' | 'rose_pink' | 'forest' | 'galactic';
 export type EmojiTheme = 'classic' | 'cute' | 'minimal';
 
 interface PreferencesContextType {
@@ -38,7 +38,12 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     useEffect(() => {
         const applyTheme = () => {
-            const isDark = themeMode === 'dark' || (themeMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            let isDark = themeMode === 'dark' || (themeMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+            // Override with mandatory themes
+            if (colorPalette === 'forest') isDark = false;
+            if (colorPalette === 'galactic') isDark = true;
+
             if (isDark) {
                 document.documentElement.classList.add('dark');
             } else {
@@ -57,9 +62,13 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }, [themeMode]);
 
     useEffect(() => {
-        document.body.classList.remove('theme-lavender', 'theme-peach', 'theme-mint', 'theme-skyblue', 'theme-rosepink', 'theme-forest', 'theme-astronomy');
+        document.body.classList.remove('theme-lavender', 'theme-peach', 'theme-mint', 'theme-skyblue', 'theme-rosepink', 'theme-forest', 'theme-galactic');
         const paletteClass = colorPalette === 'sky_blue' ? 'theme-skyblue' : colorPalette === 'rose_pink' ? 'theme-rosepink' : `theme-${colorPalette}`;
         document.body.classList.add(paletteClass);
+
+        // Retrigger theme logic to handle mandatory dark/light constraints when palette changes
+        const evt = new CustomEvent('theme-palette-changed');
+        window.dispatchEvent(evt);
     }, [colorPalette]);
 
     const getEmoji = (mood: string) => {
