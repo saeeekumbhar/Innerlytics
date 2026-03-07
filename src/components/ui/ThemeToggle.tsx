@@ -1,29 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { motion } from 'motion/react';
+import { usePreferences } from '../../context/PreferencesContext';
 
 const ThemeToggle = () => {
-    const [isDark, setIsDark] = useState(() => {
-        if (typeof window !== 'undefined') {
-            return document.documentElement.classList.contains('dark');
-        }
-        return false;
-    });
+    const { themeMode, setThemeMode, colorPalette } = usePreferences();
+    const [isDark, setIsDark] = useState(false);
 
+    // Sync local state visually with the actual DOM for smooth animations
     useEffect(() => {
-        const root = document.documentElement;
-        if (isDark) {
-            root.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            root.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        }
-    }, [isDark]);
+        const checkDark = () => setIsDark(document.documentElement.classList.contains('dark'));
+        checkDark();
+
+        // Listen to custom palette changes
+        window.addEventListener('theme-palette-changed', checkDark);
+        // Observe html class changes natively
+        const observer = new MutationObserver(checkDark);
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+        return () => {
+            window.removeEventListener('theme-palette-changed', checkDark);
+            observer.disconnect();
+        };
+    }, []);
+
+    // Hide toggle entirely if forced schema applies
+    if (colorPalette === 'forest' || colorPalette === 'galactic') {
+        return null;
+    }
+
+    const toggleTheme = () => {
+        const nextMode = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+        setThemeMode(nextMode);
+    };
 
     return (
         <button
-            onClick={() => setIsDark(!isDark)}
+            onClick={toggleTheme}
             className="relative flex items-center w-[72px] h-9 rounded-full p-1 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-md focus:outline-none"
             style={{
                 background: isDark

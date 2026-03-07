@@ -142,7 +142,7 @@ const GrowthTree = ({ streak }: { streak: number }) => {
   const StageIcon = stage.icon;
 
   return (
-    <div className="glass rounded-[2rem] p-6 soft-shadow border-none text-center relative overflow-hidden glow-card">
+    <motion.div whileHover={{ scale: 1.01 }} className="glass rounded-[2rem] p-6 soft-shadow border-none text-center relative overflow-hidden glow-card h-full flex flex-col justify-center">
       <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-pastel-teal)]/10 rounded-full blur-2xl -mt-10 -mr-10 pointer-events-none" />
       <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)] mb-4 relative z-10">Growth Tree</h3>
       <motion.div animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 2.5, repeat: Infinity }}
@@ -156,10 +156,10 @@ const GrowthTree = ({ streak }: { streak: number }) => {
         <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 1.5 }} className="text-lg">🔥</motion.span>
         <span className="text-xs font-bold text-[var(--color-text-secondary)]">{streak} day streak</span>
       </div>
-      <div className="mt-2 bg-[var(--color-pastel-purple)]/15 rounded-full px-3 py-1 inline-flex items-center gap-1 text-xs font-bold text-[var(--color-pastel-purple)] border border-[var(--color-pastel-purple)]/20">
+      <div className="mt-3 bg-[var(--color-pastel-purple)]/15 rounded-full px-3 py-1 inline-flex items-center justify-center gap-1 text-xs font-bold text-[var(--color-pastel-purple)] border border-[var(--color-pastel-purple)]/20 mx-auto">
         <Zap className="w-3 h-3" /> {stage.xp} Emotional XP
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -296,6 +296,57 @@ const QuickJournalFAB = ({ userId, onComplete }: { userId: string; onComplete: (
 };
 
 
+// ─── Onboarding Guide ────────────────────────
+const OnboardingGuide = () => {
+  const [visible, setVisible] = useState(true);
+
+  // Show only if there's no data in localStorage saying it was dismissed
+  useEffect(() => {
+    if (localStorage.getItem('hideDashboardGuide')) setVisible(false);
+  }, []);
+
+  if (!visible) return null;
+
+  const dismiss = () => {
+    setVisible(false);
+    localStorage.setItem('hideDashboardGuide', 'true');
+  };
+
+  return (
+    <motion.div initial={{ opacity: 0, y: -20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="glass rounded-[2rem] p-6 lg:p-8 mb-8 soft-shadow border border-[var(--color-pastel-purple)]/30 relative overflow-hidden glow-card">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[var(--color-pastel-purple)]/20 to-[var(--color-pastel-blue)]/20 rounded-full blur-3xl -mt-20 -mr-20 pointer-events-none" />
+      <div className="flex justify-between items-start relative z-10 mb-6">
+        <div>
+          <h3 className="text-xl font-serif font-bold text-[var(--color-text-primary)] flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-[var(--color-pastel-purple)]" /> Welcome to your Digital Sanctuary
+          </h3>
+          <p className="text-sm text-[var(--color-text-secondary)] mt-1.5 leading-relaxed">Here is a quick guide on how to navigate and use the app to feel better.</p>
+        </div>
+        <button onClick={dismiss} className="p-2 rounded-full hover:bg-[var(--color-pastel-hover)] transition-colors" title="Dismiss Guide"><X className="w-5 h-5 text-[var(--color-text-secondary)]" /></button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
+        <motion.div whileHover={{ scale: 1.02 }} className="bg-[var(--color-bg-primary)]/60 p-5 rounded-2xl border border-[var(--color-border-subtle)]/50 flex flex-col items-start soft-shadow-sm">
+          <div className="w-10 h-10 rounded-full bg-[var(--color-pastel-peach)]/20 flex items-center justify-center mb-3"><Smile className="w-5 h-5 text-[var(--color-pastel-peach)]" /></div>
+          <h4 className="font-bold text-sm text-[var(--color-text-primary)] mb-1">1. Daily Check-in</h4>
+          <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">Log your mood every day. Doing so builds your "streak" and helps your virtual tree grow!</p>
+        </motion.div>
+        <motion.div whileHover={{ scale: 1.02 }} className="bg-[var(--color-bg-primary)]/60 p-5 rounded-2xl border border-[var(--color-border-subtle)]/50 flex flex-col items-start soft-shadow-sm">
+          <div className="w-10 h-10 rounded-full bg-[var(--color-pastel-blue)]/20 flex items-center justify-center mb-3"><BookOpen className="w-5 h-5 text-[var(--color-pastel-blue)]" /></div>
+          <h4 className="font-bold text-sm text-[var(--color-text-primary)] mb-1">2. Journal & Chat</h4>
+          <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">Use the Journal to reflect in a beautiful notebook, or vent to the AI Coach when things feel heavy.</p>
+        </motion.div>
+        <motion.div whileHover={{ scale: 1.02 }} className="bg-[var(--color-bg-primary)]/60 p-5 rounded-2xl border border-[var(--color-border-subtle)]/50 flex flex-col items-start soft-shadow-sm">
+          <div className="w-10 h-10 rounded-full bg-[var(--color-pastel-teal)]/20 flex items-center justify-center mb-3"><Activity className="w-5 h-5 text-[var(--color-pastel-teal)]" /></div>
+          <h4 className="font-bold text-sm text-[var(--color-text-primary)] mb-1">3. Track & Grow</h4>
+          <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">Review your insights down below, master your habits, and unlock beautiful achievements.</p>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
+
+
 // ============= MAIN DASHBOARD =============
 const Dashboard = () => {
   const { user } = useAuth();
@@ -374,8 +425,7 @@ const Dashboard = () => {
     <>
       <motion.div className="space-y-8 pb-24 relative z-10" variants={containerVariants} initial="hidden" animate="show">
 
-        {/* ── Header ── */}
-        <motion.header variants={itemVariants} className="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+        <motion.header variants={itemVariants} className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-2">
           <div>
             <h1 className="text-3xl md:text-4xl font-serif font-bold text-[var(--color-text-primary)] tracking-tight">
               {greeting}, {firstName} 👋
@@ -383,6 +433,10 @@ const Dashboard = () => {
             <p className="text-[var(--color-text-secondary)] mt-1.5 text-lg">Ready to reflect today?</p>
           </div>
         </motion.header>
+
+        <AnimatePresence>
+          <OnboardingGuide />
+        </AnimatePresence>
 
         {/* ── 1. Action & Identity Row (Prioritized) ── */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">

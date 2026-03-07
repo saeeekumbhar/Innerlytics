@@ -24,6 +24,10 @@ const Journal = () => {
   const [moodScore, setMoodScore] = useState(5); // Default neutral
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
+  const [notebookStyle, setNotebookStyle] = useState<'blank' | 'lined' | 'dotted'>('blank');
+
+  const stickers = ['🌸', '✨', '☕', '🌧️', '🧸', '💖', '🌱', '🌙', '🎯', '🔥'];
+
   const { isListening, transcript, setTranscript, startListening, stopListening, isSupported } = useSpeechToText();
 
   useEffect(() => {
@@ -108,13 +112,27 @@ const Journal = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-10">
-      <header>
+    <div className="max-w-4xl mx-auto h-[calc(100vh-220px)] flex flex-col gap-6">
+      <header className="shrink-0">
         <h1 className="text-3xl md:text-4xl font-serif font-bold text-[var(--color-text-primary)]">Journal</h1>
-        <p className="text-[var(--color-text-secondary)] mt-1.5 text-lg">Reflect on your thoughts and feelings.</p>
+        <div className="flex justify-between items-center mt-1.5">
+          <p className="text-[var(--color-text-secondary)] text-lg">Reflect on your thoughts and feelings.</p>
+          {/* Notebook Style Selector */}
+          <div className="flex bg-[var(--color-bg-card)]/50 rounded-full p-1 border border-[var(--color-border-subtle)]/30 backdrop-blur-sm">
+            {(['blank', 'lined', 'dotted'] as const).map(style => (
+              <button
+                key={style}
+                onClick={() => setNotebookStyle(style)}
+                className={`px-3 py-1 text-xs font-semibold capitalize rounded-full transition-all ${notebookStyle === style ? 'bg-[var(--color-pastel-purple)] text-white shadow-sm' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
+              >
+                {style}
+              </button>
+            ))}
+          </div>
+        </div>
       </header>
 
-      <div className="glass rounded-[2rem] soft-shadow border-none overflow-hidden relative">
+      <div className="glass rounded-[2rem] soft-shadow border-none overflow-hidden relative flex-1 flex flex-col min-h-0">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-pastel-pink)]/10 rounded-full blur-3xl -mt-20 -mr-20 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-[var(--color-pastel-teal)]/10 rounded-full blur-2xl -mb-10 -ml-10 pointer-events-none"></div>
 
@@ -137,9 +155,9 @@ const Journal = () => {
           </button>
         </div>
 
-        <div className="p-6 md:p-8 space-y-6 relative z-10">
+        <div className="p-4 md:p-6 flex-1 flex flex-col min-h-0 relative z-10 gap-4">
           {mode === 'guided' && (
-            <div className="space-y-4">
+            <div className="space-y-4 shrink-0">
               <p className="text-sm font-medium text-[var(--color-text-secondary)]">Choose a guided template:</p>
               <div className="flex flex-wrap gap-2">
                 {templates.map((template) => (
@@ -155,18 +173,27 @@ const Journal = () => {
             </div>
           )}
 
-          <div className="glow-focus rounded-2xl transition-shadow duration-300">
+          {/* Notebook Textarea */}
+          <div className="glow-focus rounded-2xl transition-shadow duration-300 flex-1 flex flex-col min-h-0 relative">
+            {notebookStyle === 'lined' && (
+              <div className="absolute inset-0 pointer-events-none opacity-20" style={{ background: 'repeating-linear-gradient(transparent, transparent 27px, #A0C4FF 28px)', marginTop: '28px' }} />
+            )}
+            {notebookStyle === 'dotted' && (
+              <div className="absolute inset-x-8 inset-y-8 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(var(--color-text-secondary) 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }} />
+            )}
+
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder={mode === 'free' ? "Start writing..." : "Select a prompt above or start writing..."}
-              className={`w-full ${photoUrl ? 'h-32' : 'h-64'} p-5 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/30 focus:outline-none resize-none text-[var(--color-text-primary)] leading-relaxed transition-all placeholder:text-[var(--color-text-secondary)]/70 font-sans`}
+              className={`w-full flex-1 p-5 rounded-2xl border ${notebookStyle !== 'blank' ? 'border-transparent bg-transparent' : 'border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/30'} focus:outline-none resize-none text-[var(--color-text-primary)] leading-relaxed transition-all placeholder:text-[var(--color-text-secondary)]/70 font-sans z-10 relative`}
+              style={{ lineHeight: notebookStyle === 'lined' ? '28px' : '1.75' }}
             />
           </div>
 
           {photoUrl && (
-            <div className="relative inline-block mt-4 group">
-              <img src={photoUrl} alt="Journal Attachment" className="max-h-48 rounded-xl object-cover soft-shadow" />
+            <div className="relative shrink-0 mt-2 group self-start">
+              <img src={photoUrl} alt="Journal Attachment" className="max-h-32 rounded-xl object-cover soft-shadow" />
               <button
                 onClick={() => setPhotoUrl(null)}
                 className="absolute top-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/70"
@@ -176,7 +203,20 @@ const Journal = () => {
             </div>
           )}
 
-          <div className="flex justify-between items-center pt-6 border-t border-[var(--color-border-subtle)]">
+          {/* Stickers Toolbar */}
+          <div className="shrink-0 flex items-center space-x-2 pb-2 overflow-x-auto hide-scrollbar">
+            {stickers.map(s => (
+              <button
+                key={s}
+                onClick={() => setContent(prev => prev + s)}
+                className="w-8 h-8 rounded-full hover:bg-[var(--color-bg-primary)] flex items-center justify-center text-lg transition-transform hover:scale-110 active:scale-90"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex justify-between items-center pt-4 border-t border-[var(--color-border-subtle)] shrink-0">
             <div className="flex items-center space-x-3">
               <label className="p-3 rounded-full bg-[var(--color-pastel-blue)]/10 text-[var(--color-pastel-blue)] hover:bg-[var(--color-pastel-blue)]/20 cursor-pointer transition-colors" title="Attach Photo">
                 <ImageIcon className="w-5 h-5" />

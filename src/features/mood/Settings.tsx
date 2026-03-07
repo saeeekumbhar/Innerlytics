@@ -43,7 +43,7 @@ const Settings = () => {
     { id: 'sky_blue', name: 'Sky Blue', hex: '#A0C4FF' },
     { id: 'rose_pink', name: 'Rose Pink', hex: '#FFAFCC' },
     { id: 'forest', name: 'Forest', hex: '#A3B18A' },
-    { id: 'astronomy', name: 'Astronomy', hex: '#3C096C' },
+    { id: 'galactic', name: 'Galactic', hex: '#3C096C' },
   ];
 
   const emojis: { id: EmojiTheme, name: string, sample: string }[] = [
@@ -201,27 +201,33 @@ const Settings = () => {
                 Theme Mode
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <button
-                  onClick={() => setThemeMode('light')}
-                  className={`p-4 rounded-2xl border flex flex-col items-center justify-center gap-2 transition-all ${themeMode === 'light' ? 'border-[var(--color-pastel-purple)] bg-[var(--color-pastel-purple)]/10 shadow-sm' : 'border-[var(--color-border-subtle)] hover:bg-[var(--color-pastel-hover)]'}`}
-                >
-                  <Sun className={`w-6 h-6 ${themeMode === 'light' ? 'text-[var(--color-pastel-purple)]' : 'text-[var(--color-text-secondary)]'}`} />
-                  <span className={`font-medium ${themeMode === 'light' ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}>Light</span>
-                </button>
-                <button
-                  onClick={() => setThemeMode('dark')}
-                  className={`p-4 rounded-2xl border flex flex-col items-center justify-center gap-2 transition-all ${themeMode === 'dark' ? 'border-[var(--color-pastel-purple)] bg-[var(--color-pastel-purple)]/10 shadow-sm' : 'border-[var(--color-border-subtle)] hover:bg-[var(--color-pastel-hover)]'}`}
-                >
-                  <Moon className={`w-6 h-6 ${themeMode === 'dark' ? 'text-[var(--color-pastel-purple)]' : 'text-[var(--color-text-secondary)]'}`} />
-                  <span className={`font-medium ${themeMode === 'dark' ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}>Dark</span>
-                </button>
-                <button
-                  onClick={() => setThemeMode('system')}
-                  className={`p-4 rounded-2xl border flex flex-col items-center justify-center gap-2 transition-all ${themeMode === 'system' ? 'border-[var(--color-pastel-purple)] bg-[var(--color-pastel-purple)]/10 shadow-sm' : 'border-[var(--color-border-subtle)] hover:bg-[var(--color-pastel-hover)]'}`}
-                >
-                  <Monitor className={`w-6 h-6 ${themeMode === 'system' ? 'text-[var(--color-pastel-purple)]' : 'text-[var(--color-text-secondary)]'}`} />
-                  <span className={`font-medium ${themeMode === 'system' ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}>System</span>
-                </button>
+                {colorPalette !== 'galactic' && (
+                  <button
+                    onClick={() => setThemeMode('light')}
+                    className={`p-4 rounded-2xl border flex flex-col items-center justify-center gap-2 transition-all ${themeMode === 'light' ? 'border-[var(--color-pastel-purple)] bg-[var(--color-pastel-purple)]/10 shadow-sm' : 'border-[var(--color-border-subtle)] hover:bg-[var(--color-pastel-hover)]'}`}
+                  >
+                    <Sun className={`w-6 h-6 ${themeMode === 'light' ? 'text-[var(--color-pastel-purple)]' : 'text-[var(--color-text-secondary)]'}`} />
+                    <span className={`font-medium ${themeMode === 'light' ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}>Light</span>
+                  </button>
+                )}
+                {colorPalette !== 'forest' && (
+                  <button
+                    onClick={() => setThemeMode('dark')}
+                    className={`p-4 rounded-2xl border flex flex-col items-center justify-center gap-2 transition-all ${themeMode === 'dark' ? 'border-[var(--color-pastel-purple)] bg-[var(--color-pastel-purple)]/10 shadow-sm' : 'border-[var(--color-border-subtle)] hover:bg-[var(--color-pastel-hover)]'}`}
+                  >
+                    <Moon className={`w-6 h-6 ${themeMode === 'dark' ? 'text-[var(--color-pastel-purple)]' : 'text-[var(--color-text-secondary)]'}`} />
+                    <span className={`font-medium ${themeMode === 'dark' ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}>Dark</span>
+                  </button>
+                )}
+                {colorPalette !== 'forest' && colorPalette !== 'galactic' && (
+                  <button
+                    onClick={() => setThemeMode('system')}
+                    className={`p-4 rounded-2xl border flex flex-col items-center justify-center gap-2 transition-all ${themeMode === 'system' ? 'border-[var(--color-pastel-purple)] bg-[var(--color-pastel-purple)]/10 shadow-sm' : 'border-[var(--color-border-subtle)] hover:bg-[var(--color-pastel-hover)]'}`}
+                  >
+                    <Monitor className={`w-6 h-6 ${themeMode === 'system' ? 'text-[var(--color-pastel-purple)]' : 'text-[var(--color-text-secondary)]'}`} />
+                    <span className={`font-medium ${themeMode === 'system' ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}>System</span>
+                  </button>
+                )}
               </div>
             </div>
 
