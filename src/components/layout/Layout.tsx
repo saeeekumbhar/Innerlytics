@@ -108,6 +108,18 @@ const Layout = () => {
                         </NavLink>
                       );
                     })}
+
+                    <div className="h-px bg-[var(--color-border-subtle)]/50 my-2" />
+                    <button
+                      onClick={() => {
+                        setMoreOpen(false);
+                        logout();
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10 border border-transparent hover:border-[var(--color-danger)]/20"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span className="text-sm flex-1 text-left font-medium">Sign Out</span>
+                    </button>
                   </motion.div>
                 </>
               )}
@@ -125,10 +137,6 @@ const Layout = () => {
             )}
             <span className="text-sm font-medium text-[var(--color-text-primary)] hidden md:block pr-1">{user?.displayName?.split(' ')[0] || 'User'}</span>
           </NavLink>
-
-          <button onClick={logout} className="p-2 rounded-full text-[var(--color-danger)] opacity-70 hover:opacity-100 hover:bg-[var(--color-danger)]/10 transition-all border border-transparent hover:border-[var(--color-danger)]/20" title="Sign Out">
-            <LogOut className="w-4 h-4" />
-          </button>
         </div>
       </header>
 
