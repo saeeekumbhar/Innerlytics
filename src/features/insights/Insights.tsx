@@ -8,8 +8,34 @@ import { TrendingUp, Zap, Brain, Tag, MapPin, FileText, Activity as ActivityIcon
 import { generateJsonContent } from '../../services/geminiService';
 import { getHabits, Habit } from '../../services/habitService';
 import { Type } from '@google/genai';
+import { usePreferences } from '../../context/PreferencesContext';
+import WeeklyMoodGraph from '../../components/charts/WeeklyMoodGraph';
 
 const PASTEL_COLORS = ['#C8B6FF', '#FFAFCC', '#A0C4FF', '#B8E0D2', '#FFD6A5', '#FF8FAB', '#94CDB8', '#B5A0FF'];
+
+// ─── Mood Emoji Timeline ─────────────────────
+const MoodTimeline = ({ entries, getEmoji }: { entries: JournalEntry[], getEmoji: (l: string) => string }) => (
+  <div className="glass rounded-[2rem] p-6 soft-shadow border-none glow-card relative z-10 h-full w-full">
+    <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)] mb-4">Mood Timeline</h3>
+    {entries.length === 0 ? (
+      <p className="text-sm text-[var(--color-text-secondary)]">No entries yet — start tracking!</p>
+    ) : (
+      <div className="space-y-2">
+        {entries.slice(0, 7).map((entry) => (
+          <div key={entry.id} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--color-pastel-hover)] transition-colors group border border-transparent hover:border-[var(--color-border-subtle)]">
+            <span className="text-2xl drop-shadow-sm">{getEmoji(entry.moodLabel)}</span>
+            <div className="flex-1 min-w-0">
+              <span className="text-xs font-medium text-[var(--color-text-secondary)]">
+                {new Date(entry.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+              </span>
+            </div>
+            <span className="text-xs font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-pastel-purple)] transition-colors">{entry.moodLabel}</span>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+);
 
 // ─── Quick Stats Row ─────────────────────────
 const QuickStats = ({ entries, streak, habitsCount }: { entries: JournalEntry[], streak: number, habitsCount: number }) => {
@@ -134,6 +160,7 @@ const SwipeableInsights = ({ entries }: { entries: JournalEntry[] }) => {
 
 const Insights = () => {
   const { user } = useAuth();
+  const { getEmoji } = usePreferences();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
@@ -330,6 +357,14 @@ const Insights = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Weekly Flow */}
+            <motion.div variants={itemVariants} className="h-full">
+              <WeeklyMoodGraph data={entries.slice(0, 7).map(e => ({ date: e.date, moodScore: e.moodScore }))} />
+            </motion.div>
+            <motion.div variants={itemVariants} className="h-full">
+              <MoodTimeline entries={entries} getEmoji={getEmoji} />
+            </motion.div>
+
             {/* Mood & Anxiety Trend */}
             <motion.div variants={itemVariants} className="glass rounded-[2rem] border-none soft-shadow p-6 lg:p-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--color-pastel-purple)]/10 rounded-full blur-3xl -mt-10 -mr-10 pointer-events-none" />

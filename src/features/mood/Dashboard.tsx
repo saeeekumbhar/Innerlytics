@@ -2,23 +2,20 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { usePreferences } from '../../context/PreferencesContext';
 import { getUserEntries, getTodayEntry, JournalEntry, addJournalEntry } from '../journal/journalService';
-import { getLifeTrackerEntry, LifeTrackerEntry } from '../../services/lifeTrackerService';
+import { getLifeTrackerEntry, saveLifeTrackerEntry, LifeTrackerEntry } from '../../services/lifeTrackerService';
+import { categories } from '../life/LifeTracker';
 import { getHabits } from '../../services/habitService';
 import MoodCheckIn from './MoodCheckIn';
-import WeeklyMoodGraph from '../../components/charts/WeeklyMoodGraph';
-import AIInsightCard from '../../components/ui/InsightCard';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Plus, ArrowRight, BookOpen, MessageSquare, Activity, Smile,
   PenTool, X, ChevronLeft, ChevronRight, Sparkles, Flame, TreePine, Sprout, Leaf,
-  TrendingUp, Calendar, Zap, CheckCircle2
+  Zap, CheckCircle2, Star
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 // @ts-ignore
 import confetti from 'canvas-confetti';
 
-import { getAchievements, Achievement } from '../../services/achievementService';
-import AchievementBadge from '../../components/ui/AchievementBadge';
 import EmotionAvatar from '../../components/ui/EmotionAvatar';
 
 
@@ -77,9 +74,9 @@ const MoodHeatmap = ({ entries, getEmoji }: { entries: JournalEntry[], getEmoji:
   };
 
   return (
-    <div className="glass rounded-[2rem] p-6 soft-shadow border-none glow-card relative z-10">
+    <div className="glass rounded-[2rem] p-6 soft-shadow border-none glow-card relative z-10 h-full flex flex-col justify-between">
       <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)] mb-4">Mood Heatmap</h3>
-      <div className="grid grid-cols-7 gap-1.5">
+      <div className="grid grid-cols-7 gap-1.5 flex-1 justify-center content-center">
         {grid.map(cell => (
           <motion.div
             key={cell.date}
@@ -96,7 +93,7 @@ const MoodHeatmap = ({ entries, getEmoji }: { entries: JournalEntry[], getEmoji:
           </motion.div>
         ))}
       </div>
-      <div className="flex items-center justify-end gap-2 mt-3 text-[10px] text-[var(--color-text-secondary)] font-medium">
+      <div className="flex items-center justify-end gap-2 mt-3 text-[10px] text-[var(--color-text-secondary)] font-medium shrink-0">
         <span>Low</span>
         {[1, 3, 5, 7, 9].map(s => (
           <div key={s} className="w-3 h-3 rounded" style={{ backgroundColor: getColor(s) }} />
@@ -107,81 +104,8 @@ const MoodHeatmap = ({ entries, getEmoji }: { entries: JournalEntry[], getEmoji:
   );
 };
 
-// ─── Mood Emoji Timeline ─────────────────────
-const MoodTimeline = ({ entries, getEmoji }: { entries: JournalEntry[], getEmoji: (l: string) => string }) => (
-  <div className="glass rounded-[2rem] p-6 soft-shadow border-none glow-card relative z-10">
-    <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)] mb-4">Mood Timeline</h3>
-    {entries.length === 0 ? (
-      <p className="text-sm text-[var(--color-text-secondary)]">No entries yet — start tracking!</p>
-    ) : (
-      <div className="space-y-2">
-        {entries.slice(0, 7).map((entry) => (
-          <div key={entry.id} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[var(--color-pastel-hover)] transition-colors group border border-transparent hover:border-[var(--color-border-subtle)]">
-            <span className="text-2xl drop-shadow-sm">{getEmoji(entry.moodLabel)}</span>
-            <div className="flex-1 min-w-0">
-              <span className="text-xs font-medium text-[var(--color-text-secondary)]">
-                {new Date(entry.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
-              </span>
-            </div>
-            <span className="text-xs font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-pastel-purple)] transition-colors">{entry.moodLabel}</span>
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
-);
 
-// ─── Quick Journal FAB Modal ─────────────────
-const QuickJournalFAB = ({ userId, onComplete }: { userId: string; onComplete: () => void }) => {
-  const [open, setOpen] = useState(false);
-  const [note, setNote] = useState('');
-  const [saving, setSaving] = useState(false);
 
-  const handleSave = async () => {
-    if (!note.trim()) return;
-    setSaving(true);
-    try {
-      await addJournalEntry({ userId, date: new Date().toISOString().split('T')[0], moodScore: 5, moodLabel: 'Meh', content: note });
-      setNote('');
-      setOpen(false);
-      onComplete();
-    } catch (e) { console.error(e); }
-    finally { setSaving(false); }
-  };
-
-  return (
-    <>
-      <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-        onClick={() => setOpen(true)}
-        className="fixed bottom-8 right-8 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow"
-      >
-        <PenTool className="w-6 h-6" />
-      </motion.button>
-      <AnimatePresence>
-        {open && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setOpen(false)}>
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="glass rounded-[2rem] p-8 w-full max-w-lg soft-shadow relative" onClick={e => e.stopPropagation()}>
-              <button onClick={() => setOpen(false)} className="absolute top-5 right-5 p-2 rounded-full hover:bg-[var(--color-pastel-hover)] transition-colors">
-                <X className="w-5 h-5 text-[var(--color-text-secondary)]" />
-              </button>
-              <h2 className="text-2xl font-serif font-bold text-[var(--color-text-primary)] mb-1">Quick Journal ✍️</h2>
-              <p className="text-sm text-[var(--color-text-secondary)] mb-5">Capture a thought before it slips away.</p>
-              <textarea value={note} onChange={e => setNote(e.target.value)}
-                placeholder="What's on your mind right now?"
-                className="w-full p-5 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/50 text-[var(--color-text-primary)] focus:outline-none resize-none placeholder:text-[var(--color-text-secondary)]/60 leading-relaxed glow-focus"
-                rows={5} autoFocus />
-              <button onClick={handleSave} disabled={saving || !note.trim()}
-                className="w-full mt-4 py-3.5 rounded-full font-medium text-white bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] hover:scale-[1.02] active:scale-95 transition-all soft-shadow disabled:opacity-50">
-                {saving ? 'Saving...' : 'Save Entry ✨'}
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-};
 
 
 // ─── Onboarding Guide ────────────────────────
@@ -241,10 +165,13 @@ const Dashboard = () => {
   const { getEmoji } = usePreferences();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [todayEntry, setTodayEntry] = useState<JournalEntry | null>(null);
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [lifeEntry, setLifeEntry] = useState<LifeTrackerEntry | null>(null);
   const [habitsCount, setHabitsCount] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  // Inline Life Tracker state
+  const [inlineRatings, setInlineRatings] = useState<Record<string, number>>({});
+  const [savingTracker, setSavingTracker] = useState(false);
 
   const computeStreak = (list: JournalEntry[]) => {
     const dates = new Set(list.map(e => e.date));
@@ -267,16 +194,14 @@ const Dashboard = () => {
     if (!user) return;
     try {
       const todayStr = new Date().toISOString().split('T')[0];
-      const [recentEntries, today, unlockedAchievements, todayLife, habits] = await Promise.all([
+      const [recentEntries, today, todayLife, habits] = await Promise.all([
         getUserEntries(user.uid, 42),
         getTodayEntry(user.uid),
-        getAchievements(user.uid),
         getLifeTrackerEntry(user.uid, todayStr),
         getHabits(),
       ]);
       setEntries(recentEntries);
       setTodayEntry(today);
-      setAchievements(unlockedAchievements);
       setLifeEntry(todayLife);
       setHabitsCount(habits.length);
     } catch (error) {
@@ -284,6 +209,19 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRateLifeDimension = (categoryId: string, starIndex: number) => {
+    setInlineRatings(prev => ({ ...prev, [categoryId]: starIndex }));
+  };
+
+  const saveInlineLifeTracker = async () => {
+    if (!user) return;
+    setSavingTracker(true);
+    const todayStr = new Date().toISOString().split('T')[0];
+    await saveLifeTrackerEntry({ userId: user.uid, date: todayStr, ratings: inlineRatings });
+    setSavingTracker(false);
+    fetchData(); // refresh to show the summary view
   };
 
   const handleMoodComplete = () => {
@@ -327,23 +265,17 @@ const Dashboard = () => {
         </AnimatePresence>
 
         {/* ── 1. Action & Identity Row (Prioritized) ── */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          <motion.div variants={itemVariants} className="xl:col-span-2">
-            {!todayEntry ? (
+        <div className={`grid grid-cols-1 ${!todayEntry ? 'xl:grid-cols-3' : 'xl:grid-cols-1'} gap-6`}>
+          {!todayEntry && (
+            <motion.div variants={itemVariants} className="xl:col-span-2">
               <MoodCheckIn onComplete={handleMoodComplete} />
-            ) : null}
-          </motion.div>
-          <motion.div variants={itemVariants} className="xl:col-span-1 h-full">
+            </motion.div>
+          )}
+          <motion.div variants={itemVariants} className="xl:col-span-1 h-full w-full">
             <EmotionAvatar />
           </motion.div>
         </div>
 
-
-        <div className="grid grid-cols-1 xl:grid-cols-1 gap-6">
-          <motion.div variants={itemVariants} className="h-full">
-            <AIInsightCard entries={entries} />
-          </motion.div>
-        </div>
 
         {/* ── 4. Tracking & Progress ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -368,51 +300,42 @@ const Dashboard = () => {
               </div>
             ) : (
               <div className="glass rounded-[2rem] p-6 soft-shadow border-none flex flex-col justify-between gap-4 glow-card h-full">
-                <div>
-                  <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)]">Life Tracker</h3>
-                  <p className="text-sm text-[var(--color-text-secondary)] mt-1">Track 10 daily dimensions.</p>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)]">Life Tracker</h3>
+                    <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">Rate how your day went.</p>
+                  </div>
+                  <button onClick={saveInlineLifeTracker} disabled={savingTracker || Object.keys(inlineRatings).length === 0} className="px-3 py-1.5 bg-[var(--color-pastel-purple)] text-white rounded-lg text-xs font-bold shadow-sm hover:scale-105 active:scale-95 transition-all outline-none disabled:opacity-50">
+                    {savingTracker ? 'Saving...' : 'Save'}
+                  </button>
                 </div>
-                <Link to="/life" className="block text-center px-5 py-3 bg-[var(--color-pastel-purple)]/15 text-[var(--color-pastel-purple)] rounded-full font-medium hover:bg-[var(--color-pastel-purple)] hover:text-white transition-all border border-[var(--color-pastel-purple)]/20 shadow-sm mt-auto">Open Tracker</Link>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 mt-4">
+                  {categories.map((cat) => (
+                    <div key={cat.id} className="flex justify-between items-center py-2 px-3 rounded-2xl bg-[var(--color-bg-primary)]/40 border border-[var(--color-border-subtle)]/30">
+                      <div className="flex items-center gap-3">
+                        <cat.icon className={`w-4 h-4 ${cat.color}`} />
+                        <span className="text-sm font-medium text-[var(--color-text-primary)] truncate max-w-[100px]">{cat.name}</span>
+                      </div>
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => {
+                          const isActive = (inlineRatings[cat.id] || 0) >= star;
+                          return (
+                            <button key={star} onClick={() => handleRateLifeDimension(cat.id, star)} className="focus:outline-none p-0.5">
+                              <Star className={`w-4 h-4 transition-all ${isActive ? 'fill-[var(--color-pastel-yellow)] text-[var(--color-pastel-yellow)] scale-110 drop-shadow-sm' : 'text-[var(--color-border-subtle)] hover:text-[var(--color-pastel-teal)]'}`} />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </motion.div>
         </div>
 
-        {/* ── 5. Historical Flow ── */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <motion.div variants={itemVariants} className="h-full">
-            <WeeklyMoodGraph data={entries.slice(0, 7).map(e => ({ date: e.date, moodScore: e.moodScore }))} />
-          </motion.div>
-          <motion.div variants={itemVariants} className="h-full">
-            <MoodTimeline entries={entries} getEmoji={getEmoji} />
-          </motion.div>
-        </div>
-
-        {/* ── 6. Gamification Showcase ── */}
-        <motion.div variants={itemVariants}>
-          <div className="glass rounded-[2rem] p-6 soft-shadow border-none relative overflow-hidden glow-card">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-pastel-purple)]/10 rounded-full blur-2xl -mt-10 -mr-10 pointer-events-none" />
-            <div className="flex items-center justify-between mb-5 relative z-10">
-              <h3 className="text-lg font-serif font-bold text-[var(--color-text-primary)] relative z-10">Your Growth</h3>
-              <Link to="/achievements" className="text-xs font-medium text-[var(--color-pastel-purple)] hover:underline flex items-center gap-1 relative z-10">
-                View all <ArrowRight className="w-3 h-3" />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-6 gap-3 relative z-10">
-              {achievements.slice(0, 6).map((achievement) => (
-                <AchievementBadge key={achievement.id} achievement={achievement} />
-              ))}
-              {achievements.length === 0 && (
-                <div className="sm:col-span-3 xl:col-span-6 p-6 text-center border-2 border-dashed border-[var(--color-border-subtle)] rounded-2xl">
-                  <p className="text-sm text-[var(--color-text-secondary)]">Keep journaling to unlock badges! 🌱</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {user && <QuickJournalFAB userId={user.uid} onComplete={fetchData} />}
+      </motion.div >
     </>
   );
 };

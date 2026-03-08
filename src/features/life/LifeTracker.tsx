@@ -4,7 +4,7 @@ import { getLifeTrackerEntry, saveLifeTrackerEntry } from '../../services/lifeTr
 import { Moon, Heart, Palette, Coffee, Users, TrendingUp, CheckSquare, Briefcase, Sun, Sparkles, Star } from 'lucide-react';
 import { motion } from 'motion/react';
 
-const categories = [
+export const categories = [
     { id: 'sleep', name: 'Sleep', icon: Moon, color: 'text-[var(--color-pastel-blue)]', bg: 'bg-[var(--color-pastel-blue)]/20' },
     { id: 'health', name: 'Health', icon: Heart, color: 'text-[var(--color-danger)]', bg: 'bg-[var(--color-danger)]/20' },
     { id: 'hobbies', name: 'Hobbies', icon: Palette, color: 'text-[var(--color-pastel-purple)]', bg: 'bg-[var(--color-pastel-purple)]/20' },
