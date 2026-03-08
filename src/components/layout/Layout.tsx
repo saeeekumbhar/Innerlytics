@@ -105,7 +105,7 @@ const Layout = () => {
   return (
     <div className="app-bg flex flex-col h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] font-sans overflow-hidden transition-colors duration-500">
       {/* ═══ Top Header Bar ═══ */}
-      <header className="flex items-center justify-between px-6 md:px-10 py-4 bg-[var(--color-bg-card)]/80 backdrop-blur-xl border-b border-[var(--color-border-subtle)]/50 z-30 relative">
+      <header className="flex items-center justify-between px-6 md:px-10 py-4 bg-[var(--color-bg-card)]/80 backdrop-blur-xl border-b border-[var(--color-border-subtle)]/50 z-50 relative">
         {/* Logo */}
         <NavLink to="/" className="flex items-center gap-3 group">
           <Logo className="w-9 h-9 group-hover:scale-110 transition-transform duration-300" />
@@ -139,7 +139,7 @@ const Layout = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-40 pointer-events-auto"
+                    className="fixed inset-0 z-[60] pointer-events-auto"
                     onClick={() => setMoreOpen(false)}
                   />
                   <motion.div
@@ -147,7 +147,7 @@ const Layout = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    className="absolute top-full mt-3 right-0 w-56 z-50 pointer-events-auto bg-[var(--color-bg-card)] backdrop-blur-2xl border border-[var(--color-border-subtle)]/50 rounded-2xl soft-shadow p-2 origin-top"
+                    className="absolute top-full mt-3 right-0 w-56 z-[70] pointer-events-auto bg-[var(--color-bg-card)] backdrop-blur-2xl border border-[var(--color-border-subtle)]/50 rounded-2xl soft-shadow p-2 origin-top"
                   >
                     <div className="px-3 py-2 border-b border-[var(--color-border-subtle)]/50 mb-2">
                       <p className="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider">Features</p>
