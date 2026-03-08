@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Calendar, BookOpen, MessageSquare, BarChart2,
-  Users, Settings, LogOut, Activity, Heart, Shield, Star,
+  Users, Settings, LogOut, Activity, Heart, Shield, Star, Sparkles,
   Image as ImageIcon, Menu, X, ChevronRight
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -11,6 +11,67 @@ import ThemeToggle from '../ui/ThemeToggle';
 import Onboarding from '../ui/Onboarding';
 import { useReminders } from '../../hooks/useReminders';
 import { Logo } from '../ui/Logo';
+import { PenTool } from 'lucide-react';
+import { addJournalEntry } from '../../features/journal/journalService';
+
+// ─── Quick Journal FAB Modal ─────────────────
+const QuickJournalFAB = ({ userId }: { userId: string }) => {
+  const [open, setOpen] = useState(false);
+  const [note, setNote] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    if (!note.trim()) return;
+    setSaving(true);
+    try {
+      await addJournalEntry({ userId, date: new Date().toISOString().split('T')[0], moodScore: 5, moodLabel: 'Meh', content: note });
+      setNote('');
+      setOpen(false);
+      // Optional: dispatch a global event or context refresh if needed.
+    } catch (e) { console.error(e); }
+    finally { setSaving(false); }
+  };
+
+  return (
+    <>
+      <div className="relative group/fab z-50 fixed bottom-8 right-8 flex items-center">
+        {/* Tooltip */}
+        <div className="absolute right-[110%] mr-2 px-3 py-1.5 bg-[var(--color-bg-card)] border border-[var(--color-border-subtle)] soft-shadow rounded-lg text-sm font-medium text-[var(--color-text-primary)] opacity-0 group-hover/fab:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+          Quick Journal
+        </div>
+        <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+          onClick={() => setOpen(true)}
+          className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow shadow-[var(--color-pastel-purple)]/30"
+        >
+          <PenTool className="w-6 h-6" />
+        </motion.button>
+      </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setOpen(false)}>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              className="glass rounded-[2rem] p-8 w-full max-w-lg soft-shadow relative" onClick={e => e.stopPropagation()}>
+              <button onClick={() => setOpen(false)} className="absolute top-5 right-5 p-2 rounded-full hover:bg-[var(--color-pastel-hover)] transition-colors">
+                <X className="w-5 h-5 text-[var(--color-text-secondary)]" />
+              </button>
+              <h2 className="text-2xl font-serif font-bold text-[var(--color-text-primary)] mb-1">Quick Journal ✍️</h2>
+              <p className="text-sm text-[var(--color-text-secondary)] mb-5">Capture a thought before it slips away.</p>
+              <textarea value={note} onChange={e => setNote(e.target.value)}
+                placeholder="What's on your mind right now?"
+                className="w-full p-5 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/50 text-[var(--color-text-primary)] focus:outline-none resize-none placeholder:text-[var(--color-text-secondary)]/60 leading-relaxed glow-focus"
+                rows={5} autoFocus />
+              <button onClick={handleSave} disabled={saving || !note.trim()}
+                className="w-full mt-4 py-3.5 rounded-full font-medium text-white bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] hover:scale-[1.02] active:scale-95 transition-all soft-shadow disabled:opacity-50">
+                {saving ? 'Saving...' : 'Save Entry ✨'}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
 
 const Layout = () => {
   const { user, logout } = useAuth();
@@ -22,8 +83,9 @@ const Layout = () => {
   const dockItems = [
     { path: '/', icon: LayoutDashboard, label: 'Home' },
     { path: '/journal', icon: BookOpen, label: 'Journal' },
-    { path: '/chat', icon: MessageSquare, label: 'AI Chat' },
+    { path: '/myspace', icon: Sparkles, label: 'My Space' },
     { path: '/insights', icon: BarChart2, label: 'Insights' },
+    { path: '/chat', icon: MessageSquare, label: 'AI Chat' },
     { path: '/wellness', icon: Heart, label: 'Wellness' },
     { path: '/habits', icon: Activity, label: 'Habits' },
   ];
@@ -209,6 +271,9 @@ const Layout = () => {
       </div>
 
       <Onboarding />
+
+      {/* ═══ Global Quick Journal FAB ═══ */}
+      {user && location.pathname === '/' && <QuickJournalFAB userId={user.uid} />}
     </div>
   );
 };

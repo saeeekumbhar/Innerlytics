@@ -5,6 +5,7 @@ import { PreferencesProvider } from './context/PreferencesContext';
 import Layout from './components/layout/Layout';
 import Login from './features/auth/Login';
 import Dashboard from './features/mood/Dashboard';
+import MySpace from './features/mood/MySpace';
 import CalendarPage from './features/mood/CalendarPage';
 import Journal from './features/journal/JournalPage';
 import Chat from './features/insights/ChatPage';
@@ -56,6 +57,7 @@ export default function App() {
                 }
               >
                 <Route index element={<Dashboard />} />
+                <Route path="myspace" element={<MySpace />} />
                 <Route path="calendar" element={<CalendarPage />} />
                 <Route path="journal" element={<Journal />} />
                 <Route path="chat" element={<Chat />} />
