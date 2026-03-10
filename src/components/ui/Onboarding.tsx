@@ -1,7 +1,91 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Heart, Brain, Zap, ArrowRight, X, User } from 'lucide-react';
+import { ArrowRight, ArrowLeft, X, ChevronDown, Check } from 'lucide-react';
 
+/* ── Custom Dropdown Component ─────────────────────────────────── */
+interface DropdownOption {
+    value: string;
+    label: string;
+}
+
+const CustomDropdown = ({
+    label,
+    options,
+    value,
+    onChange,
+    placeholder = 'Select...'
+}: {
+    label: string;
+    options: DropdownOption[];
+    value: string;
+    onChange: (val: string) => void;
+    placeholder?: string;
+}) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            if (ref.current && !ref.current.contains(e.target as Node)) setIsOpen(false);
+        };
+        document.addEventListener('mousedown', handleClick);
+        return () => document.removeEventListener('mousedown', handleClick);
+    }, []);
+
+    const selected = options.find(o => o.value === value);
+
+    return (
+        <div ref={ref} className="relative">
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">{label}</label>
+            <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/60 backdrop-blur-sm text-left transition-all duration-200 hover:border-[var(--color-pastel-purple)] focus:outline-none focus:ring-2 focus:ring-[var(--color-pastel-purple)]/30"
+                style={{ minHeight: '48px' }}
+            >
+                <span className={`text-sm ${selected ? 'text-[var(--color-text-primary)] font-medium' : 'text-[var(--color-text-secondary)]/60'}`}>
+                    {selected ? selected.label : placeholder}
+                </span>
+                <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                    <ChevronDown className="w-4 h-4 text-[var(--color-text-secondary)]" />
+                </motion.span>
+            </button>
+
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                        transition={{ duration: 0.18 }}
+                        className="absolute z-50 left-0 right-0 mt-2 py-2 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)] shadow-xl backdrop-blur-xl overflow-hidden"
+                    >
+                        {options.map((opt) => (
+                            <button
+                                key={opt.value}
+                                onClick={() => { onChange(opt.value); setIsOpen(false); }}
+                                className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-all duration-150 ${value === opt.value
+                                        ? 'bg-[var(--color-pastel-purple)]/15 text-[var(--color-text-primary)] font-medium'
+                                        : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-pastel-hover)]'
+                                    }`}
+                            >
+                                <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${value === opt.value
+                                        ? 'border-[var(--color-pastel-purple)] bg-[var(--color-pastel-purple)]'
+                                        : 'border-[var(--color-border-subtle)]'
+                                    }`}>
+                                    {value === opt.value && <Check className="w-3 h-3 text-white" />}
+                                </span>
+                                {opt.label}
+                            </button>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
+/* ── Main Onboarding Component ─────────────────────────────────── */
 const Onboarding = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [step, setStep] = useState(0);
@@ -28,34 +112,55 @@ const Onboarding = () => {
     const steps = [
         {
             title: "Welcome to Innerlytics ✦",
-            description: "A soft, safe space for your emotional intelligence journey. We've upgraded your Experience.",
-            icon: Sparkles,
+            description: "A soft, safe space for your emotional intelligence journey. Let's get you started.",
             color: 'var(--color-pastel-purple)'
         },
         {
             title: "Deep Mood Tracking",
             description: "Log not just your mood, but energy, stress, and anxiety. Get a fuller picture of your well-being.",
-            icon: Zap,
             color: 'var(--color-pastel-blue)'
         },
         {
             title: "AI Insights",
             description: "Our compassionate AI analyzes your patterns and offers gentle coping suggestions tailored to you.",
-            icon: Brain,
             color: 'var(--color-pastel-teal)'
         },
         {
             title: "Wellness & Habits",
             description: "From breathing exercises to habit streaks, we give you the tools to evolve one day at a time.",
-            icon: Heart,
             color: 'var(--color-pastel-pink)'
         },
         {
             title: "Tell Us About Yourself",
             description: "Help us personalize your insights. This is completely optional.",
-            icon: User,
             color: 'var(--color-pastel-peach)'
         }
+    ];
+
+    const ageOptions: DropdownOption[] = [
+        { value: 'Under 18', label: 'Under 18' },
+        { value: '18-24', label: '18–24' },
+        { value: '25-34', label: '25–34' },
+        { value: '35-44', label: '35–44' },
+        { value: '45+', label: '45+' },
+    ];
+    const genderOptions: DropdownOption[] = [
+        { value: 'Male', label: 'Male' },
+        { value: 'Female', label: 'Female' },
+        { value: 'Non-binary', label: 'Non-binary' },
+        { value: 'Other', label: 'Other' },
+        { value: '', label: 'Prefer not to say' },
+    ];
+    const frequencyOptions: DropdownOption[] = [
+        { value: 'Daily', label: 'Daily' },
+        { value: 'Weekly', label: 'Weekly' },
+        { value: 'Occasionally', label: 'Occasionally' },
+    ];
+    const motivationOptions: DropdownOption[] = [
+        { value: 'Track Moods', label: 'Track Moods' },
+        { value: 'Reduce Stress', label: 'Reduce Stress' },
+        { value: 'Self-Discovery', label: 'Self-Discovery' },
+        { value: 'Build Habits', label: 'Build Good Habits' },
     ];
 
     if (!isOpen) return null;
@@ -71,19 +176,21 @@ const Onboarding = () => {
                 >
                     <div className="absolute top-0 right-0 w-64 h-64 opacity-20 blur-3xl rounded-full -mt-20 -mr-20 pointer-events-none transition-colors duration-500" style={{ backgroundColor: steps[step].color }} />
 
-                    <button onClick={completeOnboarding} className="absolute top-6 right-6 p-2 rounded-full hover:bg-[var(--color-pastel-hover)] transition-colors">
+                    <button onClick={completeOnboarding} className="absolute top-6 right-6 p-2 rounded-full hover:bg-[var(--color-pastel-hover)] transition-colors z-20">
                         <X className="w-5 h-5 text-[var(--color-text-secondary)]" />
                     </button>
 
                     <div className="relative z-10 text-center space-y-6">
+                        {/* Logo instead of icon */}
                         <motion.div
                             key={step}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
+                            initial={{ scale: 0, rotate: -10 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
                             className="w-20 h-20 rounded-[2rem] mx-auto flex items-center justify-center"
-                            style={{ backgroundColor: steps[step].color, opacity: 0.2 }}
+                            style={{ backgroundColor: steps[step].color + '22' }}
                         >
-                            {React.createElement(steps[step].icon, { className: "w-10 h-10", style: { color: steps[step].color } })}
+                            <img src="/logo.svg" alt="Innerlytics" className="w-12 h-12 object-contain" />
                         </motion.div>
 
                         <AnimatePresence mode="wait">
@@ -100,68 +207,67 @@ const Onboarding = () => {
                                 {step === 4 && (
                                     <div className="space-y-4 text-left mt-6 px-1">
                                         <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Age Group</label>
-                                                <select value={formData.ageGroup} onChange={e => setFormData({ ...formData, ageGroup: e.target.value })} className="w-full p-2.5 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/50 focus:outline-none text-[var(--color-text-primary)]">
-                                                    <option value="">Select...</option>
-                                                    <option value="Under 18">Under 18</option>
-                                                    <option value="18-24">18-24</option>
-                                                    <option value="25-34">25-34</option>
-                                                    <option value="35-44">35-44</option>
-                                                    <option value="45+">45+</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Gender (Optional)</label>
-                                                <select value={formData.gender} onChange={e => setFormData({ ...formData, gender: e.target.value })} className="w-full p-2.5 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/50 focus:outline-none text-[var(--color-text-primary)]">
-                                                    <option value="">Prefer not to say</option>
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
-                                                    <option value="Non-binary">Non-binary</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </div>
+                                            <CustomDropdown
+                                                label="Age Group"
+                                                options={ageOptions}
+                                                value={formData.ageGroup}
+                                                onChange={val => setFormData({ ...formData, ageGroup: val })}
+                                            />
+                                            <CustomDropdown
+                                                label="Gender (Optional)"
+                                                options={genderOptions}
+                                                value={formData.gender}
+                                                onChange={val => setFormData({ ...formData, gender: val })}
+                                                placeholder="Prefer not to say"
+                                            />
                                         </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Journaling Frequency</label>
-                                            <select value={formData.frequency} onChange={e => setFormData({ ...formData, frequency: e.target.value })} className="w-full p-2.5 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/50 focus:outline-none text-[var(--color-text-primary)]">
-                                                <option value="">Select...</option>
-                                                <option value="Daily">Daily</option>
-                                                <option value="Weekly">Weekly</option>
-                                                <option value="Occasionally">Occasionally</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Primary Motivation</label>
-                                            <select value={formData.motivation} onChange={e => setFormData({ ...formData, motivation: e.target.value })} className="w-full p-2.5 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-primary)]/50 focus:outline-none text-[var(--color-text-primary)]">
-                                                <option value="">Select...</option>
-                                                <option value="Track Moods">Track Moods</option>
-                                                <option value="Reduce Stress">Reduce Stress</option>
-                                                <option value="Self-Discovery">Self-Discovery</option>
-                                                <option value="Build Habits">Build Good Habits</option>
-                                            </select>
-                                        </div>
+                                        <CustomDropdown
+                                            label="Journaling Frequency"
+                                            options={frequencyOptions}
+                                            value={formData.frequency}
+                                            onChange={val => setFormData({ ...formData, frequency: val })}
+                                        />
+                                        <CustomDropdown
+                                            label="Primary Motivation"
+                                            options={motivationOptions}
+                                            value={formData.motivation}
+                                            onChange={val => setFormData({ ...formData, motivation: val })}
+                                        />
                                     </div>
                                 )}
                             </motion.div>
                         </AnimatePresence>
 
+                        {/* Step indicators */}
                         <div className="flex justify-center gap-2 pt-4">
                             {steps.map((_, i) => (
                                 <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-[var(--color-pastel-purple)]' : 'w-2 bg-[var(--color-border-subtle)]'}`} />
                             ))}
                         </div>
 
-                        <button
-                            onClick={() => step < steps.length - 1 ? setStep(step + 1) : completeOnboarding()}
-                            className="w-full py-4 bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white rounded-full font-bold text-lg soft-shadow hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
-                        >
-                            {step < steps.length - 1 ? (
-                                <>Next Step <ArrowRight className="w-5 h-5" /></>
-                            ) : (
-                                "Let's Begin ✨"
+                        {/* Navigation Buttons */}
+                        <div className="flex gap-3">
+                            {step > 0 && (
+                                <motion.button
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    onClick={() => setStep(step - 1)}
+                                    className="px-6 py-4 rounded-full font-bold text-lg border border-[var(--color-border-subtle)] text-[var(--color-text-secondary)] hover:bg-[var(--color-pastel-hover)] hover:text-[var(--color-text-primary)] transition-all flex items-center justify-center gap-2"
+                                >
+                                    <ArrowLeft className="w-5 h-5" /> Back
+                                </motion.button>
                             )}
-                        </button>
+                            <button
+                                onClick={() => step < steps.length - 1 ? setStep(step + 1) : completeOnboarding()}
+                                className="flex-1 py-4 bg-gradient-to-r from-[var(--color-pastel-purple)] to-[var(--color-pastel-blue)] text-white rounded-full font-bold text-lg soft-shadow hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+                            >
+                                {step < steps.length - 1 ? (
+                                    <>Next Step <ArrowRight className="w-5 h-5" /></>
+                                ) : (
+                                    "Let's Begin ✨"
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </motion.div>
             </div>
